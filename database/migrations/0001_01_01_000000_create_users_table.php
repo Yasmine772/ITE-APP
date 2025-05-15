@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('role')->default('user');
             $table->string('address')->nullable();
             $table->string('image')->nullable();
             $table->string('gender')->nullable();
             $table->string('brith_date')->nullable();
             $table->string('bio')->nullable();
-            $table->boolean('active')->default(true);
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
