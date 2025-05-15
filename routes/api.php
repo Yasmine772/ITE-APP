@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\profileController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -15,3 +17,7 @@ Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('specializations', SpecializationController::class);
 Route::post('AddspecializationsToYear/{specializationID}', [SpecializationController::class, 'AddSpecializationToYear']);
+
+//Users:
+Route::post('/updateUserProfile',[profileController::class ,'updateUserProfile']);
+Route::post('/showUserProfile',[profileController::class ,'showUserProfile']);
