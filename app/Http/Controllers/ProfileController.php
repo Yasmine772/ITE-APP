@@ -12,6 +12,7 @@ class ProfileController extends Controller
 {
     public function updateUserProfile(Request $request)
     {
+        try{
         $validator = Validator::make($request->all(), [
             'name'      => 'nullable|string|between:2,50',
             'email'     => 'nullable|email',
@@ -22,14 +23,12 @@ class ProfileController extends Controller
             'bio'       => 'nullable|string|max:150',
         ]);
         if ($validator->fails()) {
-            return response()->json([$validator->errors()], 400);
+            return Response::Error($validator->errors(),400);
         }
-
         $user = auth()->user();
         if (!$user) {
-            return response()->json(['User not found!'], 404);
+            return Response::Error(null, 'User not found',404);
         }
-
         $user->name = $request->name ?? $user->name;
         $user->email = $request->email ?? $user->email;
         if(User::where('email', $request->email)->exists()){
@@ -48,10 +47,20 @@ class ProfileController extends Controller
         $user->save();
 
         return Response::Success($user, 'User profile has been updated successfuly',200);
+    } catch (\Exception $e) {
+        return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+    }
     }
     //*************************************************************************************************
     public function showUserProfile()
     {
-        return Response::Success(auth()->user(),'This is user profile',200);
+        try {
+            if (!auth()->user()) {
+                return Response::Error('User not authenticated',401);
+            }
+            return Response::Success(auth()->user(),'This is user profile', 200);
+        } catch (\Exception $e) {
+            return Response::Error(null, 'Something went wrong', 500);
+        }
     }
 }
