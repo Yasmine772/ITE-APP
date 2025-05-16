@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //User profile:
     Route::post('/updateUserProfile', [profileController::class, 'updateUserProfile']);
     Route::post('/showUserProfile', [profileController::class, 'showUserProfile']);
+    //articles:
+    Route::post('/addArticle', [ArticleController::class, 'addArticle']);
+    Route::post('/editArticles', [ArticleController::class, 'editArticles']);
+    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
 });
-
-
+Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 

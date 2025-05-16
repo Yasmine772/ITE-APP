@@ -10,7 +10,7 @@ class Year extends Model
   
   public function specializations()
     {
-        return $this->belongsToMany(Specialization::class, 'specialization_year');
+      return $this->belongsToMany(Specialization::class, 'specialization_year');
     }
 
 }
