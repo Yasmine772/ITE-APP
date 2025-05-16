@@ -59,7 +59,11 @@ class YearController extends Controller
             $year = Year::findOrFail($id);
 
             $validated = $request->validate([
+<<<<<<< HEAD
                 'name' => 'required|string|max:255|unique:years,name,' . $id,
+=======
+                'name' => 'required|string|max:255|unique:years,name,',
+>>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
             ]);
 
             $year->update($validated);

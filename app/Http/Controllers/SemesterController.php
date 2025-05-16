@@ -59,7 +59,11 @@ class SemesterController extends Controller
             $semester = Semester::findOrFail($id);
 
             $validated = $request->validate([
+<<<<<<< HEAD
                 'name' => 'required|string|max:255|unique:semesters,name,' . $id,
+=======
+                'name' => 'required|string|max:255|unique:semesters,name,' ,
+>>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
             ]);
 
             $semester->update($validated);

@@ -58,7 +58,11 @@ class SpecializationController extends Controller
             $specialization = Specialization::findOrFail($id);
 
             $validated = $request->validate([
+<<<<<<< HEAD
                 'name' => 'required|string|max:255|unique:specializations,name,'  . $id,
+=======
+                'name' => 'required|string|max:255|unique:specializations,name,' ,
+>>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
             ]);
 
             $specialization->update($validated);

@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
@@ -35,3 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+>>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff

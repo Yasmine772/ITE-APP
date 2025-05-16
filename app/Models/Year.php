@@ -9,8 +9,8 @@ class Year extends Model
     protected $fillable=['name'];
   
   public function specializations()
-    {
-      return $this->belongsToMany(Specialization::class, 'specialization_year');
-    }
+  {
+    return $this->belongsToMany(Specialization::class, 'specialization_year');
+  }
 
 }
