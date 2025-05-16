@@ -60,7 +60,7 @@ class ProfileController extends Controller
             }
             return Response::Success(auth()->user(),'This is user profile', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong', 500);
+            return Response::Error(null, 'Something went wrong' . $e->getMessage(), 500);
         }
     }
 }
