@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('register',[UserController::class,'register']);
-Route::post('login',[UserController::class,'login']);
+Route::post('login',[UserController::class,'login'])->name('login');
 Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
 
 Route::apiResource('years', YearController::class);
@@ -22,9 +22,12 @@ Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('specializations', SpecializationController::class);
 Route::post('AddspecializationsToYear/{specializationID}', [SpecializationController::class, 'AddSpecializationToYear']);
 
-//Users:
-Route::post('/updateUserProfile',[profileController::class ,'updateUserProfile']);
-Route::post('/showUserProfile',[profileController::class ,'showUserProfile']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    //User profile:
+    Route::post('/updateUserProfile', [profileController::class, 'updateUserProfile']);
+    Route::post('/showUserProfile', [profileController::class, 'showUserProfile']);
+});
 
 
 

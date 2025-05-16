@@ -15,11 +15,11 @@ class UserServices
     public function register($request): array
     {
         $user = User::query()->create([
-             'name' => $request['name'],
+            'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
-         Mail::to($user->email)->send(new WelcomeMail($user));
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
          $adminRole = Role::query()->where('name', 'admin')->first();
         if ($adminRole) {
