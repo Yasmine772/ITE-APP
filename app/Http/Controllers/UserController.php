@@ -1,25 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
-<<<<<<< HEAD
-
-=======
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
 use App\Http\Requests\UserSigninRequest;
 use App\Http\Requests\UserSignUpRequest;
 use App\Response\Response;
 use App\Services\UserServices;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-<<<<<<< HEAD
 
-=======
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
+use App\Traits\ApiResponseTrait;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\JsonResponse;
 use Throwable;
+
 
 class UserController extends Controller
 {
+    use ApiResponseTrait;
    private UserServices $userService;
    public function __construct(UserServices $userServices)
    {
@@ -30,10 +25,6 @@ class UserController extends Controller
        $data = [];
        try {
            $data = $this->userService->register($request->validated());
-<<<<<<< HEAD
-
-=======
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
            return Response::Success($data['user'],$data['message']);
        }
        catch(Throwable $th)
@@ -69,6 +60,9 @@ class UserController extends Controller
            return Response::Error($data ,$message);
        }
    }
-
+public function user(): JsonResponse
+{
+    return $this->successResponse($this->userService->details());
+}
 
 }

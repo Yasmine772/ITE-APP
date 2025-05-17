@@ -7,7 +7,7 @@ trait ApiResponseTrait
     /**
      * Success response
      */
-    protected function successResponse($data = [], $message = 'Success', $code = 200)
+    protected function successResponse($data = [], $message = 'Success', $code = 200): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'status' => 'success',

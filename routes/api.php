@@ -2,12 +2,17 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\verifiedEmail;
+use App\Models\User;
+use App\Response\Response;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SpecializationController;
-use App\Http\Controllers\profileController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -15,9 +20,31 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('register',[UserController::class,'register']);
-Route::post('login',[UserController::class,'login']);
-Route::get('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+// when clicking on verification link
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
+    {
+    $request->fulfill();
+    event(new Verified(User::query()->find($request->route('id'))));
+    return Response::Success(true, 'Email Verified Successfully');
+
+    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
+// resend verification email
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return Response::Success(true, 'Verification link sent!');
+})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+
+Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function () {
+    Route::get('/user', [UserController::class, 'user']);
+    Route::get('/logout', [UserController::class, 'logout']);
+});
+
+Route::post('signup', [UserController::class, 'register']);
+Route::post('signing', [UserController::class, 'login']);
+
 
 Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
@@ -37,7 +64,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
+
+

@@ -1,18 +1,12 @@
 <?php
 
 namespace App\Services;
-
-<<<<<<< HEAD
 use App\Mail\WelcomeMail;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-=======
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
 use Spatie\Permission\Models\Role;
 
 
@@ -25,30 +19,19 @@ class UserServices
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
-         Mail::to($user->email)->send(new WelcomeMail($user));
 
-         $adminRole = Role::query()->where('name', 'admin')->first();
-=======
 
          $adminRole = Role::query()->where('name', 'admin')->first();
 
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
         if ($adminRole) {
             $user->assignRole($adminRole);
 
             $permissions = $adminRole->permissions->pluck('name')->toArray();
             $user->givePermissionTo($permissions);
         }
-
-
         $user->load('roles', 'permissions');
-
+         event(new Registered($user));
         $user = User::query()->find($user->id);
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
         $user['token'] = $user->createToken('token')->plainTextToken;
 
         $message = 'User created successfully';
@@ -79,11 +62,9 @@ class UserServices
     }
 
 
-<<<<<<< HEAD
-    public function logout(): \Illuminate\Http\JsonResponse
-=======
+
     public function logout()
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
+
     {
         $user = Auth::user();
         if(!is_null($user))
@@ -103,6 +84,9 @@ class UserServices
         ]);
 
     }
-
+ public function details(): ?\Illuminate\Contracts\Auth\Authenticatable
+ {
+    return auth()->user();
+ }
 
 }

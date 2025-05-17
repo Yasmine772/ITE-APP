@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Middleware\CheckUserRole;
+
+use App\Http\Middleware\VerifiedEmail;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,11 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-<<<<<<< HEAD
+
         $middleware->alias([
-            'CheckUser' => CheckUserRole::class
+           // 'verifiedEmail' => VerifiedEmail::class
         ]);
-=======
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
@@ -26,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([]
 
         );
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
