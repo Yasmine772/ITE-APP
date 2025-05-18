@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\verifiedEmail;
 use App\Models\User;
@@ -54,15 +56,17 @@ Route::post('AddspecializationsToYear/{specializationID}', [SpecializationContro
 
 Route::middleware('auth:sanctum')->group(function () {
     //User profile:
-    Route::post('/updateUserProfile', [profileController::class, 'updateUserProfile']);
+    Route::post('/updateUserProfile', [ProfileController::class, 'updateUserProfile']);
     Route::post('/showUserProfile', [profileController::class, 'showUserProfile']);
     //articles:
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+    Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
+    Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);
+    Route::post('/editComplaint', [ComplaintController::class, 'editComplaint']);
+
+    
 });
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
-
-
-
-
+Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
