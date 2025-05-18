@@ -6,32 +6,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-<<<<<<< HEAD
-use Spatie\Permission\Traits\HasRoles;
-use Laravel\Sanctum\HasApiTokens;
-
-
-class User extends Authenticatable
-{
-    use HasFactory, Notifiable , HasRoles, HasApiTokens;
-
-=======
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    use Notifiable;
+    use HasRoles;
     use HasProfilePhoto;
     use HasTeams;
-    use Notifiable;
     use TwoFactorAuthenticatable;
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
 
     /**
      * The attributes that are mass assignable.
@@ -46,8 +35,8 @@ class User extends Authenticatable
         'image',
         'gender',
         'birth_date',
-        'bio' ,
-        'role' ,
+        'bio',
+        'role',
     ];
 
     /**
@@ -58,11 +47,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-<<<<<<< HEAD
-        'roles',
-=======
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'roles', // إذا كان هناك داعي لإخفاءها من الـ JSON
     ];
 
     /**
@@ -72,7 +59,6 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
     ];
 
     /**
@@ -87,8 +73,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function teacher()
-  {
-    return $this->hasOne(Teacher::class);
-  }
+    {
+        return $this->hasOne(Teacher::class);
+    }
 }

@@ -3,20 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Year extends Model
 {
-    protected $fillable=['name'];
-<<<<<<< HEAD
-  
-  public function specializations()
-    {
-=======
+    protected $fillable = ['name'];
 
-  public function specializations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-  {
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff
+    public function specializations(): BelongsToMany
+    {
         return $this->belongsToMany(Specialization::class, 'specialization_year');
     }
-
+      public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
 }

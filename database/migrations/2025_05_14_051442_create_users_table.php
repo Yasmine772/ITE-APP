@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-<<<<<<< HEAD:database/migrations/2025_05_14_051442_create_users_table.php
-            $table->string('password');
+
+          
             $table->string('role')->default('student');
             $table->string('address')->nullable();
             $table->string('image')->nullable();
             $table->string('gender')->nullable();
-            $table->string('brith_date')->nullable();
+            $table->string('birth_date')->nullable();
+
             $table->string('bio')->nullable();
-=======
->>>>>>> a74942e7baa9c99995047ffcc5334ae48c910eff:database/migrations/0001_01_01_000000_create_users_table.php
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
