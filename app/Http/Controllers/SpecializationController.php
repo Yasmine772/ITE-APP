@@ -52,13 +52,14 @@ class SpecializationController extends Controller
         }
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, $id)
     {
         try {
             $specialization = Specialization::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:specializations,name,'
+                'name' => 'required|string|max:255|unique:specializations,name,'  . $id,
+
             ]);
 
             $specialization->update($validated);

@@ -1,20 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\ProfileController;
+
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\verifiedEmail;
-use App\Models\User;
-use App\Response\Response;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\SubjectController;
 
+use App\Http\Controllers\ContentSubjectController;
 
 
 Route::get('/user', function (Request $request) {
@@ -22,37 +20,18 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-// when clicking on verification link
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
-    {
-    $request->fulfill();
-    event(new Verified(User::query()->find($request->route('id'))));
-    return Response::Success(true, 'Email Verified Successfully');
-
-    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
-
-// resend verification email
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-
-    return Response::Success(true, 'Verification link sent!');
-})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
-
-
-Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function () {
-    Route::get('/user', [UserController::class, 'user']);
-    Route::get('/logout', [UserController::class, 'logout']);
-});
-
-Route::post('signup', [UserController::class, 'register']);
-Route::post('signing', [UserController::class, 'login']);
-
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('specializations', SpecializationController::class);
 Route::post('AddspecializationsToYear/{specializationID}', [SpecializationController::class, 'AddSpecializationToYear']);
 
+//Users:
+Route::post('/updateUserProfile', [ProfileController::class, 'updateUserProfile']);
+Route::post('/showUserProfile', [ProfileController::class, 'showUserProfile']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //User profile:
@@ -70,3 +49,28 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
+
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
+
+Route::prefix('subjects')->name('subjects.')->group(function () {
+    Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
+    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search'); // 👈 الآن فوق
+    Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
+    Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
+    Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
+    Route::delete('{id}', [SubjectController::class, 'apiDestroy'])->name('destroy');
+});
+
+
+Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
+    Route::get('/', [ContentSubjectController::class, 'apiIndex'])->name('index');
+    Route::get('search', [ContentSubjectController::class, 'apiSearch'])->name('search');
+    Route::get('{id}', [ContentSubjectController::class, 'apiShow'])->name('show');
+    Route::post('/', [ContentSubjectController::class, 'apiStore'])->name('store');
+    Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
+    Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
+});

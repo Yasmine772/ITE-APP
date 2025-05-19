@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Services;
+
 use App\Mail\WelcomeMail;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
-
 
 class UserServices
 {
@@ -20,8 +19,9 @@ class UserServices
             'password' => Hash::make($request['password'])
         ]);
 
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
-         $adminRole = Role::query()->where('name', 'admin')->first();
+        $adminRole = Role::query()->where('name', 'admin')->first();
 
         if ($adminRole) {
             $user->assignRole($adminRole);
@@ -29,14 +29,17 @@ class UserServices
             $permissions = $adminRole->permissions->pluck('name')->toArray();
             $user->givePermissionTo($permissions);
         }
+
         $user->load('roles', 'permissions');
-         event(new Registered($user));
+
         $user = User::query()->find($user->id);
+
         $user['token'] = $user->createToken('token')->plainTextToken;
 
         $message = 'User created successfully';
         return ['user' => $user, 'message' => $message];
     }
+
     public function login($request): array
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
@@ -61,32 +64,23 @@ class UserServices
         ];
     }
 
-
-
     public function logout()
-
     {
         $user = Auth::user();
-        if(!is_null($user))
-        {
-            Auth::user()->currentAccessToken()->delete();
+
+        if (!is_null($user)) {
+            $user->currentAccessToken()->delete();
             $message = 'User logout successfully';
             $code = 200;
-        }
-        else{
+        } else {
             $message = 'Invalid token';
             $code = 404;
         }
+
         return response()->json([
-            'user'=> $user,
+            'user' => $user,
             'message' => $message,
             'code' => $code
         ]);
-
     }
- public function details(): ?\Illuminate\Contracts\Auth\Authenticatable
- {
-    return auth()->user();
- }
-
 }

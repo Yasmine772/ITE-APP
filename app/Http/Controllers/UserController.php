@@ -1,20 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
+
+ 
+
+
 use App\Http\Requests\UserSigninRequest;
 use App\Http\Requests\UserSignUpRequest;
 use App\Response\Response;
 use App\Services\UserServices;
-
-use App\Traits\ApiResponseTrait;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Throwable;
-
 
 class UserController extends Controller
 {
-    use ApiResponseTrait;
    private UserServices $userService;
    public function __construct(UserServices $userServices)
    {
@@ -25,6 +25,7 @@ class UserController extends Controller
        $data = [];
        try {
            $data = $this->userService->register($request->validated());
+
            return Response::Success($data['user'],$data['message']);
        }
        catch(Throwable $th)
@@ -60,9 +61,6 @@ class UserController extends Controller
            return Response::Error($data ,$message);
        }
    }
-public function user(): JsonResponse
-{
-    return $this->successResponse($this->userService->details());
-}
+
 
 }

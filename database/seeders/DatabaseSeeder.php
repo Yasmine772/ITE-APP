@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+        // User::factory(10)->withPersonalTeam()->create();
+
 
         User::factory()->withPersonalTeam()->create([
             'name' => 'Test User',
@@ -25,6 +27,9 @@ class DatabaseSeeder extends Seeder
         SemesterSeeder::class,
         SpecializationSeeder::class,
         SpecializationYearSeeder::class,
+        StudentSeeder::class,
+        TeacherSeeder::class,
+        SubjectSeeder::class,
        ]);
 
           $this->call([

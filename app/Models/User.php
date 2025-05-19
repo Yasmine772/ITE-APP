@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,11 +12,15 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable , HasRoles,
-    HasApiTokens , HasProfilePhoto, TwoFactorAuthenticatable,
-    HasTeams,\Illuminate\Auth\MustVerifyEmail;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
+    use HasProfilePhoto;
+    use HasTeams;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,28 +35,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'image',
         'gender',
         'birth_date',
-        'bio' ,
-        'role' ,
+        'bio',
+        'role',
     ];
-
-    public function articles(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Article::class, 'articles');
-    }
-
-    public function teacher(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(Teacher::class);
-    }
-
-
-
-
-
-
-
-
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,9 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'roles',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'roles', // إذا كان هناك داعي لإخفاءها من الـ JSON
     ];
 
     /**
@@ -90,5 +74,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
 }

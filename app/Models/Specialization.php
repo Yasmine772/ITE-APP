@@ -12,5 +12,8 @@ class Specialization extends Model
         return $this->belongsToMany(Year::class, 'specialization_year');
     }
 
-
+  public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
 }

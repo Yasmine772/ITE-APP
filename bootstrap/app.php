@@ -1,7 +1,6 @@
 <?php
 
-
-use App\Http\Middleware\VerifiedEmail;
+use App\Http\Middleware\CheckUserRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->alias([
-           // 'verifiedEmail' => VerifiedEmail::class
+            'CheckUser' => CheckUserRole::class
         ]);
 
         $middleware->web(append: [
