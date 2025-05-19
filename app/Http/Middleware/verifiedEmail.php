@@ -18,10 +18,9 @@ class verifiedEmail
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!$request->user() || (!$request->user() instanceof MustVerifyEmail &&
-                !$request->user()->hasVerifiedEmail()))
-        {
-            return $this-> errorResponse($message = 'Your email address is not verified', $error = null, $code = 500);
+        if (!$request->user() || (!$request->user() instanceof MustVerifyEmail &&
+            !$request->user()->hasVerifiedEmail())) {
+            return $this->errorResponse($message = 'Your email address is not verified', $error = null, $code = 500);
         }
 
         return $next($request);

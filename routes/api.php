@@ -38,16 +38,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/updateUserProfile', [ProfileController::class, 'updateUserProfile']);
     Route::post('/showUserProfile', [profileController::class, 'showUserProfile']);
     //articles:
-    Route::post('/addArticle', [ArticleController::class, 'addArticle']);
-    Route::post('/editArticles', [ArticleController::class, 'editArticles']);
-    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+   // Route::post('/addArticle', [ArticleController::class, 'addArticle']);
+   // Route::post('/editArticles', [ArticleController::class, 'editArticles']);
+   // Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);
     Route::post('/editComplaint', [ComplaintController::class, 'editComplaint']);
 
     
 });
-Route::get('/showArticles', [ArticleController::class, 'showArticles']);
+//Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
 
 

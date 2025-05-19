@@ -24,23 +24,21 @@ class ArticleController extends Controller
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
-            ],200);
-            return Response::Success($article,'Article has been added successfully',200);
-
+            ], 200);
+            return Response::Success($article, 'Article has been added successfully', 200);
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
     }
-//************************************************************************************************ */
+    //************************************************************************************************ */
     public function deleteArticle(Request $request)
     {
         try {
             $article = Article::find($request->article_id);
-            if(auth()->user()->id == $article->user_id){
-                return Response::Success($article->delete(),'Article has been deleted successfully', 200);
+            if (auth()->user()->id == $article->user_id) {
+                return Response::Success($article->delete(), 'Article has been deleted successfully', 200);
             }
             return Response::Error('You can not delete this', 500);
-
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
@@ -49,7 +47,7 @@ class ArticleController extends Controller
     public function showArticles()
     {
         try {
-            return Response::Success(Article::all(),'All Articles', 200);
+            return Response::Success(Article::all(), 'All Articles', 200);
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
@@ -60,7 +58,7 @@ class ArticleController extends Controller
         try {
             $article = Article::find($request->article_id);
 
-            if($article->is_accepted == 1){
+            if ($article->is_accepted == 1) {
                 $validator = Validator::make($request->all(), [
                     'title'   => 'nullable|string|min:10|max:100',
                     'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
@@ -75,7 +73,6 @@ class ArticleController extends Controller
                 return Response::Success($article, 'Article has been updated successfully', 200);
             }
             return Response::Success('we send an order to the admin for edit your article', 200);
-
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
