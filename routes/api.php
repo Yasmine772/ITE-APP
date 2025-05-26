@@ -1,6 +1,7 @@
 <?php
 
-
+use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\UserController;
@@ -10,10 +11,11 @@ use App\Http\Controllers\YearController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\SubjectController;
 
 use App\Http\Controllers\ContentSubjectController;
-
+use App\Http\Controllers\SolutionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -45,10 +47,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);
     Route::post('/editComplaint', [ComplaintController::class, 'editComplaint']);
 
-    
+    //advices for doctor:
+    Route::post('/addAdvice', [AdviceController::class, 'addAdvice']);
+    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
+    Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
+
+    //assignments for doctor:
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+
+    //Solutions of assignments for student:
+    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    //Route::post('/deleteAssignment', [SolutionController::class, 'deleteAssignment']);
+    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+    Route::post('/showSolutions', [SolutionController::class, 'showSolutions']);
 });
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
+Route::post('/showAdvices', [AdviceController::class, 'showAdvices']);
+Route::post('/showAssignment', [AssignmentController::class, 'showAssignment']);
+
+
+
+
+
+
+
 
 
 Route::post('register', [UserController::class, 'register']);

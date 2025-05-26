@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Complaint extends Model
+class Solution extends Model
 {
     protected $fillable = [
-        'content',
+        'solutionFile',
         'user_id',
+        'assignment_id',
         'user_details'
     ];
 
-    public function user()
+    public function assignment()
     {
-        return $this->belongsTo(User::class, 'users');
+        return $this->belongsTo(Assignment::class);
     }
 }

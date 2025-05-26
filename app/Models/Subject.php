@@ -36,10 +36,20 @@ class Subject extends Model
     {
         return $this->belongsTo(Teacher::class);
     }
-public function contentSubjects()
-{
-    return $this->hasMany(ContentSubject::class);
-}
+    public function contentSubjects()
+    {
+        return $this->hasMany(ContentSubject::class);
+    }
+
+    public function advice()
+    {
+        return $this->hasMany(Advice::class);
+    }
+
+    public function assignment()
+    {
+        return $this->hasMany(Assignment::class);
+    }
 
 
 }

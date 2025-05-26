@@ -22,8 +22,9 @@ class ComplaintController extends Controller
             $complaint = Complaint::create([
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
+                'user_details' => auth()->user(),
             ], 200);
-            return Response::Success($complaint, 'Complaint has been added successfully', 200);
+            return Response::Success($complaint , 'Complaint has been added successfully', 200);
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
@@ -63,6 +64,7 @@ class ComplaintController extends Controller
                 }
             $complaint->content = $request->content ?? $complaint->content;
             $complaint->user_id = auth()->user()->id;
+            $complaint->user_details = auth()->user();
             $complaint->save();
             return Response::Success($complaint, 'Complaint has been updated successfully', 200);
         } catch (\Exception $e) {

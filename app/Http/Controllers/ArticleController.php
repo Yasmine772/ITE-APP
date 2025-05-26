@@ -24,6 +24,7 @@ class ArticleController extends Controller
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
+                'user_details' => auth()->user()
             ], 200);
             return Response::Success($article, 'Article has been added successfully', 200);
         } catch (\Exception $e) {
@@ -69,6 +70,7 @@ class ArticleController extends Controller
                 $article->title = $request->title ?? $article->title;
                 $article->content = $request->content ?? $article->content;
                 $article->user_id = auth()->user()->id;
+                $article->user_details = auth()->user();
                 $article->save();
                 return Response::Success($article, 'Article has been updated successfully', 200);
             }
