@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SubjectController;
 
 use App\Http\Controllers\ContentSubjectController;
+use App\Http\Controllers\SolutionController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -47,3 +50,24 @@ Route::prefix('content-subjects')->name('content_subjects.')->group(function() {
     Route::delete('destroy/{id}', [ContentSubjectController::class, 'destroy'])->name('destroy');
     Route::get('search', [ContentSubjectController::class, 'search'])->name('search');
 });
+
+Route::middleware('auth:sanctum')->group(function (){
+    //advices:
+    Route::post('/addAdvices', [AdviceController::class, 'addAdvice']);
+    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
+    Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
+
+    //assignments:
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+
+    //Solutions of assignments:
+    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
+    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+
+});
+Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
+Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
+Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');

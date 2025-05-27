@@ -18,13 +18,10 @@ class SolutionController extends Controller
         try {
             if(auth()->user()->role == 'teacher')
             {
-                $validator = Validator::make($request->all(), [
+                $request->validate([
                     'solutionFile' => 'required|file|mimes:pdf|max:3072',
                     'assignment_id' => 'required|string',
                 ]);
-                if ($validator->fails()) {
-                    return Response::Error($validator->errors(), 400);
-                }
                 $user = User::find(auth()->user()->id);
                 $teacher = Teacher::where('user_id', $user->id)->first();
                 $assignment = Assignment::find($request->assignment_id);
@@ -32,12 +29,8 @@ class SolutionController extends Controller
                 if($assignment->teacher_id == $teacher->id)
                 {
                     $sameSolution = Solution::where('assignment_id', $request->assignment_id)->first();
-                   // return response()->json(['data' => $sameSolution]);
                     if ($request->assignment_id == $sameSolution->assignment_id) {
-                        return Response::Error('you add solution for this assignment!', 500);
-                    }
-                    if (!$request->hasFile('solutionFile')) {
-                        return Response::Error('file not found!', 404);
+                         return redirect()->back()->withErrors('you add solution for this assignment!');
                     }
                     $NameOfFile = $request->file('solutionFile')->getClientOriginalName();
                     $pathOfFile = $request->file('solutionFile')->storeAs('folderOfImages/SolutionsOfAssignments', $NameOfFile, 'public');
@@ -47,14 +40,18 @@ class SolutionController extends Controller
                         'teacher_id' => $teacher->id,
                         'assignment_id' => $request->assignment_id,
                         'teacher_details' => $user,
-                    ], 200);
-                    return Response::Success($solution, 'Solution has been added successfully', 200);
+                    ]);
+                    $success = 'Solution has been added successfully';
+                    $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
+                    return view('Solutions.All_solutions', compact('solutions', 'success'));
                 }
-                return Response::Error('you can not add solution because you are not responsible about this assignment !', 500);
+                return redirect()->back()->withErrors('you can not add solution because you are not responsible about this assignment !');
             }
-            return Response::Error('you are not teacher!', 500);
+            return redirect()->back()->withErrors('You are not a teacher!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************ */
@@ -68,20 +65,22 @@ class SolutionController extends Controller
 
             if ($solution->teacher_id == $teacher->id) 
             {
-                return Response::Success($solution->delete(), 'Solution has been deleted successfully', 200);
+                $solution->delete();
+                return view('Solutions.All_solutions')->with('success', 'Solution has been deleted successfully');
             }
-            return Response::Error('You can not delete this', 500);
+            return redirect()->back()->withErrors('You can not delete this');
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
-    public function showSolutions()
+    public function showSolutions(Request $request)
     {
         try {
-            return Response::Success(Solution::All(),'All solutions', 200);
+            $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
+            return view('Solutions.All_solutions', compact('solutions'));
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -97,12 +96,9 @@ class SolutionController extends Controller
 
                 if ($solution->teacher_id == $teacher->id)
                 {
-                    $validator = Validator::make($request->all(), [
+                    $request->validate([
                         'solutionFile' => 'nullable|file|mimes:pdf|max:3072',
                     ]);
-                    if ($validator->fails()) {
-                        return Response::Error($validator->errors(), 400);
-                    }
                     $NameOfFile = $request->file('solutionFile')->getClientOriginalName();
                     $pathOfFile = $request->file('solutionFile')->storeAs('folderOfImages/SolutionsOfAssignments', $NameOfFile, 'public');
 
@@ -111,12 +107,27 @@ class SolutionController extends Controller
                     $solution->assignment_id = $solution->assignment_id;
                     $solution->teacher_details = $user;
                     $solution->save();
-                    return Response::Success($solution, 'Solution has been updated successfully', 200);
+
+                    $success = 'Solution has been updated successfully';
+                    $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
+                    return view('solutions.All_solutions', compact('solutions', 'success'));
                 }
-                return Response::Error('you can not edit the solution because you are not responsible about this assignment!', 500);
+                return redirect()->back()->withErrors('you can not edit the solution because you are not responsible about this assignment!');
             }
-            return Response::Error('you are not teacher!', 500);
-        }catch (\Exception $e) {
+            return redirect()->back()->withErrors('You are not a teacher!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    //*************************************************************************************************** */
+    public function displaySolutions(Request $request)
+    {
+        try {
+            $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
+            return Response::Success($solutions, 'All solutions', 200);
+        } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }

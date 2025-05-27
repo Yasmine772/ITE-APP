@@ -79,4 +79,13 @@ class ArticleController extends Controller
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+//************************************************************************************************** */
+    public function articleDetails(Request $request)
+    {
+        try {
+            return Response::Success(Article::find($request->article_id), 'Article details:', 200);
+        }catch (\Exception $e) {
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
 }

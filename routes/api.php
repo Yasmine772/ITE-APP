@@ -40,30 +40,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+
+    //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);
     Route::post('/editComplaint', [ComplaintController::class, 'editComplaint']);
 
-    //advices for doctor:
-    Route::post('/addAdvice', [AdviceController::class, 'addAdvice']);
-    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
-    Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
+    // //advices:
+    // Route::post('/addAdvice', [AdviceController::class, 'addAdvice']);
+    // Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
+    // Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
 
-    //assignments for doctor:
-    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
-    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
-    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+    // //assignments:
+    // Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    // Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    // Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
 
-    //Solutions of assignments:
-    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
-    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
-    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
-    Route::post('/showSolutions', [SolutionController::class, 'showSolutions']);
+    // //Solutions of assignments:
+    // Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
+    // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
 });
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
-Route::post('/showAdvices', [AdviceController::class, 'showAdvices']);
-Route::post('/showAssignment', [AssignmentController::class, 'showAssignment']);
+Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
+Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
+Route::post('/displaySolutions', [SolutionController::class, 'displaySolutions']);
+Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
+Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
 
 
 

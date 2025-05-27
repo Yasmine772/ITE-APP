@@ -8,8 +8,6 @@ use App\Models\Teacher;
 use App\Models\User;
 use App\Response\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
 
 class AssignmentController extends Controller
 {
@@ -17,24 +15,17 @@ class AssignmentController extends Controller
     {
         try {
             if(auth()->user()->role == 'teacher'){
-                $validator = Validator::make($request->all(), [
+                $request->validate([
                     'title' => 'required|string',
                     'file' => 'required|file|mimes:pdf|max:3072',
                     'subject_id' => 'required|string',
                 ]);
-                if ($validator->fails()) {
-                    return Response::Error($validator->errors(), 400);
-                }
                 $subject = Subject::find($request->subject_id);
                 $user = User::find(auth()->user()->id);
                 $teacher = Teacher::where('user_id', $user->id)->first();
 
-                //return response()->json(['data' => $teacher]);
                 if($subject->teacher_id ==  $teacher->id) 
                 {
-                    if (!$request->hasFile('file')) {
-                        return Response::Error('File not found!',404);
-                    }
                     $NameOfFile = $request->file('file')->getClientOriginalName();
                     $pathOfFile = $request->file('file')->storeAs('folderOfImages/Assignments', $NameOfFile, 'public');
 
@@ -43,14 +34,19 @@ class AssignmentController extends Controller
                         'file' => $pathOfFile,
                         'teacher_id' => $teacher->id,
                         'subject_id' => $request->subject_id,
-                    ], 200);
-                    return Response::Success($assignment, 'Assignment has been added successfully', 200);
+                    ]);
+
+                    $success = 'Assignment has been added successfully';
+                    $assignments = assignment::where('subject_id', $request->subject_id)->get();
+                    return view('assignments.All_assignments', compact('assignments', 'success'));
                 }
-                return Response::Error('you are not responsible about this assignment !', 500);
+                return redirect()->back()->withErrors('you are not responsible about this subject !');
             }
-            return Response::Error('you are not teacher!', 500);
+            return redirect()->back()->withErrors('You are not a teacher!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************ */
@@ -62,11 +58,12 @@ class AssignmentController extends Controller
             $teacher = Teacher::where('user_id', $user->id)->first();
 
             if ($teacher->id == $assignment->teacher_id) {
-                return Response::Success($assignment->delete(), 'Assignment has been deleted successfully', 200);
+                $assignment->delete();
+                return view('assignments.All_assignments')->with('success', 'Assignment has been deleted successfully');
             }
-            return Response::Error('Are you reposible about this assignment ? You can not delete this', 500);
+            return redirect()->back()->withErrors('Are you reposible about this assignment ? You can not delete this');
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -74,9 +71,9 @@ class AssignmentController extends Controller
     {
         try {
             $assignments = Assignment::where('subject_id',$request->subject_id)->get();
-            return Response::Success($assignments, 'All assignments for this subject', 200);
+            return view('assignments.All_assignments', compact('assignments'));
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -91,13 +88,10 @@ class AssignmentController extends Controller
 
                 if ($assignment->teacher_id == $teacher->id) 
                 {
-                $validator = Validator::make($request->all(), [
+                    $request->validate([
                     'title' => 'nullable|string',
                     'file' => 'nullable|file|mimes:pdf|max:3072',
                 ]);
-                if ($validator->fails()) {
-                     return Response::Error($validator->errors(), 400);
-                }
                 if($request->hasFile('file')){
                     $NameOfFile = $request->file('file')->getClientOriginalName();
                     $pathOfFile = $request->file('file')->storeAs('folderOfImages/Assignments', $NameOfFile, 'public');
@@ -107,13 +101,28 @@ class AssignmentController extends Controller
                 $assignment->teacher_id = $teacher->id;
                 $assignment->subject_id = $assignment->subject_id;
                 $assignment->save();
-                return Response::Success($assignment, 'Assignment has been updated successfully', 200);
+
+                $success = 'Assignment has been updated successfully';
+                $assignments = assignment::where('subject_id', $request->subject_id)->get();
+                return view('assignments.All_assignments', compact('assignments', 'success'));
                 }
-                return Response::Error('you are not responsible about this assignment !', 500);
+                return redirect()->back()->withErrors('you are not responsible about this assignment!');
             }
-            return Response::Error('you are not teacher!', 500);
+            return redirect()->back()->withErrors('You are not a teacher!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    //********************************************************************************************* */
+    public function displayAssignment(Request $request)
+    {
+        try {
+            $assignments = Assignment::where('subject_id', $request->subject_id)->get();
+            return Response::Success($assignments, 'All assignments for this subject', 200);
+        } catch (\Exception $e) {
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 }

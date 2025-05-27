@@ -71,5 +71,14 @@ class ComplaintController extends Controller
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+    //************************************************************************************************** */
+    public function complaintDetails(Request $request)
+    {
+        try {
+            return Response::Success(Complaint::find($request->complaint_id), 'Complaint details:', 200);
+        } catch (\Exception $e) {
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
 
 }
