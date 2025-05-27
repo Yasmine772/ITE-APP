@@ -20,7 +20,7 @@ class Assignment extends Model
 
     public function solution()
     {
-        return $this->hasMany(Solution::class, 'solutions');
+        return $this->hasOne(Solution::class, 'solutions');
     }
 
 

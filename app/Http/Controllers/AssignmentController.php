@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller
 {
-    //Only teacher can add , delete, edit assignment
     public function addAssignment(Request $request)
     {
         try {
@@ -67,7 +66,7 @@ class AssignmentController extends Controller
             }
             return Response::Error('Are you reposible about this assignment ? You can not delete this', 500);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -77,7 +76,7 @@ class AssignmentController extends Controller
             $assignments = Assignment::where('subject_id',$request->subject_id)->get();
             return Response::Success($assignments, 'All assignments for this subject', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */

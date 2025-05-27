@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('role')->default('student');
             $table->string('address')->nullable();
-            $table->string('image')->nullable();
             $table->string('gender')->nullable();
             $table->string('birth_date')->nullable();
             $table->string('bio')->nullable();

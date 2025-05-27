@@ -31,9 +31,6 @@ Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('specializations', SpecializationController::class);
 Route::post('AddspecializationsToYear/{specializationID}', [SpecializationController::class, 'AddSpecializationToYear']);
 
-//Users:
-Route::post('/updateUserProfile', [ProfileController::class, 'updateUserProfile']);
-Route::post('/showUserProfile', [ProfileController::class, 'showUserProfile']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //User profile:
@@ -57,9 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
     Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
 
-    //Solutions of assignments for student:
+    //Solutions of assignments:
     Route::post('/addSolution', [SolutionController::class, 'addSolution']);
-    //Route::post('/deleteAssignment', [SolutionController::class, 'deleteAssignment']);
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
     Route::post('/editSolution', [SolutionController::class, 'editSolution']);
     Route::post('/showSolutions', [SolutionController::class, 'showSolutions']);
 });

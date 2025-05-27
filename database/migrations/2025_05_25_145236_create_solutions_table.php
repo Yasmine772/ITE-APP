@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('solutions', function (Blueprint $table) {
             $table->id();
             $table->string('solutionFile');
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignId('teacher_id')->references('id')->on('teachers')->cascadeOnDelete();
             $table->foreignId('assignment_id')->references('id')->on('assignments')->cascadeOnDelete();
-            $table->json('user_details');
+            $table->json('teacher_details');
             $table->timestamps();
         });
     }

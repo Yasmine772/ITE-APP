@@ -8,9 +8,9 @@ class Solution extends Model
 {
     protected $fillable = [
         'solutionFile',
-        'user_id',
+        'teacher_id',
         'assignment_id',
-        'user_details'
+        'teacher_details'
     ];
 
     public function assignment()
