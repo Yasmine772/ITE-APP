@@ -21,17 +21,20 @@ class profileController extends Controller
                 'gender'    => 'nullable|in:male,female',
                 'birth_date' => 'nullable|date_format:Y-m-d',
                 'bio'       => 'nullable|string|max:150',
-                'profile_photo_path' => 'nullable|image|max:2048',
+                'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
             if ($validator->fails()) {
                 return Response::Error($validator->errors(), 400);
             }
             $user = auth()->user();
             $user->name = $request->name ?? $user->name;
-            $user->email = $request->email ?? $user->email;
-            if (User::where('email', $request->email)->exists()) {
-                return Response::Error('This email has already been taken', 500);
+            if ($request->email && $request->email !== $user->email) {
+                if (User::where('email', $request->email)->exists()) {
+                    return Response::Error('This email has already been taken', 500);
+                }
+                $user->email = $request->email;
             }
+            $user->email = $user->email;
             $user->address = $request->address ?? $user->address;
             $user->gender = $request->gender ?? $user->gender;
             $user->birth_date = $request->birth_date ?? $user->birth_date;
