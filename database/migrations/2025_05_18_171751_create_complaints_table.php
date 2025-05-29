@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->longText('content');
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->json('user_details');
             $table->timestamps();
         });
     }

@@ -42,6 +42,18 @@ class Subject extends Model
         return $this->hasMany(ContentSubject::class);
     }
 
+
+    public function advice()
+    {
+        return $this->hasMany(Advice::class);
+    }
+
+    public function assignment()
+    {
+        return $this->hasMany(Assignment::class);
+    }
+
+
     public function courses()
     {
         return $this->hasMany(Course::class);

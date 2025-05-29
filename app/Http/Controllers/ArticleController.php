@@ -24,6 +24,7 @@ class ArticleController extends Controller
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
+                'user_details' => auth()->user()
             ], 200);
             return Response::Success($article, 'Article has been added successfully', 200);
         } catch (\Exception $e) {
@@ -69,12 +70,22 @@ class ArticleController extends Controller
                 $article->title = $request->title ?? $article->title;
                 $article->content = $request->content ?? $article->content;
                 $article->user_id = auth()->user()->id;
+                $article->user_details = auth()->user();
                 $article->save();
                 return Response::Success($article, 'Article has been updated successfully', 200);
             }
             return Response::Success('we send an order to the admin for edit your article', 200);
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+//************************************************************************************************** */
+    public function articleDetails(Request $request)
+    {
+        try {
+            return Response::Success(Article::find($request->article_id), 'Article details:', 200);
+        }catch (\Exception $e) {
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 }

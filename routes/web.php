@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -9,6 +11,8 @@ use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseContentController;
+use App\Http\Controllers\SolutionController;
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -80,3 +84,23 @@ Route::prefix('course_contents')->group(function () {
     Route::delete('web/delete/{content}', [CourseContentController::class, 'webDestroy'])->name('course_contents.webDestroy');
     Route::get('web/show/{content}', [CourseContentController::class, 'webShow'])->name('course_contents.webShow');
 });
+Route::middleware('auth:sanctum')->group(function (){
+    //advices:
+    Route::post('/addAdvices', [AdviceController::class, 'addAdvice']);
+    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
+    Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
+
+    //assignments:
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+
+    //Solutions of assignments:
+    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
+    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+
+});
+Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
+Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
+Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
