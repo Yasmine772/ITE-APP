@@ -1,10 +1,21 @@
 <?php
 
-use App\Http\Controllers\AdviceController;
 use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Middleware\verifiedEmail;
+use App\Http\Middleware\CheckUser;
+use App\Http\Middleware\Admin;
+use App\Models\User;
+use App\Response\Response;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
@@ -27,9 +38,43 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
+
+
+// when clicking on verification link
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
+    {
+    $request->fulfill();
+    event(new Verified(User::query()->find($request->route('id'))));
+    return Response::Success(true, 'Email Verified Successfully');
+
+    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
+// resend verification email
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return Response::Success(true, 'Verification link sent!');
+})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+
+Route::post('signup', [UserController::class, 'register']);
+Route::post('signin', [UserController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function () {
+    Route::get('/user', [UserController::class, 'user']);
+    Route::get('/logout', [UserController::class, 'logout']);
+});
+//To send  password reset links
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+Route::group(['middleware' => 'auth:sanctum'], function () {
+   Route::post('user/password/email',[UserController::class,'UserForgetPassword']);  //forget password
+   Route::post('user/password/code/check',[UserController::class,'userCheckCode']); //send code for reset
+   Route::post('user/password/reset', [UserController::class, 'UserResetPassword']); //update password
+});
+
 
 Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
@@ -75,7 +120,33 @@ Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
 Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
 
 
+//Notifications
+Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'notifications'], function () {
+    Route::get('/show', [NotificationController::class, 'index']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/readAll', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/{id}/destroy', [NotificationController::class, 'destroy']);
+    Route::delete('/destroyAll', [NotificationController::class, 'destroyAll']);
+    Route::get('/unread/count', [NotificationController::class, 'countUnreadNotifications']);
+    Route::get('/unread', [NotificationController::class, 'unreadNotifications']);
+});
+Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+    Route::post('notifications/send', [NotificationController::class, 'send']);
+});
+//Advertisements
+Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+    Route::get('advertisement/index', [AdvertisementController::class, 'index']);
+    Route::post('advertisement/store', [AdvertisementController::class, 'store']);
+    Route::put('advertisement/{id}/update', [AdvertisementController::class, 'update']);
+    Route::delete('advertisement/{id}/destroy', [AdvertisementController::class, 'destroy']);
+    Route::delete('advertisement/destroyAll', [AdvertisementController::class, 'destroyAll']);
+});
 
+Route::group(['middleware' => ['auth:sanctum','Admin']], function () {
+    Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
+    Route::delete('advertisement/{id}/destroyAdmin', [AdvertisementController::class, 'destroyAdmin']);
+    Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
+});
 
 
 
@@ -127,7 +198,7 @@ Route::prefix('courses')->group(function () {
 Route::prefix('contents')->group(function () {
     Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
-    
+
     Route::post('/', [CourseContentController::class, 'store']);
     Route::post('{content}', [CourseContentController::class, 'update']);
     Route::delete('{content}', [CourseContentController::class, 'destroy']);

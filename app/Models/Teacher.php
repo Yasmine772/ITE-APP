@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
+
     use HasFactory;
 
     protected $fillable = [
@@ -16,10 +17,13 @@ class Teacher extends Model
         'university_degree',
     ];
 
-    public function user()
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+
     {
         return $this->belongsTo(User::class);
     }
+
 
     public function subjects()
     {
@@ -29,4 +33,6 @@ class Teacher extends Model
     {
         return $this->hasMany(Course::class);
     }
+
+
 }

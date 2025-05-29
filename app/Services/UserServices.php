@@ -32,6 +32,8 @@ class UserServices
 
         $user->load('roles', 'permissions');
 
+         event(new Registered($user));
+
         $user = User::query()->find($user->id);
 
         $user['token'] = $user->createToken('token')->plainTextToken;
@@ -54,6 +56,9 @@ class UserServices
 
         $roles = $user->getRoleNames();
         $user->role = $roles->first();
+        $user->update([
+            'role' => $user->role
+        ]);
 
         $user['token'] = $user->createToken('token')->plainTextToken;
 
