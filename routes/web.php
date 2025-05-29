@@ -6,7 +6,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\SubjectController;
 
 use App\Http\Controllers\ContentSubjectController;
-
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseContentController;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -46,4 +48,35 @@ Route::prefix('content-subjects')->name('content_subjects.')->group(function() {
     Route::put('update/{id}', [ContentSubjectController::class, 'update'])->name('update');
     Route::delete('destroy/{id}', [ContentSubjectController::class, 'destroy'])->name('destroy');
     Route::get('search', [ContentSubjectController::class, 'search'])->name('search');
+});
+
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+});
+
+Route::prefix('courses')->group(function () {
+    Route::get('/', [CourseController::class, 'index'])->name('courses.index');
+    Route::get('/create', [CourseController::class, 'create'])->name('courses.create');
+    Route::post('/', [CourseController::class, 'store'])->name('courses.store');
+    Route::get('/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/{id}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+    Route::get('/search', [CourseController::class, 'filter'])->name('courses.search');
+});
+
+Route::prefix('course_contents')->group(function () {
+    Route::get('web/{courseId}', [CourseContentController::class, 'webIndex'])->name('course_contents.webIndex');
+    Route::get('web/{courseId}/search', [CourseContentController::class, 'webSearch'])->name('course_contents.webSearch');
+    Route::get('web/create/{courseId}', [CourseContentController::class, 'webCreate'])->name('course_contents.webCreate');
+    Route::post('web/store', [CourseContentController::class, 'webStore'])->name('course_contents.webStore');
+    Route::get('web/edit/{content}', [CourseContentController::class, 'webEdit'])->name('course_contents.webEdit');
+    Route::post('web/update/{content}', [CourseContentController::class, 'webUpdate'])->name('course_contents.webUpdate');
+    Route::delete('web/delete/{content}', [CourseContentController::class, 'webDestroy'])->name('course_contents.webDestroy');
+    Route::get('web/show/{content}', [CourseContentController::class, 'webShow'])->name('course_contents.webShow');
 });
