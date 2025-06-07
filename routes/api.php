@@ -5,6 +5,8 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdvertisementController;
+use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -29,7 +31,10 @@ use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseContentController;
-
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\MarkController;
+use App\Http\Controllers\OptionController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
 
 
@@ -110,14 +115,45 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/addSolution', [SolutionController::class, 'addSolution']);
     // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
     // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+
+    //Exams:
+    Route::post('/addExam', [ExamController::class, 'addExam']);
+    Route::post('/deleteExam', [ExamController::class, 'deleteExam']);
+    Route::post('/editExam', [ExamController::class, 'editExam']);
+
+
+    //Questions:
+    Route::post('/addQuestion', [QuestionController::class, 'addQuestion']);
+    Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion']);
+    Route::post('/editQuestion', [QuestionController::class, 'editQuestion']);
+
+    //Options:
+    Route::post('/addOption', [OptionController::class, 'addOption']);
+    Route::post('/deleteOption', [OptionController::class, 'deleteOption']);
+    Route::post('/editOption', [OptionController::class, 'editOption']);
+
+    //Answer:
+    Route::post('/addAnswer', [AnswerController::class, 'addAnswer']);
+    //status of student exam :
+    Route::post('/startExam', [MarkController::class, 'startExam']);
+    Route::post('/finishExam', [MarkController::class, 'finishExam']);
+    
 });
+
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
 Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
+Route::post('/displayAssignmentdetails', [AssignmentController::class, 'displayAssignmentdetails']);
+
 Route::post('/displaySolutions', [SolutionController::class, 'displaySolutions']);
+Route::post('/displaySolutionsdetails', [SolutionController::class, 'displaySolutionsdetails']);
+
 Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
 Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
+
+Route::post('/showExamForStudent', [ExamController::class, 'showExamForStudent']);
+Route::post('/detailsOfExam', [ExamController::class, 'detailsOfExam']);
 
 
 //Notifications

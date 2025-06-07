@@ -14,7 +14,7 @@ class ArticleController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'title'   => 'required|string|min:10|max:100',
-                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
             ]);
             if ($validator->fails()) {
                 return Response::Error($validator->errors(), 400);
@@ -62,7 +62,7 @@ class ArticleController extends Controller
             if ($article->is_accepted == 1) {
                 $validator = Validator::make($request->all(), [
                     'title'   => 'nullable|string|min:10|max:100',
-                    'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                    'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
                 ]);
                 if ($validator->fails()) {
                     return Response::Error($validator->errors(), 400);

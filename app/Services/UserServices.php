@@ -55,7 +55,9 @@ class UserServices
         $user = User::where('email', $request->email)->firstOrFail();
 
         $roles = $user->getRoleNames();
+
         $user->role = $roles->first();
+        //?? 'student';
         $user->update([
             'role' => $user->role
         ]);

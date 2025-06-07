@@ -14,7 +14,7 @@ class ComplaintController extends Controller
    {
         try {
             $validator = Validator::make($request->all(), [
-                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
             ]);
             if ($validator->fails()) {
                 return Response::Error($validator->errors(), 400);
@@ -46,9 +46,9 @@ class ComplaintController extends Controller
     public function showComplaintes()
     {
         try {
-            return Response::Success(Complaint::all(), 'All complaints', 200);
+            return Response::Success(Complaint::find(auth()->user()->id)->get(), 'All complaints for this user', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //*************************************************************************************************** */
@@ -57,7 +57,7 @@ class ComplaintController extends Controller
         try {
             $complaint = Complaint::find($request->complaint_id);
             $validator = Validator::make($request->all(), [
-                'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
                 ]);
                 if ($validator->fails()) {
                     return Response::Error($validator->errors(), 400);
@@ -68,7 +68,7 @@ class ComplaintController extends Controller
             $complaint->save();
             return Response::Success($complaint, 'Complaint has been updated successfully', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************** */

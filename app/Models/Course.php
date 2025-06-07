@@ -41,4 +41,9 @@ class Course extends Model
     {
         return $this->hasMany(CourseContent::class)->orderBy('order');
     }
+
+    public function exam() 
+    {
+        return $this->hasMany(Exam::class, 'exams');
+    }
 }

@@ -23,4 +23,9 @@ class CourseContent extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function exam()
+    {
+        return $this->hasMany(Exam::class, 'exams');
+    }
 }
