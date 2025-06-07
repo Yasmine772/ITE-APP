@@ -186,14 +186,6 @@ Route::group(['middleware' => ['auth:sanctum','Admin']], function () {
 
 
 
-
-
-
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
-
-
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
     Route::get('search', [SubjectController::class, 'apiSearch'])->name('search'); // 👈 الآن فوق
