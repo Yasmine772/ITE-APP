@@ -24,7 +24,7 @@ class AdvertisementController extends Controller
     {
         $this->notificationService = $notificationService;
     }
-    public function index()
+    public function index(): JsonResponse
     {
         $advertisements = auth()->user()->advertisements()->get();
         return $this->successResponse(['Your Advertisements'=>$advertisements]);
@@ -34,7 +34,8 @@ class AdvertisementController extends Controller
          $user = auth()->user();
          $advertisementData = $request->validated();
          $advertisementData['user_id'] = $user->id ;
-         $advertisement= Advertisement::create($advertisementData);
+
+        $advertisement= Advertisement::create($advertisementData);
 
          $title = $advertisementData['title'];
          $message = $advertisementData['description'];
@@ -44,7 +45,11 @@ class AdvertisementController extends Controller
           $students = User::where('role', 'student')->get();
                $this->notificationService->sendToUsers($students, $title, $message, $advertisementId, $teacherInformation);
 
-         return $this->successResponse(['advertisement' => $advertisementData ,'TeacherInformation'=>$teacherInformation],'Saved Successfully',201);
+        return $this->successResponse([
+            'advertisement' => $advertisement,
+            'TeacherInformation' => $teacherInformation
+        ], 'Saved Successfully', 201);
+
     }
 
     public function update(UpdateAdvertisementRequest $request, int $id): JsonResponse

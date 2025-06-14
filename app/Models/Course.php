@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 {
@@ -42,8 +43,14 @@ class Course extends Model
         return $this->hasMany(CourseContent::class)->orderBy('order');
     }
 
-    public function exam() 
+
+    public function exam()
     {
         return $this->hasMany(Exam::class, 'exams');
+    }
+    public function resources(): BelongsToMany
+    {
+        return $this->belongsToMany(Resource::class);
+
     }
 }

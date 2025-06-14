@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Notifications\BasicNotification;
 use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Factory;
@@ -21,7 +22,10 @@ class NotificationService
     {
         Notification::send($users, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
     }
-
+    public function sendToUser($user, string $title, string $message): void
+    {
+        Notification::send($user, new WelcomeNotification($user , $title, $message));
+    }
 
     public function markAsRead($notificationId): bool
     {
