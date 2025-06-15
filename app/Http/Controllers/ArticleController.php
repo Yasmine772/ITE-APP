@@ -25,7 +25,7 @@ class ArticleController extends Controller
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
                 'user_details' => auth()->user()
-            ], 200);
+            ]);
             return Response::Success($article, 'Article has been added successfully', 200);
         } catch (\Exception $e) {
             return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
@@ -48,9 +48,13 @@ class ArticleController extends Controller
     public function showArticles()
     {
         try {
-            return Response::Success(Article::all(), 'All Articles', 200);
+            $articles = Article::all();
+            if($articles->isEmpty()){
+                return Response::Error('No articles yet!', 500);
+            }
+            return Response::Success($articles, 'All Articles', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -76,7 +80,7 @@ class ArticleController extends Controller
             }
             return Response::Success('we send an order to the admin for edit your article', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 //************************************************************************************************** */
@@ -88,4 +92,39 @@ class ArticleController extends Controller
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+    //************************************************************************************************** */
+    public function acceptEditArticle(Request $request)
+    {
+        try {
+            $article = Article::find($request->article_id);
+            $article->is_accepted = '1' ;
+            $article->save();
+
+           // return Response::Success('successfull', 200);
+             return redirect()->back()->with('successfuly');
+
+        } catch (\Exception $e) {
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+//************************************************************************************************** */
+    public function showNoneAcceptArticle()
+    {
+        try {
+            $articles = Article::where('is_accepted','0')->get();
+
+            if($articles->isEmpty()){
+                //return response()->json(['data' => 'There are not articles not acceppted!']);
+                return redirect()->back()->withErrors('There are not articles not acceppted! ', 500);
+            }
+            //return Response::Success($articles, 'all not accept articles', 200);
+            return view('Aricles.NoneAcceptArticles',compact('articles'));
+           
+
+        } catch (\Exception $e) {
+            //  return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+
 }

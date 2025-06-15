@@ -94,6 +94,9 @@ class AssignmentController extends Controller
     {
         try {
             $assignments = Assignment::where('subject_id', $request->subject_id)->get();
+            if($assignments->isEmpty()){
+                return Response::Error('There are not assignments yet!', 500);
+            }
             return Response::Success($assignments, 'All assignments for this subject', 200);
         } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);

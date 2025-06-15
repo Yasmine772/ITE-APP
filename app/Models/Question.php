@@ -15,11 +15,11 @@ class Question extends Model
 
     public function exam()
     {
-        return $this->belongsTo(Exam::class, 'exams');
+        return $this->belongsTo(Exam::class);
     }
-    public function option()
+    public function options()
     {
-        return $this->hasMany(Option::class, 'options');
+        return $this->hasMany(Option::class);
     }
     public function answer()
     {

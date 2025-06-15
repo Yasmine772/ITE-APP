@@ -99,7 +99,11 @@ class AdviceController extends Controller
     public function displayAdvices(Request $request)
     {
         try {
-            return Response::Success(Advice::where('subject_id', $request->subject_id)->get(), 'All advices for this subject', 200);
+            $advices = Advice::where('subject_id', $request->subject_id)->get();
+            if($advices->isEmpty()){
+                return Response::Error('No advices yet!', 500);
+            }
+            return Response::Success($advices, 'All advices for this subject', 200);
         } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }

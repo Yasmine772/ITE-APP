@@ -56,8 +56,9 @@ class UserServices
 
         $roles = $user->getRoleNames();
 
-        $user->role = $roles->first();
+        $user->role = $roles->first(); 
         //?? 'student';
+
         $user->update([
             'role' => $user->role
         ]);

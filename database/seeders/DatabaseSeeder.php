@@ -32,9 +32,9 @@ class DatabaseSeeder extends Seeder
         SubjectSeeder::class,
         CategorySeeder::class,
         AdviceSeeder::class,
-        //ExamSeeder::class,
-        //QuestionSeeder::class,
-        //OptionSeeder::class,
+        // ExamSeeder::class,
+        // QuestionSeeder::class,
+        // OptionSeeder::class,
 
         ]);
 

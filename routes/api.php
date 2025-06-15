@@ -95,11 +95,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
-
+    
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);
     Route::post('/editComplaint', [ComplaintController::class, 'editComplaint']);
+    Route::post('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
+
 
     // //advices:
     // Route::post('/addAdvice', [AdviceController::class, 'addAdvice']);
@@ -141,7 +143,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
-Route::get('/showComplaintes', [ComplaintController::class, 'showComplaintes']);
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
 Route::post('/displayAssignmentdetails', [AssignmentController::class, 'displayAssignmentdetails']);
@@ -150,6 +151,9 @@ Route::post('/displaySolutions', [SolutionController::class, 'displaySolutions']
 Route::post('/displaySolutionsdetails', [SolutionController::class, 'displaySolutionsdetails']);
 
 Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
+Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
+Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
+
 Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
 
 Route::post('/showExamForStudent', [ExamController::class, 'showExamForStudent']);

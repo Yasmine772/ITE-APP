@@ -24,7 +24,6 @@ class OptionSeeder extends Seeder
             Option::create([
                 'answer_text' => $faker->text,
                 'is_correct' =>  $faker->boolean,
-                'option_order' => $faker->numberBetween(1,3),
                 'question_id' => $faker->randomElement($questionIds),
             ]);
         }

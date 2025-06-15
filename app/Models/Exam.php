@@ -34,7 +34,7 @@ class Exam extends Model
     }
     public function questions()
     {
-        return $this->hasMany(Question::class, 'questions');
+        return $this->hasMany(Question::class);
     }
     public function mark()
     {

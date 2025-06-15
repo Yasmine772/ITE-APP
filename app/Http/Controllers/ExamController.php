@@ -118,7 +118,7 @@ class ExamController extends Controller
                 if(!$exam->isEmpty()){
                     return Response::Success($exam, 'All exams', 200);
                 }
-                return Response::Error('No exam yet!', 500);
+                return Response::Error('No exams yet!', 500);
             }
         } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
@@ -128,44 +128,32 @@ class ExamController extends Controller
     public function detailsOfExam(Request $request)
     {
         try {
-            $allData = [];
-            $allQuestions = Question::Where('exam_id', $request->exam_id)->orderBy('id')->get();
             $exam = Exam::find($request->exam_id);
+            $questions = $exam->questions()->with('options')->paginate(1);
 
-            foreach ($allQuestions as $Question) {
-                $Question_options = Option::orderBy('id')->where('question_id', $Question->id)->get();
-
-                $allData[] = [
-                    'exam' =>  $exam,
-                    'question' =>  $Question,
-                    'its options' =>   $Question_options,
-                ];
-            }
             return response()->json([
-                'data' => $allData,
+                'exam' =>  $exam,
+                'questions'=> $questions
             ]);
+
         } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
-
     //********************************************************************************************** */
     public function showExamForTeacher(Request $request)
     {
         try {
             $allData = [];
-            $allQuestions = Question::Where('exam_id', $request->exam_id)->orderBy('id')->get();
+
             $exam = Exam::find($request->exam_id);
+            $questions = $exam->questions()->with('options')->paginate(2);
 
-            foreach ($allQuestions as $Question) {
-                $Question_options = Option::orderBy('option_order')->where('question_id', $Question->id)->get();
+            $allData[] = [
+                'exam' =>  $exam,
+                'questions' => $questions
+            ];
 
-                $allData[] = [
-                    'exam' => $exam,
-                    'question' =>  $Question,
-                    'its options' =>   $Question_options,
-                ];
-            }
             return view('Exams.showExam', compact('allData'));
         } catch (\Exception $e) {
             return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);

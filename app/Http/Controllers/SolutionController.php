@@ -96,8 +96,11 @@ class SolutionController extends Controller
     public function displaySolutions(Request $request)
     {
         try {
-            $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
-            return Response::Success($solutions, 'All solutions', 200);
+            $solutions = Solution::where('assignment_id', $request->assignment_id)->first();
+            if($solutions){
+                return Response::Success($solutions, 'A solution for this assignment', 200);
+            }
+            return Response::Error('No solution yet!', 500);
         } catch (\Exception $e) {
             return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
