@@ -14,7 +14,7 @@ class SendCodeResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $code ;
+    protected $code ;
     public function __construct($code)
     {
        $this->code = $code ;

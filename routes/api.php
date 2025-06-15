@@ -43,9 +43,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-
-
-
 // when clicking on verification link
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
     {
@@ -79,6 +76,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
    Route::post('user/password/code/check',[UserController::class,'userCheckCode']); //send code for reset
    Route::post('user/password/reset', [UserController::class, 'UserResetPassword']); //update password
 });
+
+
 
 
 Route::apiResource('years', YearController::class);
@@ -139,7 +138,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //status of student exam :
     Route::post('/startExam', [MarkController::class, 'startExam']);
     Route::post('/finishExam', [MarkController::class, 'finishExam']);
-    
+
 });
 
 Route::get('/showArticles', [ArticleController::class, 'showArticles']);
@@ -186,6 +185,12 @@ Route::group(['middleware' => ['auth:sanctum','Admin']], function () {
     Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
     Route::delete('advertisement/{id}/destroyAdmin', [AdvertisementController::class, 'destroyAdmin']);
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
+});
+//resources
+Route::group(['middleware' => ['auth:sanctum','Teacher']], function () {
+
+
+
 });
 
 
