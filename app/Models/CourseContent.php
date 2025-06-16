@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CourseContent extends Model
 {
@@ -17,10 +16,26 @@ class CourseContent extends Model
         'duration',
         'description',
         'attachment',
+        'average_rating',
+        'duration_hms'
     ];
 
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function getAverageRatingAttribute($value)
+    {
+        return round($this->ratings()->avg('rating') ?? 0.0, 1);
+    }
+     public function progresses()
+    {
+        return $this->hasMany(CourseContentProgress::class);
     }
 }

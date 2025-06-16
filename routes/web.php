@@ -12,6 +12,16 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseContentController;
 use App\Http\Controllers\SolutionController;
+use FFMpeg\FFMpeg;
+use FFMpeg\FFProbe;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Http\Controllers\CourseSubscriptionController;
+use App\Http\Controllers\RoadmapController;
+use App\Http\Controllers\RoadmapProgressController;
+use App\Http\Controllers\YearController;
+use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\SemesterController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -33,7 +43,32 @@ Route::middleware([
 });
 
 
+Route::get('years-view', [YearController::class, 'indexView'])->name('years.index');
+Route::get('years-view/create', [YearController::class, 'create'])->name('years.create');
+Route::post('years-view', [YearController::class, 'storeView'])->name('years.store');
+Route::get('years-view/{year}', [YearController::class, 'showView'])->name('years.show');
+Route::get('years-view/{year}/edit', [YearController::class, 'edit'])->name('years.edit');
+Route::put('years-view/{year}', [YearController::class, 'updateView'])->name('years.update');
+Route::delete('years-view/{year}', [YearController::class, 'destroyView'])->name('years.destroy');
 
+
+Route::prefix('semesters')->group(function () {
+    Route::get('/', [SemesterController::class, 'indexView'])->name('semesters.index');
+    Route::get('/create', [SemesterController::class, 'createView'])->name('semesters.create');
+    Route::post('/', [SemesterController::class, 'storeView'])->name('semesters.store');
+    Route::get('/{semester}/edit', [SemesterController::class, 'editView'])->name('semesters.edit');
+    Route::put('/{semester}', [SemesterController::class, 'updateView'])->name('semesters.update');
+    Route::delete('/{semester}', [SemesterController::class, 'destroyView'])->name('semesters.destroy');
+});
+
+Route::prefix('specializations')->group(function () {
+    Route::get('/', [SpecializationController::class, 'bladeIndex'])->name('specializations.index');
+    Route::get('/create', [SpecializationController::class, 'bladeCreate'])->name('specializations.create');
+    Route::post('/', [SpecializationController::class, 'bladeStore'])->name('specializations.store');
+    Route::get('/{specialization}/edit', [SpecializationController::class, 'bladeEdit'])->name('specializations.edit');
+    Route::put('/{specialization}', [SpecializationController::class, 'bladeUpdate'])->name('specializations.update');
+    Route::delete('/{specialization}', [SpecializationController::class, 'bladeDestroy'])->name('specializations.destroy');
+});
 Route::prefix('subjects')->name('subjects.')->group(function() {
     Route::get('/', [SubjectController::class, 'index'])->name('index');
     Route::get('create', [SubjectController::class, 'create'])->name('create');
@@ -43,6 +78,7 @@ Route::prefix('subjects')->name('subjects.')->group(function() {
     Route::delete('destroy/{id}', [SubjectController::class, 'destroy'])->name('destroy');
     Route::get('search', [SubjectController::class, 'search'])->name('search');
 });
+
 
 Route::prefix('content-subjects')->name('content_subjects.')->group(function() {
     Route::get('/', [ContentSubjectController::class, 'index'])->name('index');
@@ -104,3 +140,9 @@ Route::middleware('auth:sanctum')->group(function (){
 Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
 Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
 Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
+
+
+Route::get('/test-stripe-config', function () {
+
+    dd(config('stripe.publishable_key'), config('stripe.secret_key'));
+});

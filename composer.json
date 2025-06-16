@@ -12,7 +12,10 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
+        "php-ffmpeg/php-ffmpeg": "^1.3",
         "spatie/laravel-permission": "^6.18",
+        "stripe/stripe-php": "^17.3",
+        "symfony/process": "^7.3",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

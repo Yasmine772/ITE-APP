@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('duration')->nullable()->comment('Duration in minutes');
             $table->text('description')->nullable();
             $table->string('attachment')->nullable()->comment(' PDF attachment');
+            $table->decimal('average_rating', 3, 2)->nullable(); 
             $table->timestamps();
         });
     }

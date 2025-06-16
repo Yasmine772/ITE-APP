@@ -13,13 +13,21 @@ class SpecializationYearSeeder extends Seeder
      */
     public function run(): void
     {
-    $year4 = Year::where('name', 'Fourth Year')->first();
-    $year5 = Year::where('name', 'Fifth Year')->first();
+        $year4 = Year::where('name', 'Fourth Year')->first();
+        $year5 = Year::where('name', 'Fifth Year')->first();
 
-    $specializations = Specialization::all();
+        if (!$year4 || !$year5) {
+            $this->command->error('Fourth or Fifth Year not found. Run YearSeeder first.');
+            return;
+        }
 
-    foreach ($specializations as $spec) {
-        $spec->years()->attach([$year4->id, $year5->id]);
+        $specializations = Specialization::all();
+
+        foreach ($specializations as $spec) {
+            $spec->years()->syncWithoutDetaching([$year4->id, $year5->id]);
+        }
+
+        $this->command->info('Specializations assigned to 4th and 5th years successfully.');
     }
-    }
+    
 }
