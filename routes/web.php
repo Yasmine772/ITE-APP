@@ -11,6 +11,9 @@ use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseContentController;
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\OptionController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
@@ -120,21 +123,41 @@ Route::prefix('course_contents')->group(function () {
     Route::delete('web/delete/{content}', [CourseContentController::class, 'webDestroy'])->name('course_contents.webDestroy');
     Route::get('web/show/{content}', [CourseContentController::class, 'webShow'])->name('course_contents.webShow');
 });
+
 Route::middleware('auth:sanctum')->group(function (){
     //advices:
-    Route::post('/addAdvices', [AdviceController::class, 'addAdvice']);
-    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
-    Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
+    Route::post('/addAdvices', [AdviceController::class, 'addAdvice'])->name('advices.addAdvice');
+    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');
+    Route::post('/editAdvices', [AdviceController::class, 'editAdvices'])->name('advices.editAdvices');
 
     //assignments:
-    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
-    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
-    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment'])->name('assignments.addAssignment');
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment'])->name('assignments.deleteAssignment');
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment'])->name('assignments.editAssignment');
 
     //Solutions of assignments:
-    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
-    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
-    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+    Route::post('/addSolution', [SolutionController::class, 'addSolution'])->name('solutions.addSolution');
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution'])->name('solutions.deleteSolution');
+    Route::post('/editSolution', [SolutionController::class, 'editSolution'])->name('solutions.editSolution');
+
+    //Exams:
+    Route::post('/addExam', [ExamController::class, 'addExam'])->name('Exams.addExam');
+    Route::post('/deleteExam', [ExamController::class, 'deleteExam'])->name('Exams.deleteExam');
+    Route::post('/editExam', [ExamController::class, 'editExam'])->name('Exams.editExam');
+
+    //Questions:
+    Route::post('/addQuestion', [QuestionController::class, 'addQuestion'])->name('Exams.addQuestion');
+    Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion'])->name('Exams.deleteQuestion');
+    Route::post('/editQuestion', [QuestionController::class, 'editQuestion'])->name('Exams.editQuestion');
+
+    //Options:
+    Route::post('/addOption', [OptionController::class, 'addOption'])->name('Exams.addOption');
+    Route::post('/deleteOption', [OptionController::class, 'deleteOption'])->name('Exams.deleteOption');
+    Route::post('/editOption', [OptionController::class, 'editOption'])->name('Exams.editOption');
+
+    //show exam
+    Route::post('/showExamForTeacher', [ExamController::class, 'showExam'])->name('Exam.showExam'); //web+api
+
 
 });
 Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');

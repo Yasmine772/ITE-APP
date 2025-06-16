@@ -38,4 +38,8 @@ class CourseContent extends Model
     {
         return $this->hasMany(CourseContentProgress::class);
     }
+    public function exam()
+    {
+        return $this->hasMany(Exam::class, 'exams');
+    }
 }

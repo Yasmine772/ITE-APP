@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
-use App\Mail\WelcomeMail;
+
 use App\Models\User;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -11,6 +13,8 @@ use Spatie\Permission\Models\Role;
 
 class UserServices
 {
+    use ApiResponseTrait;
+    protected NotificationService $notificationService;
     public function register($request): array
     {
         $user = User::query()->create([
@@ -19,7 +23,6 @@ class UserServices
             'password' => Hash::make($request['password'])
         ]);
 
-        Mail::to($user->email)->send(new WelcomeMail($user));
 
         $adminRole = Role::query()->where('name', 'admin')->first();
 
@@ -31,7 +34,7 @@ class UserServices
         }
 
         $user->load('roles', 'permissions');
-
+        $user->sendEmailVerificationNotification();
         $user = User::query()->find($user->id);
 
         $user['token'] = $user->createToken('token')->plainTextToken;
@@ -53,7 +56,25 @@ class UserServices
         $user = User::where('email', $request->email)->firstOrFail();
 
         $roles = $user->getRoleNames();
+
+
         $user->role = $roles->first();
+        //?? 'student';
+
+        $user->update([
+            'role' => $user->role
+        ]);
+
+        $role = $roles->first();
+
+        if ($role) {
+            $user->role = $role;
+            $user->update([
+                'role' => $user->role
+            ]);
+        }
+
+
 
         $user['token'] = $user->createToken('token')->plainTextToken;
 

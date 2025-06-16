@@ -6,7 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-http": "*",
+        "composer": "*",
         "inertiajs/inertia-laravel": "^2.0",
+        "kreait/firebase-php": "^7.18",
+        "kreait/laravel-firebase": "^6.0",
+        "laravel-notification-channels/fcm": "^5.1",
         "laravel/framework": "^11.0",
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
@@ -18,6 +23,7 @@
         "symfony/process": "^7.3",
         "tightenco/ziggy": "^2.0"
     },
+
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",

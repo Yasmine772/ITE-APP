@@ -14,7 +14,7 @@ class ComplaintController extends Controller
    {
         try {
             $validator = Validator::make($request->all(), [
-                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
             ]);
             if ($validator->fails()) {
                 return Response::Error($validator->errors(), 400);
@@ -26,29 +26,30 @@ class ComplaintController extends Controller
             ], 200);
             return Response::Success($complaint , 'Complaint has been added successfully', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //*********************************************************************************************** */
     public function deleteComplaint(Request $request)
     {
         try {
-            $complaint = Complaint::find($request->complaint_id);
-            if (auth()->user()->id == $complaint->user_id) {
-                return Response::Success($complaint->delete(), 'Complaint has been deleted successfully', 200);
-            }
-            return Response::Error('You can not delete this', 500);
+            Complaint::find($request->complaint_id)->delete();
+            return Response::Success(null,'Complaint has been deleted successfully', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
     public function showComplaintes()
     {
         try {
-            return Response::Success(Complaint::all(), 'All complaints', 200);
+            $complaints = Complaint::where('user_id',auth()->user()->id)->get();
+            if($complaints->isEmpty()){
+                return Response::Error('you have not add any complaints yet!', 500);
+            }
+            return Response::Success($complaints, 'All complaints for this user', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //*************************************************************************************************** */
@@ -57,7 +58,7 @@ class ComplaintController extends Controller
         try {
             $complaint = Complaint::find($request->complaint_id);
             $validator = Validator::make($request->all(), [
-                'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_\!\؟\?]+$/u',
+                'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
                 ]);
                 if ($validator->fails()) {
                     return Response::Error($validator->errors(), 400);
@@ -68,7 +69,7 @@ class ComplaintController extends Controller
             $complaint->save();
             return Response::Success($complaint, 'Complaint has been updated successfully', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************** */

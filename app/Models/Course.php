@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 {
@@ -22,7 +22,6 @@ class Course extends Model
         'subject_id',
         'average_rating',
     ];
-
 
     public function teacher()
     {
@@ -49,10 +48,10 @@ class Course extends Model
         return $this->hasManyThrough(
             Rating::class,
             CourseContent::class,
-            'course_id', // Foreign key on CourseContent table...
-            'course_content_id', // Foreign key on Rating table...
-            'id', // Local key on Course table...
-            'id'  // Local key on CourseContent table...
+            'course_id',
+            'course_content_id',
+            'id',
+            'id'
         );
     }
 
@@ -60,17 +59,29 @@ class Course extends Model
     {
         return round($this->ratings()->avg('rating') ?? 0.0, 1);
     }
+
     public function subscriptions()
     {
         return $this->hasMany(CourseSubscription::class);
     }
-     public function progresses()
+
+    public function progresses()
     {
         return $this->hasMany(CourseProgress::class);
     }
-        public function steps()
+
+    public function steps()
     {
         return $this->belongsToMany(RoadmapStep::class, 'roadmap_step_courses');
     }
-    
+
+    public function exam()
+    {
+        return $this->hasMany(Exam::class, 'exams');
+    }
+
+    public function resources(): BelongsToMany
+    {
+        return $this->belongsToMany(Resource::class);
+    }
 }

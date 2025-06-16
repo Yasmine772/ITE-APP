@@ -19,7 +19,7 @@ trait ApiResponseTrait
     /**
      * Error response
      */
-    protected function errorResponse($message = 'Error', $error = null, $code = 500)
+    protected function errorResponse($message = 'Error', $error = null, $code = 500): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'status' => 'error',
