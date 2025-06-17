@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "ext-http": "*",
+    
         "composer": "*",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/firebase-php": "^7.18",
