@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Models;
-
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'gender',
         'birth_date',
         'bio',
-        'role',
+
     ];
 
 
@@ -57,7 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Advertisement::class);
     }
 
-    public function exam() 
+    public function exam()
     {
         return $this->hasMany(Exam::class, 'exams');
     }

@@ -21,7 +21,6 @@ class StudentSeeder extends Seeder
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
-                'role' => 'student', 
                 'password' => bcrypt('password'),
                 'address' => $faker->address,
                 'gender' => $faker->randomElement(['male', 'female']),

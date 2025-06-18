@@ -24,6 +24,7 @@ use Throwable;
 
 class UserController extends Controller
 {
+    use ApiResponseTrait;
    private UserServices $userService;
    public function __construct(UserServices $userServices)
    {
@@ -31,43 +32,35 @@ class UserController extends Controller
    }
    public function register(UserSignUpRequest $request): JsonResponse
    {
-       $data = [];
-       try {
-           $data = $this->userService->register($request->validated());
-
-           return Response::Success($data['user'],$data['message']);
-       }
-       catch(Throwable $th)
-       {
-           $message = $th->getMessage();
-           return Response::Error($data ,$message);
-       }
+           try {
+               $data = $this->userService->register($request->validated());
+               return $this->successResponse($data, 'User Created Successfully');
+           }
+           catch (Throwable $e) {
+               return $this->errorResponse($e->getMessage(), $e->getCode());
+           }
    }
 
    public function login(UserSigninRequest $request): JsonResponse
    {
-      $data =[];
       try{
           $data = $this->userService->login($request);
-          return Response::Success($data['user'],$data['message'],$data['code']);
+          return $this->successResponse($data, 'User Login Successfully');
       }
       catch(Throwable $th)
       {
-          $message = $th->getMessage();
-          return Response::Error($data ,$message);
+         return $this->errorResponse($th->getMessage(), $th->getCode());
       }
    }
    public function logout(): JsonResponse
    {
-       $data =[];
        try{
            $data = $this->userService->logout();
-           return Response::Success($data['user'],$data['message'],$data['code']);
+           return $this->successResponse($data, 'User Logout Successfully');
        }
        catch(Throwable $th)
        {
-           $message = $th->getMessage();
-           return Response::Error($data ,$message);
+           return $this->errorResponse($th->getMessage(), $th->getCode());
        }
    }
 
