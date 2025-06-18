@@ -39,16 +39,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     ];
 
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
 
     public function articles(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Article::class, 'articles');
     }
 
-    public function routeNotificationForFcm()
-    {
-        return $this->fcm_token;
-    }
 
     public function advertisements(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -69,15 +69,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Mark::class, 'marks');
     }
-
-
-
-
-
-
-
-
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -88,7 +79,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
-        'roles', // إذا كان هناك داعي لإخفاءها من الـ JSON
+        'academic_qualification',
+        'experience',
+        'degree'
     ];
 
     /**

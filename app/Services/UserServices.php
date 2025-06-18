@@ -26,7 +26,6 @@ class UserServices
         $token =$user['token'] = $user->createToken('token')->plainTextToken;
         $message = 'User created successfully';
         return [
-            'user' => $user,
             'token' =>$token
         ];
 
@@ -42,9 +41,10 @@ class UserServices
             ];
         }
         $user = User::where('email', $request->email)->firstOrFail();
-        $user['token'] = $user->createToken('token')->plainTextToken;
+        $token = $user['token'] = $user->createToken('token')->plainTextToken;
         return [
-            'user' => $user
+            'token'=>$token
+
         ];
     }
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade') ;
             $table->string('academic_qualification');
             $table->integer('years_of_experience');
-            $table->string('university_degree');
+            $table->string('degree');
             $table->timestamps();
         });
     }

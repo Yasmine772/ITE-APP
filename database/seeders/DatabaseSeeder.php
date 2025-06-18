@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         SpecializationSeeder::class,
         SpecializationYearSeeder::class,
         StudentSeeder::class,
-        TeacherSeeder::class,
+        //TeacherSeeder::class,
         SubjectSeeder::class,
         CategorySeeder::class,
         AdviceSeeder::class,
