@@ -24,7 +24,6 @@ class UserServices
         ]);
         $user->sendEmailVerificationNotification();
         $token =$user['token'] = $user->createToken('token')->plainTextToken;
-        $message = 'User created successfully';
         return [
             'token' =>$token
         ];
@@ -42,9 +41,10 @@ class UserServices
         }
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user['token'] = $user->createToken('token')->plainTextToken;
+        $message = 'User login successfully';
         return [
-            'token'=>$token
-
+            'token'=>$token ,
+            'message'=> $message
         ];
     }
 

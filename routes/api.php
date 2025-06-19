@@ -17,7 +17,6 @@ use App\Models\User;
 use App\Response\Response;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
@@ -26,7 +25,6 @@ use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\SubjectController;
-
 use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
@@ -36,7 +34,7 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
-
+use App\Traits\ApiResponseTrait;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -48,15 +46,14 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     {
     $request->fulfill();
     event(new Verified(User::query()->find($request->route('id'))));
-    return Response::Success(true, 'Email Verified Successfully');
+    return $this->successResponse(true,'Email Verified Successfully');
 
     })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
 // resend verification email
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
-
-    return Response::Success(true, 'Verification link sent!');
+    return $this->successResponse(true,'Verification link sent!');
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
 
@@ -94,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
-    
+
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);

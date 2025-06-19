@@ -14,7 +14,7 @@ class TeacherSeeder extends Seeder
      *
      * @return void
      */
-    public function run(): void
+    public function run()
     {
         $faker = Faker::create();
 

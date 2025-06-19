@@ -31,6 +31,6 @@ class AdviceSeeder extends Seeder
     //         'teacher_id' => 1,
     //         'subject_id' => 1,
     //     ]);
-    
+
 }
 }

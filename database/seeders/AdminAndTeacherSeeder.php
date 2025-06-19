@@ -14,8 +14,7 @@ class AdminAndTeacherSeeder extends Seeder
 
     public function run(): void
     {
-        ini_set('memory_limit', '512M');
-        ini_set('max_execution_time', 300);
+
 
         $admin = User::firstOrCreate([
             'email' => 'admin@gmail.com',
@@ -44,12 +43,12 @@ class AdminAndTeacherSeeder extends Seeder
 
         //Teacher
         $teachersData = [
-            [ 'name' => 'مدحت الصوص', 'email' => 'medhat@example.com', 'academic_qualification' => 'دكتوراه في هندسة البرمجيات','years_of_experience' => 10, 'degree' => ' دكتور' ],
-            [ 'name' => 'محمد الأحمد', 'email' => 'mohammad.ahmad@example.com', 'academic_qualification' => 'ماجستير في البرمجة','years_of_experience'=> 8 , 'degree' => ' دكتور' ],
-            [ 'name' => 'عبد الرحمن اللحام', 'email' => 'abed.lahham@example.com', 'academic_qualification' => 'ماجستير في البرمجة', 'years_of_experience' => 8, 'degree' => ' دكتور' ],
-            [ 'name' => 'عبد الله العمر', 'email' => 'abdullah.omar@example.com', 'academic_qualification' => 'دكتوراه رياضيات عددية', 'years_of_experience' => 9, 'degree' => ' دكتور' ],
+            [ 'name' => 'مدحت الصوص', 'email' => 'medhat@example.com', 'academic_qualification' => 'دكتوراه في هندسة البرمجيات','years_of_experience' => 10, 'degree' => 'دكتور' ],
+            [ 'name' => 'محمد الأحمد', 'email' => 'mohammad.ahmad@example.com', 'academic_qualification' => 'ماجستير في البرمجة','years_of_experience'=> 8 , 'degree' => 'دكتور' ],
+            [ 'name' => 'عبد الرحمن اللحام', 'email' => 'abed.lahham@example.com', 'academic_qualification' => 'ماجستير في البرمجة', 'years_of_experience' => 8, 'degree' => 'دكتور' ],
+            [ 'name' => 'عبد الله العمر', 'email' => 'abdullah.omar@example.com', 'academic_qualification' => 'دكتوراه رياضيات عددية', 'years_of_experience' => 9, 'degree' => 'دكتور' ],
             [ 'name' => 'إياد الخياط', 'email' => 'eyad.khayat@example.com', 'academic_qualification' => 'دكتوراه في الاتصالات', 'years_of_experience' => 10, 'degree' => 'دكتور' ],
-            [ 'name' => 'عماد الدين محمد', 'email' => 'emad.mohammad@example.com', 'academic_qualification' => 'دكتوراه نظم رقمية','years_of_experience' => 7, 'degree' => ' دكتور' ],
+            [ 'name' => 'عماد الدين محمد', 'email' => 'emad.mohammad@example.com', 'academic_qualification' => 'دكتوراه نظم رقمية','years_of_experience' => 7, 'degree' => 'دكتور' ],
             [ 'name' => 'روان قرعوني', 'email' => 'rawan.qaraoni@example.com', 'academic_qualification' => 'دكتوراه علوم الحاسوب', 'years_of_experience' => 6, 'degree' => 'دكتور' ],
             [ 'name' => 'أسمهان خضور', 'email' => 'asmakh@example.com', 'academic_qualification' => 'ماجستير رياضيات', 'years_of_experience' => 8, 'degree' => 'دكتورة' ],
             [ 'name' => 'فاطمة الخضر', 'email' => 'fatima.khuder@example.com', 'academic_qualification' => 'دكتوراه في الإلكترونيات', 'years_of_experience' => 10, 'degree' => 'دكتورة' ],
@@ -59,7 +58,7 @@ class AdminAndTeacherSeeder extends Seeder
             [ 'name' => 'نورس وظفة', 'email' => 'nawras.wazfa@example.com', 'academic_qualification' => 'دكتوراه في التسويق', 'years_of_experience' => 10, 'degree' => 'دكتور' ],
             [ 'name' => 'علي حماد', 'email' => 'ali.hamad@example.com', 'academic_qualification' => 'دكتوراه في بروتوكولات الاتصالات','years_of_experience' => 12, 'degree' => 'دكتور' ],
             [ 'name' => 'المثنى خضر', 'email' => 'mothanna.khuder@example.com', 'academic_qualification' => 'دكتوراه نظم تشغيل','years_of_experience'=> 13, 'degree' => 'دكتور' ],
-            [ 'name' => 'فراس ضعيف', 'email' => 'feras.daif@example.com', 'academic_qualification' => 'دكتوراه في الواقع الافتراضي','years_of_experience' => 11, 'degree' => ' دكتور' ],
+            [ 'name' => 'فراس ضعيف', 'email' => 'feras.daif@example.com', 'academic_qualification' => 'دكتوراه في الواقع الافتراضي','years_of_experience' => 11, 'degree' => 'دكتور' ],
             [ 'name' => 'عمر حمدون', 'email' => 'omar.hamdon@example.com', 'academic_qualification' => 'دكتوراه في نظم قواعد المعرفة','years_of_experience' => 10, 'degree' => 'دكتور' ],
             [ 'name' => 'عمار النحاس', 'email' => 'ammar.nahhas@example.com', 'academic_qualification' => 'دكتوراه منطق ترجيحي', 'years_of_experience'=> 9, 'degree' => 'دكتور' ],
             [ 'name' => 'رياض سنيل', 'email' => 'riyad.sneel@example.com', 'academic_qualification' => 'دكتوراه تعلم تلقائي', 'years_of_experience' => 10, 'degree' => 'دكتور' ],
@@ -95,7 +94,7 @@ class AdminAndTeacherSeeder extends Seeder
             [ 'name' => 'أماني الحلبي', 'email' => 'amani.halabi@example.com', 'academic_qualification' => 'معيدة نظم وسائط', 'years_of_experience' => 5, 'degree' => 'أستاذة عملي' ],
             [ 'name' => 'زكريا صافي', 'email' => 'zakaria.safi@example.com', 'academic_qualification' => 'معيد قواعد معرفة', 'years_of_experience' => 4, 'degree' => 'أستاذ عملي' ],
             [ 'name' => 'نوال الصفدي', 'email' => 'nawal.safadi@example.com', 'academic_qualification' => 'معيدة قواعد معرفة', 'years_of_experience' => 4, 'degree' => 'أستاذة عملي' ],
-            [ 'name' => 'أناستاسيا الحميري', 'email' => 'anastasia.hamiri@example.com', 'academic_qualification' => 'معيدة قواعد معرفة', 'years_of_experience' => 4, 'degree' => 'ف.مأستاذة عملي' ],
+            [ 'name' => 'أناستاسيا الحميري', 'email' => 'anastasia.hamiri@example.com', 'academic_qualification' => 'معيدة قواعد معرفة', 'years_of_experience' => 4, 'degree' => 'أستاذة عملي' ],
             [ 'name' => 'خالد إسماعيل', 'email' => 'khaled.esmail@example.com', 'academic_qualification' => 'معيد واقع افتراضي', 'years_of_experience' => 4, 'degree' => 'أستاذ عملي' ],
             [ 'name' => 'مصطفى لطف', 'email' => 'mostafa.lotf@example.com', 'academic_qualification' => 'ماجستير نظم الزمن الحقيقي', 'years_of_experience' => 7, 'degree' => 'أستاذ عملي' ],
             [ 'name' => 'محسن أحمد', 'email' => 'mohsen.ahmad@example.com', 'academic_qualification' => 'ماجستير في المحاكاة','years_of_experience' => 7, 'degree' => 'أستاذ عملي' ],
@@ -108,7 +107,6 @@ class AdminAndTeacherSeeder extends Seeder
             [ 'name' => 'صبحي الأبوحمد', 'email' => 'sobhi.abouahmad@example.com', 'academic_qualification' => 'معيد نظم معلومات', 'years_of_experience' => 5, 'degree' => 'أستاذ عملي' ],
             [ 'name' => 'آية شحادة', 'email' => 'aya.shahada@example.com', 'academic_qualification' => 'معيدة في مشروع المترجمات', 'years_of_experience' => 4, 'degree' => 'أستاذة عملي' ],
         ];
-
 
         $teacherRole = Role::firstOrCreate(['name' => 'teacher']);
         $teacherPermissions = [];
