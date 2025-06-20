@@ -65,14 +65,10 @@ Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function 
     Route::get('/logout', [UserController::class, 'logout']);
 });
 //To send  password reset links
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
-Route::group(['middleware' => 'auth:sanctum'], function () {
-   Route::post('user/password/email',[UserController::class,'UserForgetPassword']);  //forget password
-   Route::post('user/password/code/check',[UserController::class,'userCheckCode']); //send code for reset
-   Route::post('user/password/reset', [UserController::class, 'UserResetPassword']); //update password
-});
+Route::post('user/password/email', [UserController::class, 'UserForgetPassword'])->middleware('guest');
+Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
+Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
+
 
 
 
