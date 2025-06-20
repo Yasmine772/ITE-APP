@@ -97,7 +97,7 @@ class UserController extends Controller
     public function UserResetPassword(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
     {
         $input = $request->validate([
-            'code' => 'required|string|exists:reset_code_passwords',
+            'code' => 'required|exists:reset_code_passwords',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
