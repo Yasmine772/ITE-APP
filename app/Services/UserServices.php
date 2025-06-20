@@ -44,7 +44,7 @@ class UserServices
         $message = 'User login successfully';
         return [
             'token'=>$token ,
-            'message'=> $message
+            git 'message'=> $message
         ];
     }
 
