@@ -17,7 +17,6 @@ use App\Models\User;
 use App\Response\Response;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\YearController;
@@ -26,7 +25,6 @@ use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\SubjectController;
-
 use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
@@ -36,12 +34,16 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
+
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CourseSubscriptionController;
 use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
 use App\Http\Controllers\RoadmapStepController;
+
+
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -52,15 +54,14 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     {
     $request->fulfill();
     event(new Verified(User::query()->find($request->route('id'))));
-    return Response::Success(true, 'Email Verified Successfully');
+    return $this->successResponse(true,'Email Verified Successfully');
 
     })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
 // resend verification email
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
-
-    return Response::Success(true, 'Verification link sent!');
+    return $this->successResponse(true,'Verification link sent!');
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
 
@@ -72,14 +73,10 @@ Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function 
     Route::get('/logout', [UserController::class, 'logout']);
 });
 //To send  password reset links
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
-Route::group(['middleware' => 'auth:sanctum'], function () {
-   Route::post('user/password/email',[UserController::class,'UserForgetPassword']);  //forget password
-   Route::post('user/password/code/check',[UserController::class,'userCheckCode']); //send code for reset
-   Route::post('user/password/reset', [UserController::class, 'UserResetPassword']); //update password
-});
+Route::post('user/password/email', [UserController::class, 'UserForgetPassword'])->middleware('guest');
+Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
+Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
+
 
 
 
@@ -98,7 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
-    
+
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
     Route::post('/deleteComplaint', [ComplaintController::class, 'deleteComplaint']);

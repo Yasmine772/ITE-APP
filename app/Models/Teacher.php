@@ -25,11 +25,11 @@ class Teacher extends Model
     }
 
 
-    public function subjects()
+    public function subjects(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Subject::class);
     }
-    public function courses()
+    public function courses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Course::class);
     }

@@ -63,7 +63,11 @@ class Subject extends Model
 
     public function exam()
     {
-        return $this->hasMany(Exam::class, 'exams');}
+
+        return $this->hasMany(Exam::class, 'exams');
+    }
+
+    
 
     public function resources(): BelongsToMany
     {

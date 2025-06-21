@@ -22,25 +22,12 @@ class UserServices
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
-
-
-        $adminRole = Role::query()->where('name', 'admin')->first();
-
-        if ($adminRole) {
-            $user->assignRole($adminRole);
-
-            $permissions = $adminRole->permissions->pluck('name')->toArray();
-            $user->givePermissionTo($permissions);
-        }
-
-        $user->load('roles', 'permissions');
         $user->sendEmailVerificationNotification();
-        $user = User::query()->find($user->id);
+        $token =$user['token'] = $user->createToken('token')->plainTextToken;
+        return [
+            'token' =>$token
+        ];
 
-        $user['token'] = $user->createToken('token')->plainTextToken;
-
-        $message = 'User created successfully';
-        return ['user' => $user, 'message' => $message];
     }
 
     public function login($request): array
@@ -52,56 +39,25 @@ class UserServices
                 'code' => 401
             ];
         }
-
         $user = User::where('email', $request->email)->firstOrFail();
-
-        $roles = $user->getRoleNames();
-
-
-        $user->role = $roles->first();
-        //?? 'student';
-
-        $user->update([
-            'role' => $user->role
-        ]);
-
-        $role = $roles->first();
-
-        if ($role) {
-            $user->role = $role;
-            $user->update([
-                'role' => $user->role
-            ]);
-        }
-
-
-
-        $user['token'] = $user->createToken('token')->plainTextToken;
-
+        $token = $user['token'] = $user->createToken('token')->plainTextToken;
+        $message = 'User login successfully';
         return [
-            'user' => $user,
-            'message' => 'User login successfully',
-            'code' => 200
+            'token'=>$token ,
+            'message'=> $message
         ];
     }
 
-    public function logout()
+    public function logout(): void
     {
         $user = Auth::user();
-
         if (!is_null($user)) {
             $user->currentAccessToken()->delete();
-            $message = 'User logout successfully';
-            $code = 200;
+
         } else {
             $message = 'Invalid token';
             $code = 404;
         }
 
-        return response()->json([
-            'user' => $user,
-            'message' => $message,
-            'code' => $code
-        ]);
     }
 }
