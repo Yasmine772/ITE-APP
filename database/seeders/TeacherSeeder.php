@@ -22,7 +22,7 @@ class TeacherSeeder extends Seeder
             $user = User::create([
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
-                'role' => 'teacher', 
+
                 'password' => bcrypt('password'),
                 'address' => $faker->address,
                 'gender' => $faker->randomElement(['male', 'female']),

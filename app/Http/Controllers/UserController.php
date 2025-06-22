@@ -24,118 +24,103 @@ use Throwable;
 
 class UserController extends Controller
 {
-   private UserServices $userService;
-   public function __construct(UserServices $userServices)
-   {
-       $this->userService = $userServices;
-   }
-   public function register(UserSignUpRequest $request): JsonResponse
-   {
-       $data = [];
-       try {
-           $data = $this->userService->register($request->validated());
-
-           return Response::Success($data['user'],$data['message']);
-       }
-       catch(Throwable $th)
-       {
-           $message = $th->getMessage();
-           return Response::Error($data ,$message);
-       }
-   }
-
-   public function login(UserSigninRequest $request): JsonResponse
-   {
-      $data =[];
-      try{
-          $data = $this->userService->login($request);
-          return Response::Success($data['user'],$data['message'],$data['code']);
-      }
-      catch(Throwable $th)
-      {
-          $message = $th->getMessage();
-          return Response::Error($data ,$message);
-      }
-   }
-   public function logout(): JsonResponse
-   {
-       $data =[];
-       try{
-           $data = $this->userService->logout();
-           return Response::Success($data['user'],$data['message'],$data['code']);
-       }
-       catch(Throwable $th)
-       {
-           $message = $th->getMessage();
-           return Response::Error($data ,$message);
-       }
-   }
-
-
-public function UserForgetPassword(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
-{
-    $data = $request->validate([
-        'email' => 'required|email|exists:users,email'
-    ]);
-
-    ResetCodePassword::where('email', $data['email'])->delete();
-    //random code
-    $data['code'] = mt_rand(100000, 999999);
-
-    $codeData = ResetCodePassword::create($data);
-
-    Mail::to($data['email'])->send(new SendCodeResetPassword($codeData->code));
-
-    return response(['message' => trans('code.sent')], 200);
-
-}
-
-public function UserCheckCode(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
-{
-    $data = $request->validate([
-        'code'=>'required|string|exists:reset_code_passwords,code'
-    ]);
-    $passwordReset = ResetCodePassword::query()->firstWhere('code',$data['code']);
-
-    if ($passwordReset['created_at'] > now()->addHour()) {
-        $passwordReset->delete();
-        return response(['message' => trans('passwords.code_is_expire')], 422);
+    use ApiResponseTrait;
+    private UserServices $userService;
+    public function __construct(UserServices $userServices)
+    {
+        $this->userService = $userServices;
+    }
+    public function register(UserSignUpRequest $request): JsonResponse
+    {
+        try {
+            $data = $this->userService->register($request->validated());
+            return $this->successResponse($data, 'User registered successfully');
+        } catch (Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $e->getCode());
+        }
     }
 
-    return response([
-        'code' => $passwordReset->code,
-        'message' => trans('passwords.code_is_valid')
-    ], 200);
-}
-public function UserResetPassword(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
-{
-    $input = $request->validate([
-        'code' => 'required|string|exists:reset_code_passwords',
-        'password' => 'required|string|min:6|confirmed',
-    ]);
-
-    // find the code
-    $passwordReset = ResetCodePassword::query()->firstWhere('code', $input['code']);
-
-    //Check if it has not expired: the time is one hour
-    if ($passwordReset->created_at > now()->addHour()) {
-        $passwordReset->delete();
-        return response(['message' => trans('passwords.code_is_expire')], 422);
+    public function login(UserSigninRequest $request): JsonResponse
+    {
+        try {
+            $data = $this->userService->login($request);
+            return $this->successResponse($data, $data['message']);
+        } catch (Throwable $th) {
+            return $this->errorResponse($th->getMessage(), $th->getCode());
+        }
+    }
+    public function logout(): JsonResponse
+    {
+        try {
+            $data = $this->userService->logout();
+            return $this->successResponse($data, 'User Logout Successfully');
+        } catch (Throwable $th) {
+            return $this->errorResponse($th->getMessage(), $th->getCode());
+        }
     }
 
-    // find user's email
-    $user = User::query()->firstWhere('email', $passwordReset->email);
 
-    // update user password
-    $input['password'] = bcrypt($input['password']);
-    $user->update([
-        'password' => $input['password'],
-    ]);
-    // delete current code
-    $passwordReset->delete();
+    public function UserForgetPassword(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+    {
+        $data = $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
 
-    return response(['message' =>'Password has been  successfully reset'], 200);
-}
+        ResetCodePassword::where('email', $data['email'])->delete();
+        //random code
+        $data['code'] = mt_rand(100000, 999999);
 
+        $codeData = ResetCodePassword::create($data);
 
+        Mail::to($data['email'])->send(new SendCodeResetPassword($codeData->code));
+
+        return response(['message' => trans('code.sent')], 200);
+    }
+
+    public function UserCheckCode(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+    {
+        $data = $request->validate([
+            'code' => 'required|string|exists:reset_code_passwords,code'
+        ]);
+        $passwordReset = ResetCodePassword::query()->firstWhere('code', $data['code']);
+
+        if ($passwordReset['created_at'] > now()->addHour()) {
+            $passwordReset->delete();
+            return response(['message' => trans('passwords.code_is_expire')], 422);
+        }
+
+        return response([
+            'code' => $passwordReset->code,
+            'message' => trans('passwords.code_is_valid')
+        ], 200);
+    }
+    public function UserResetPassword(Request $request): \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+    {
+        $input = $request->validate([
+            'code' => 'required|exists:reset_code_passwords',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        // find the code
+        $passwordReset = ResetCodePassword::query()->firstWhere('code', $input['code']);
+
+        //Check if it has not expired: the time is one hour
+        if ($passwordReset->created_at > now()->addHour()) {
+            $passwordReset->delete();
+            return response(['message' => trans('passwords.code_is_expire')], 422);
+        }
+
+        // find user's email
+        $user = User::query()->firstWhere('email', $passwordReset->email);
+
+        // update user password
+        $input['password'] = bcrypt($input['password']);
+        $user->update([
+            'password' => $input['password'],
+        ]);
+        // delete current code
+        $passwordReset->delete();
+
+        return response(['message' => 'Password has been  successfully reset'], 200);
+    }
 }
