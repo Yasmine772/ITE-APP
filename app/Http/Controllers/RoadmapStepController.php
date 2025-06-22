@@ -20,7 +20,6 @@ class RoadmapStepController extends Controller
         $this->roadmapStepService = $roadmapStepService;
     }
 
-    // عرض جميع الخطوات المرتبطة بالـ Roadmap
     public function index($roadmapId)
     {
         try {
@@ -31,16 +30,13 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // عرض صفحة إنشاء خطوة جديدة
     public function create($roadmapId)
     {
         return view('roadmap_steps.create', compact('roadmapId'));
     }
 
-    // تخزين خطوة جديدة
     public function store(Request $request, $roadmapId)
     {
-        // التحقق من صحة البيانات المدخلة يدويًا
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -59,7 +55,6 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // عرض تفاصيل خطوة معينة
     public function show($id)
     {
         try {
@@ -72,7 +67,6 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // عرض صفحة تعديل خطوة معينة
     public function edit($id)
     {
         try {
@@ -85,10 +79,8 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // تحديث بيانات خطوة معينة
     public function update(Request $request, $id)
     {
-        // التحقق من صحة البيانات المدخلة يدويًا
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -108,7 +100,6 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // حذف خطوة معينة
     public function destroy($id)
     {
         try {
@@ -126,10 +117,8 @@ class RoadmapStepController extends Controller
         }
     }
 
-    // ربط الدورات مع الخطوة
     public function attachCourses(Request $request, $stepId)
     {
-        // التحقق من صحة البيانات المدخلة يدويًا
         $validated = $request->validate([
             'course_ids' => 'required|array',
             'course_ids.*' => 'exists:courses,id',
@@ -139,7 +128,6 @@ class RoadmapStepController extends Controller
             $step = $this->roadmapStepService->getStepById($stepId);
             $courseIds = $validated['course_ids'];
 
-            // ربط الدورات بالخطوة
             $this->roadmapStepService->attachCourses($step, $courseIds);
 
             return redirect()->route('roadmap_steps.show', ['id' => $stepId])

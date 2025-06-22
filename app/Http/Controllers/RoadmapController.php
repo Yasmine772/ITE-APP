@@ -20,26 +20,22 @@ class RoadmapController extends Controller
         $this->roadmapService = $roadmapService;
     }
 
-    // عرض كل الـ Roadmaps (واجهة الويب)
     public function index()
     {
         $roadmaps = $this->roadmapService->getAllRoadmaps();
         return view('roadmaps.index', compact('roadmaps'));
     }
 
-    // عرض نموذج إنشاء Roadmap
     public function create()
     {
         return view('roadmaps.create');
     }
 
-    // تخزين Roadmap جديد
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            // أضف أي قواعد تحقق أخرى حسب الجدول
         ]);
 
         try {
@@ -50,7 +46,6 @@ class RoadmapController extends Controller
         }
     }
 
-    // عرض نموذج تعديل Roadmap
     public function edit($id)
     {
         try {
@@ -63,7 +58,6 @@ class RoadmapController extends Controller
         }
     }
 
-    // تحديث Roadmap موجود
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -85,7 +79,6 @@ class RoadmapController extends Controller
         }
     }
 
-    // حذف Roadmap
     public function destroy($id)
     {
         try {
@@ -100,7 +93,6 @@ class RoadmapController extends Controller
         }
     }
 
-    // عرض تفاصيل Roadmap
     public function show($id)
     {
         try {
@@ -113,7 +105,6 @@ class RoadmapController extends Controller
         }
     }
 
-    // ---- API Methods ----
 
     public function apiIndex()
     {

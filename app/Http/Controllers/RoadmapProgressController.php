@@ -18,10 +18,9 @@ class RoadmapProgressController extends Controller
         $this->roadmapProgressService = $roadmapProgressService;
     }
 
-    // حساب التقدم في الخطة الدراسية
     public function recalculate(Request $request, $roadmapId)
     {
-        $userId = Auth::id();  // الحصول على معرّف المستخدم الحالي
+        $userId = Auth::id();  
 
         try {
             $this->roadmapProgressService->recalculate($userId, $roadmapId);
@@ -32,10 +31,9 @@ class RoadmapProgressController extends Controller
         }
     }
 
-    // عرض التقدم في الخطة الدراسية
     public function showProgress(Request $request, $roadmapId)
     {
-        $userId = Auth::id();  // الحصول على معرّف المستخدم الحالي
+        $userId = Auth::id(); 
 
         try {
             $progress = $this->roadmapProgressService->getProgress($userId, $roadmapId);

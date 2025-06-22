@@ -202,16 +202,9 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::prefix('subjects')->group(function() {
-    Route::get('subjects', [SubjectController::class, 'apiIndex'])->name('api.subjects.index');
-    Route::get('subjects/{subject}', [SubjectController::class, 'apiShow'])->name('api.subjects.show');
-    Route::post('subjects', [SubjectController::class, 'apiStore'])->name('api.subjects.store');
-    Route::put('subjects/{subject}', [SubjectController::class, 'apiUpdate'])->name('api.subjects.update');
-    Route::delete('subjects/{subject}', [SubjectController::class, 'apiDestroy'])->name('api.subjects.destroy');
-    Route::get('subjects/search', [SubjectController::class, 'apiSearch'])->name('api.subjects.search');
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search'); // 👈 الآن فوق
+    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');   
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
@@ -254,14 +247,24 @@ Route::prefix('courses')->group(function () {
     });
 });
 
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/subscriptions', [CourseSubscriptionController::class, 'apiIndex']);
+    Route::post('/subscriptions/subscribe', [CourseSubscriptionController::class, 'apiSubscribe']);
+    Route::post('/subscriptions/unsubscribe', [CourseSubscriptionController::class, 'apiUnsubscribe']);
+    Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
+});
+
+    Route::post('contents', [CourseContentController::class, 'store']);
+    Route::post('contents/{content}', [CourseContentController::class, 'update']);
+    Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
+   Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+
 Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
-    Route::get('{courseId}', [CourseContentController::class, 'index']);
+  //  Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
 
-    Route::post('/', [CourseContentController::class, 'store']);
-    Route::post('{content}', [CourseContentController::class, 'update']);
-    Route::delete('{content}', [CourseContentController::class, 'destroy']);
     Route::get('show/{content}', [CourseContentController::class, 'show']);
     Route::get('download/video/{content}', [CourseContentController::class, 'downloadVideo']);
     Route::get('download/attachment/{content}', [CourseContentController::class, 'downloadAttachment']);
@@ -288,58 +291,38 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    // مسارات الـ Roadmap
     Route::prefix('roadmaps')->group(function () {
-        // الحصول على جميع الخطط الدراسية
         Route::get('/', [RoadmapController::class, 'index']);
 
-        // عرض خطة دراسية حسب ID
         Route::get('{roadmapId}', [RoadmapController::class, 'show']);
 
-        // إنشاء خطة دراسية جديدة
         Route::post('/', [RoadmapController::class, 'store']);
 
-        // تحديث خطة دراسية
         Route::put('{roadmapId}', [RoadmapController::class, 'update']);
 
-        // حذف خطة دراسية
         Route::delete('{roadmapId}', [RoadmapController::class, 'destroy']);
     });
 
-    // مسارات التقدم في الخطة الدراسية
     Route::prefix('roadmap-progress')->group(function () {
-        // عرض التقدم في الخطة الدراسية
         Route::get('{roadmapId}', [RoadmapProgressController::class, 'showProgress']);
     });
 
-    // مسارات الخطوات (Steps) في الخطة الدراسية
     Route::prefix('roadmap-steps')->group(function () {
-        // الحصول على جميع الخطوات الخاصة بخطة دراسية معينة
         Route::get('roadmap/{roadmapId}', [RoadmapStepController::class, 'getStepsByRoadmap']);
 
-        // عرض خطوة معينة حسب ID
         Route::get('{stepId}', [RoadmapStepController::class, 'showStep']);
 
-        // إنشاء خطوة جديدة
         Route::post('/', [RoadmapStepController::class, 'store']);
 
-        // تحديث خطوة
         Route::put('{stepId}', [RoadmapStepController::class, 'update']);
 
-        // حذف خطوة
         Route::delete('{stepId}', [RoadmapStepController::class, 'destroy']);
 
-        // ربط كورسات بخطوة
         Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
     });
 
 });
-Route::get('/test-stripe-config', function () {
-    return response()->json([
-        'publishable_key' => config('stripe.publishable_key'),
-        'secret_key' => config('stripe.secret_key')
-    ]);
-});
 
-});
+
+
 
