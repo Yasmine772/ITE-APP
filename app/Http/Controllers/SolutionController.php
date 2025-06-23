@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Solution;
 use App\Models\Teacher;
-use App\Response\Response;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 
 
 class SolutionController extends Controller
 {
+    use ApiResponseTrait;
+    
     public function addSolution(Request $request)
     {
         try {
@@ -98,11 +100,11 @@ class SolutionController extends Controller
         try {
             $solutions = Solution::where('assignment_id', $request->assignment_id)->first();
             if($solutions){
-                return Response::Success($solutions, 'A solution for this assignment', 200);
+                return $this->successResponse($solutions, 'A solution for this assignment', 200);
             }
-            return Response::Error('No solution yet!', 500);
+            return $this->errorResponse('No solution yet!', 500);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //********************************************************************************************* */
@@ -110,9 +112,9 @@ class SolutionController extends Controller
     {
         try {
             $solution = Solution::find($request->solution_id);
-            return Response::Success($solution, 'Solution details ', 200);
+            return $this->successResponse($solution, 'Solution details ', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 }

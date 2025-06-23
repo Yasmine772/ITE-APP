@@ -88,7 +88,7 @@ Route::prefix('course_contents')->group(function () {
     Route::get('web/show/{content}', [CourseContentController::class, 'webShow'])->name('course_contents.webShow');
 });
 
-Route::middleware('auth:sanctum')->group(function (){
+Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
     //advices:
     Route::post('/addAdvices', [AdviceController::class, 'addAdvice'])->name('advices.addAdvice');
     Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');

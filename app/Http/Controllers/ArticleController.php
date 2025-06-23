@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Response\Response;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
+    use ApiResponseTrait;
+
     public function addArticle(Request $request)
     {
         try {
@@ -17,18 +19,18 @@ class ArticleController extends Controller
                 'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
             ]);
             if ($validator->fails()) {
-                return Response::Error($validator->errors(), 400);
+                return $this->errorResponse($validator->errors(), 400);
             }
 
             $article = Article::create([
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
-                'user_details' => auth()->user()
+                'user_details' =>  json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
             ]);
-            return Response::Success($article, 'Article has been added successfully', 200);
+            return $this->successResponse($article, 'Article has been added successfully', 200);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************ */
@@ -37,11 +39,11 @@ class ArticleController extends Controller
         try {
             $article = Article::find($request->article_id);
             if (auth()->user()->id == $article->user_id) {
-                return Response::Success($article->delete(), 'Article has been deleted successfully', 200);
+                return $this->successResponse($article->delete(), 'Article has been deleted successfully', 200);
             }
-            return Response::Error('You can not delete this', 500);
+            return $this->errorResponse('You can not delete this', 500);
         } catch (\Exception $e) {
-            return Response::Error(null, 'Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -50,11 +52,11 @@ class ArticleController extends Controller
         try {
             $articles = Article::all();
             if($articles->isEmpty()){
-                return Response::Error('No articles yet!', 500);
+                return $this->errorResponse('No articles yet!', 500);
             }
-            return Response::Success($articles, 'All Articles', 200);
+            return $this->successResponse($articles, 'All Articles', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
@@ -69,27 +71,27 @@ class ArticleController extends Controller
                     'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
                 ]);
                 if ($validator->fails()) {
-                    return Response::Error($validator->errors(), 400);
+                    return $this->errorResponse($validator->errors(), 400);
                 }
                 $article->title = $request->title ?? $article->title;
                 $article->content = $request->content ?? $article->content;
                 $article->user_id = auth()->user()->id;
-                $article->user_details = auth()->user();
+                $article->user_details =  json_encode(auth()->user()->only(['name', 'profile_photo_path']));
                 $article->save();
-                return Response::Success($article, 'Article has been updated successfully', 200);
+                return $this->successResponse($article, 'Article has been updated successfully', 200);
             }
-            return Response::Success('we send an order to the admin for edit your article', 200);
+            return $this->successResponse('we send an order to the admin for edit your article', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 //************************************************************************************************** */
     public function articleDetails(Request $request)
     {
         try {
-            return Response::Success(Article::find($request->article_id), 'Article details:', 200);
+            return $this->successResponse(Article::find($request->article_id), 'Article details:', 200);
         }catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************** */
@@ -100,11 +102,11 @@ class ArticleController extends Controller
             $article->is_accepted = '1' ;
             $article->save();
 
-           // return Response::Success('successfull', 200);
+           // return $this->successResponse('successfull', 200);
              return redirect()->back()->with('successfuly');
 
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 //************************************************************************************************** */
@@ -117,13 +119,13 @@ class ArticleController extends Controller
                 //return response()->json(['data' => 'There are not articles not acceppted!']);
                 return redirect()->back()->withErrors('There are not articles not acceppted! ', 500);
             }
-            //return Response::Success($articles, 'all not accept articles', 200);
+            //return $this->successResponse($articles, 'all not accept articles', 200);
             return view('Aricles.NoneAcceptArticles',compact('articles'));
            
 
         } catch (\Exception $e) {
             //  return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 

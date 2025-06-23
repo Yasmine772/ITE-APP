@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use App\Models\Teacher;
-use App\Response\Response;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 
 class AssignmentController extends Controller
 {
+    use ApiResponseTrait;
+
     public function addAssignment(Request $request)
     {
         try {
@@ -95,11 +97,11 @@ class AssignmentController extends Controller
         try {
             $assignments = Assignment::where('subject_id', $request->subject_id)->get();
             if($assignments->isEmpty()){
-                return Response::Error('There are not assignments yet!', 500);
+                return $this->errorResponse('There are not assignments yet!', 500);
             }
-            return Response::Success($assignments, 'All assignments for this subject', 200);
+            return $this->successResponse($assignments, 'All assignments for this subject', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //********************************************************************************************* */
@@ -107,9 +109,9 @@ class AssignmentController extends Controller
     {
         try {
             $assignment = Assignment::find($request->assignment_id);
-            return Response::Success($assignment, 'Assignment details ', 200);
+            return $this->successResponse($assignment, 'Assignment details ', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 }
