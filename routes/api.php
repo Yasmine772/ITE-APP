@@ -34,7 +34,15 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
-use App\Traits\ApiResponseTrait;
+
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\CourseSubscriptionController;
+use App\Http\Controllers\CourseProgressController;
+use App\Http\Controllers\RoadmapController;
+use App\Http\Controllers\RoadmapProgressController;
+use App\Http\Controllers\RoadmapStepController;
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -188,14 +196,21 @@ Route::group(['middleware' => ['auth:sanctum','Teacher']], function () {
 
 
 
+
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search'); // 👈 الآن فوق
+    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');   
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
     Route::delete('{id}', [SubjectController::class, 'apiDestroy'])->name('destroy');
 });
+
 
 
 Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
@@ -216,24 +231,98 @@ Route::prefix('categories')->group(function () {
     Route::get('/search', [CategoryController::class, 'apiSearch']);
 });
 
+
 Route::prefix('courses')->group(function () {
     Route::get('/', [CourseController::class, 'apiIndex']);
-      Route::get('/search', [CourseController::class, 'apiFilter']);
-
+    Route::get('/search', [CourseController::class, 'apiFilter']);
     Route::get('/{id}', [CourseController::class, 'apiShow']);
     Route::post('/', [CourseController::class, 'apiStore']);
     Route::post('/{id}', [CourseController::class, 'apiUpdate']);
     Route::delete('/{id}', [CourseController::class, 'apiDestroy']);
+
+    Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
+        Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
+        
+        Route::post('/{courseId}/recalculate-progress', [CourseProgressController::class, 'recalculateProgress']);
+    });
 });
-Route::prefix('contents')->group(function () {
-    Route::get('{courseId}', [CourseContentController::class, 'index']);
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/subscriptions', [CourseSubscriptionController::class, 'apiIndex']);
+    Route::post('/subscriptions/subscribe', [CourseSubscriptionController::class, 'apiSubscribe']);
+    Route::post('/subscriptions/unsubscribe', [CourseSubscriptionController::class, 'apiUnsubscribe']);
+    Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
+});
+
+    Route::post('contents', [CourseContentController::class, 'store']);
+    Route::post('contents/{content}', [CourseContentController::class, 'update']);
+    Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
+   Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+
+Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
+  //  Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
-    Route::post('/', [CourseContentController::class, 'store']);
-    Route::post('{content}', [CourseContentController::class, 'update']);
-    Route::delete('{content}', [CourseContentController::class, 'destroy']);
-    Route::get('show/{content}', [CourseContentController::class, 'show']);
 
+    Route::get('show/{content}', [CourseContentController::class, 'show']);
     Route::get('download/video/{content}', [CourseContentController::class, 'downloadVideo']);
     Route::get('download/attachment/{content}', [CourseContentController::class, 'downloadAttachment']);
+
+    Route::post('progress/update', [CourseProgressController::class, 'updateProgress']);
+    Route::get('progress/last-position', [CourseProgressController::class, 'getLastPosition']);
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/ratings', [RatingController::class, 'store']);
+    Route::put('/ratings/{rating}', [RatingController::class, 'update']);
+    Route::delete('/ratings/{rating}', [RatingController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/subscriptions', [CourseSubscriptionController::class, 'apiIndex']);
+    Route::post('/subscriptions/subscribe', [CourseSubscriptionController::class, 'apiSubscribe']);
+    Route::post('/subscriptions/unsubscribe', [CourseSubscriptionController::class, 'apiUnsubscribe']);
+    Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
+});
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::prefix('roadmaps')->group(function () {
+        Route::get('/', [RoadmapController::class, 'index']);
+
+        Route::get('{roadmapId}', [RoadmapController::class, 'show']);
+
+        Route::post('/', [RoadmapController::class, 'store']);
+
+        Route::put('{roadmapId}', [RoadmapController::class, 'update']);
+
+        Route::delete('{roadmapId}', [RoadmapController::class, 'destroy']);
+    });
+
+    Route::prefix('roadmap-progress')->group(function () {
+        Route::get('{roadmapId}', [RoadmapProgressController::class, 'showProgress']);
+    });
+
+    Route::prefix('roadmap-steps')->group(function () {
+        Route::get('roadmap/{roadmapId}', [RoadmapStepController::class, 'getStepsByRoadmap']);
+
+        Route::get('{stepId}', [RoadmapStepController::class, 'showStep']);
+
+        Route::post('/', [RoadmapStepController::class, 'store']);
+
+        Route::put('{stepId}', [RoadmapStepController::class, 'update']);
+
+        Route::delete('{stepId}', [RoadmapStepController::class, 'destroy']);
+
+        Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
+    });
+
+});
+
+
+
+

@@ -20,7 +20,7 @@ class CourseRequest extends FormRequest
             'is_free' => 'required|boolean',
             'price' => 'required_if:is_free,false|numeric|min:0',
             'currency_code' => 'required|string|size:3',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image',
             'duration' => 'nullable|integer|min:0',
             'teacher_id' => 'required|exists:teachers,id',
             'category_id' => 'required|exists:categories,id',

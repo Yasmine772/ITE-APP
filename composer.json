@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "ext-http": "*",
+    
         "composer": "*",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/firebase-php": "^7.18",
@@ -17,7 +17,10 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
+        "php-ffmpeg/php-ffmpeg": "^1.3",
         "spatie/laravel-permission": "^6.18",
+        "stripe/stripe-php": "^17.3",
+        "symfony/process": "^7.3",
         "tightenco/ziggy": "^2.0"
     },
 

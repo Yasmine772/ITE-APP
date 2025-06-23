@@ -3,90 +3,106 @@
 namespace App\Http\Controllers;
 
 use App\Models\Year;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\YearRequest;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Request;
 
 class YearController extends Controller
 {
     use ApiResponseTrait;
 
+    // ------------------ API METHODS ------------------
+
     public function index()
     {
-        $data = Year::all();
+        $years = Year::all();
 
-        if ($data->isEmpty()) {
+        if ($years->isEmpty()) {
             return $this->errorResponse('No years found', null, 200);
         }
 
-        return $this->successResponse($data, 'Years retrieved successfully');
+        return $this->successResponse($years, 'Years retrieved successfully');
     }
 
-    public function show($id)
+    public function show(Year $year)
     {
-        try {
-            $data = Year::findOrFail($id);
-            return $this->successResponse($data, 'Year retrieved successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Year not found', $e->getMessage(), 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error occurred', $e->getMessage(), 500);
-        }
+        return $this->successResponse($year, 'Year retrieved successfully');
     }
 
-    public function store(Request $request)
+    public function store(YearRequest $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:years,name',
-            ]);
+        $validatedData = $request->validated();
 
-            $year = Year::create($validatedData);
+        $year = Year::create($validatedData);
 
-            return $this->successResponse($year, 'Year created successfully', 201);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->errorResponse('Validation failed', $e->errors(), 422);
-
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error occurred during creation', $e->getMessage(), 500);
-        }
+        return $this->successResponse($year, 'Year created successfully', 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(YearRequest $request, Year $year)
     {
-        try {
-            $year = Year::findOrFail($id);
+        $validatedData = $request->validated();
 
-            $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:years,name,',
-            ]);
+        $year->update($validatedData);
 
-            $year->update($validated);
-
-            return $this->successResponse($year, 'Year updated successfully');
-
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Year not found', $e->getMessage(), 404);
-
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error occurred during update', $e->getMessage(), 500);
-        }
+        return $this->successResponse($year, 'Year updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Year $year)
     {
-        try {
-            $year = Year::findOrFail($id);
-            $year->delete();
+        $year->delete();
 
-            return $this->successResponse(null, 'Year deleted successfully');
+        return $this->successResponse(null, 'Year deleted successfully');
+    }
 
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Year not found', $e->getMessage(), 404);
 
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error occurred during deletion', $e->getMessage(), 500);
-        }
+
+    public function indexView()
+    {
+        $years = Year::all();
+
+        return view('years.index', compact('years'));
+    }
+
+    public function create()
+    {
+        return view('years.create');
+    }
+
+    public function storeView(YearRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        Year::create($validatedData);
+
+        return redirect()->route('years.index')
+            ->with('success', 'Year created successfully');
+    }
+
+    public function showView(Year $year)
+    {
+        return view('years.show', compact('year'));
+    }
+
+    public function edit(Year $year)
+    {
+        return view('years.edit', compact('year'));
+    }
+
+    public function updateView(YearRequest $request, Year $year)
+    {
+        $validatedData = $request->validated();
+
+        $year->update($validatedData);
+
+        return redirect()->route('years.index')
+            ->with('success', 'Year updated successfully');
+    }
+
+    public function destroyView(Year $year)
+    {
+        $year->delete();
+
+        return redirect()->route('years.index')
+            ->with('success', 'Year deleted successfully');
     }
 }

@@ -40,7 +40,16 @@ class CourseContentController extends Controller
         try {
             $data = $request->validated();
             $content = $this->courseContentService->createContent($data);
-            return $this->successResponse($content, 'Content created successfully', 201);
+  $durationInSeconds = $content->duration;
+
+        $hours = floor($durationInSeconds / 3600);
+        $minutes = floor(($durationInSeconds % 3600) / 60);
+        $seconds = floor($durationInSeconds % 60);
+
+        $formattedDuration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);            return $this->successResponse([
+                'content' => $content,
+                'duration_hms' => $formattedDuration
+            ], 'Content created successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse('Failed to create content', $e->getMessage());
         }
@@ -113,35 +122,35 @@ class CourseContentController extends Controller
         return view('course_contents.show', compact('content'));
     }
 
-  public function webSearch(Request $request, int $courseId)
-{
-    try {
-        $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
-        ]);
-
-        $title = $validated['title'] ?? null;
-        $contents = $this->courseContentService->search($courseId, $title);
-
-        if ($contents->isEmpty()) {
-            return view('course_contents.index', [
-                'contents' => $contents,
-                'courseId' => $courseId,
-                'message' => 'No course contents match your search criteria.'
+    public function webSearch(Request $request, int $courseId)
+    {
+        try {
+            $validated = $request->validate([
+                'title' => 'nullable|string|max:255',
             ]);
-        }
 
-        return view('course_contents.index', compact('contents', 'courseId'));
-    } catch (ValidationException $e) {
-        return redirect()->back()
-            ->withErrors($e->validator)
-            ->withInput();
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->withErrors(['error' => 'Unexpected error: ' . $e->getMessage()])
-            ->withInput();
+            $title = $validated['title'] ?? null;
+            $contents = $this->courseContentService->search($courseId, $title);
+
+            if ($contents->isEmpty()) {
+                return view('course_contents.index', [
+                    'contents' => $contents,
+                    'courseId' => $courseId,
+                    'message' => 'No course contents match your search criteria.'
+                ]);
+            }
+
+            return view('course_contents.index', compact('contents', 'courseId'));
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Unexpected error: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
-}
 
     public function webCreate(int $courseId)
     {
@@ -158,7 +167,7 @@ class CourseContentController extends Controller
                 ->with('success', 'Content created successfully');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to create content: ' . $e->getMessage()])
-                         ->withInput();
+                ->withInput();
         }
     }
 
@@ -177,7 +186,7 @@ class CourseContentController extends Controller
                 ->with('success', 'Content updated successfully');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to update content: ' . $e->getMessage()])
-                         ->withInput();
+                ->withInput();
         }
     }
 
@@ -193,21 +202,20 @@ class CourseContentController extends Controller
         }
     }
     public function downloadVideo(CourseContent $content)
-{
-    if (!$content->video_path || !Storage::disk('public')->exists($content->video_path)) {
-        return abort(404, 'Video file not found.');
-    }
-   
-    return Storage::disk('public')->download($content->video_path);
-}
+    {
+        if (!$content->video_path || !Storage::disk('public')->exists($content->video_path)) {
+            return abort(404, 'Video file not found.');
+        }
 
-public function downloadAttachment(CourseContent $content)
-{
-    if (!$content->attachment || !Storage::disk('public')->exists($content->attachment)) {
-        return abort(404, 'Attachment file not found.');
+        return Storage::disk('public')->download($content->video_path);
     }
 
-    return Storage::disk('public')->download($content->attachment);
-}
+    public function downloadAttachment(CourseContent $content)
+    {
+        if (!$content->attachment || !Storage::disk('public')->exists($content->attachment)) {
+            return abort(404, 'Attachment file not found.');
+        }
 
+        return Storage::disk('public')->download($content->attachment);
+    }
 }

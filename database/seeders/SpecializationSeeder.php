@@ -10,12 +10,17 @@ class SpecializationSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+   
     public function run(): void
     {
-         $specializations = ['Artificial Intelligence', 'Software Engineering', 'Computer Networks'];
+        $specializations = [
+            'Artificial Intelligence',
+            'Software Engineering',
+            'Computer Networks',
+        ];
 
         foreach ($specializations as $spec) {
-            Specialization::create(['name' => $spec]);
+            Specialization::updateOrCreate(['name' => $spec]);
         }
     }
 }

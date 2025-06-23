@@ -39,24 +39,25 @@ class ContentSubjectService
     }
 
    
-   public function updateContentSubject(ContentSubject $contentSubject, array $data)
+  public function updateContentSubject(ContentSubject $contentSubject, array $data)
 {
     if (isset($data['file'])) {
         if ($contentSubject->file_path && Storage::disk('public')->exists($contentSubject->file_path)) {
             Storage::disk('public')->delete($contentSubject->file_path);
         }
-        $filePath = $data['file']->store('content_subjects', 'public');
-        $contentSubject->file_path = $filePath;
+        $contentSubject->file_path = $data['file']->store('content_subjects', 'public');
     }
+
     $contentSubject->update([
         'subject_id' => $data['subject_id'],
         'lecture_name' => $data['lecture_name'],
         'lecture_order' => $data['lecture_order'],
-        'file_path' => $contentSubject->file_path, 
+        'file_path' => $contentSubject->file_path,
     ]);
 
     return $contentSubject;
 }
+
 
 
     

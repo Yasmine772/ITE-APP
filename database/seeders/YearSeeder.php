@@ -11,12 +11,12 @@ class YearSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+   public function run(): void
     {
-          $years = ['First Year', 'Second Year', 'Third Year', 'Fourth Year', 'Fifth Year'];
+        $years = ['First Year', 'Second Year', 'Third Year', 'Fourth Year', 'Fifth Year'];
 
         foreach ($years as $year) {
-            Year::create(['name' => $year]);
+            Year::updateOrCreate(['name' => $year]);
         }
     }
 }
