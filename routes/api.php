@@ -50,18 +50,16 @@ Route::get('/user', function (Request $request) {
 
 
 // when clicking on verification link
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
-    {
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     event(new Verified(User::query()->find($request->route('id'))));
-    return $this->successResponse(true,'Email Verified Successfully');
-
-    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+    return $this->successResponse(true, 'Email Verified Successfully');
+})->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
 // resend verification email
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
-    return $this->successResponse(true,'Verification link sent!');
+    return $this->successResponse(true, 'Verification link sent!');
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
 
@@ -76,10 +74,6 @@ Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function 
 Route::post('user/password/email', [UserController::class, 'UserForgetPassword'])->middleware('guest');
 Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
 Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
-
-
-
-
 
 Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
@@ -146,7 +140,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //status of student exam :
     Route::post('/startExam', [MarkController::class, 'startExam']);
     Route::post('/finishExam', [MarkController::class, 'finishExam']);
-
 });
 
 Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
@@ -192,21 +185,13 @@ Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
     Route::delete('advertisement/destroyAll', [AdvertisementController::class, 'destroyAll']);
 });
 
-Route::group(['middleware' => ['auth:sanctum','Admin']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
     Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
     Route::delete('advertisement/{id}/destroyAdmin', [AdvertisementController::class, 'destroyAdmin']);
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
 });
 //resources
-Route::group(['middleware' => ['auth:sanctum','Teacher']], function () {
-
-
-
-});
-
-
-
-
+Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {});
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
@@ -214,7 +199,7 @@ Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctu
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');   
+    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
@@ -252,7 +237,7 @@ Route::prefix('courses')->group(function () {
 
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
-        
+
         Route::post('/{courseId}/recalculate-progress', [CourseProgressController::class, 'recalculateProgress']);
     });
 });
@@ -265,13 +250,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
 });
 
-    Route::post('contents', [CourseContentController::class, 'store']);
-    Route::post('contents/{content}', [CourseContentController::class, 'update']);
-    Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
-   Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+Route::post('contents', [CourseContentController::class, 'store']);
+Route::post('contents/{content}', [CourseContentController::class, 'update']);
+Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
+Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
 
 Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
-  //  Route::get('{courseId}', [CourseContentController::class, 'index']);
+    //  Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
 
@@ -330,9 +315,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
     });
-
 });
-
-
-
-
