@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
@@ -21,8 +20,8 @@ class Course extends Model
         'teacher_id',
         'category_id',
         'subject_id',
+        'average_rating',
     ];
-
 
     public function teacher()
     {
@@ -38,19 +37,51 @@ class Course extends Model
     {
         return $this->belongsTo(Subject::class);
     }
+
     public function contents()
     {
         return $this->hasMany(CourseContent::class)->orderBy('order');
     }
 
+    public function ratings()
+    {
+        return $this->hasManyThrough(
+            Rating::class,
+            CourseContent::class,
+            'course_id',
+            'course_content_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function getAverageRatingAttribute($value)
+    {
+        return round($this->ratings()->avg('rating') ?? 0.0, 1);
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(CourseSubscription::class);
+    }
+
+    public function progresses()
+    {
+        return $this->hasMany(CourseProgress::class);
+    }
+
+    public function steps()
+    {
+        return $this->belongsToMany(RoadmapStep::class, 'roadmap_step_courses');
+    }
 
     public function exam()
     {
         return $this->hasMany(Exam::class, 'exams');
     }
+
     public function resources(): BelongsToMany
     {
         return $this->belongsToMany(Resource::class);
-
     }
 }

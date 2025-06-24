@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('subject_id')->nullable()->constrained()->nullOnDelete();
+            $table->decimal('average_rating', 3, 2)->nullable(); 
             $table->timestamps();
         });
     }

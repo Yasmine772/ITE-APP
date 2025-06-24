@@ -125,6 +125,20 @@ public function filter(Request $request)
 
     return view('courses.index', compact('courses'));
 }
+public function show($id)
+{
+    try {
+        $course = $this->courseService->getCourseById($id);
+
+        $course->load(['teacher.user']);
+
+        return view('courses.show', compact('course'));
+    } catch (ModelNotFoundException $e) {
+        return redirect()->route('courses.index')->with('error', 'Course not found');
+    } catch (\Exception $e) {
+        return redirect()->route('courses.index')->with('error', 'Unexpected error: ' . $e->getMessage());
+    }
+}
 
 
 
@@ -136,15 +150,21 @@ public function filter(Request $request)
         return $this->successResponse($courses, 'Courses retrieved successfully');
     }
 
-    public function apiShow($id)
-    {
-        try {
-            $course = $this->courseService->getCourseById($id);
-            return $this->successResponse($course, 'Course retrieved successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Course not found', null, 404);
-        }
+  public function apiShow($id)
+{
+    try {
+        $course = $this->courseService->getCourseById($id);
+        $course->load(['teacher.user']);
+
+        $course->teacher_name = optional($course->teacher->user)->name;
+        unset($course->teacher);
+
+        return $this->successResponse($course, 'Course retrieved successfully');
+    } catch (ModelNotFoundException $e) {
+        return $this->errorResponse('Course not found', null, 404);
     }
+}
+
 
     public function apiStore( CourseRequest $request)
     {
@@ -224,4 +244,28 @@ public function filter(Request $request)
             return $this->errorResponse('Unexpected error', $e->getMessage(), 500);
         }
     }
+    public function topRated()
+{
+    $courses = $this->courseService->getTopRatedCourses();
+
+    return view('courses.top-rated', compact('courses'));
+}
+public function apiTopRated()
+{
+    try {
+        $courses = $this->courseService->getTopRatedCourses();
+
+        $courses->load(['teacher.user']);
+
+        $courses->transform(function ($course) {
+            $course->teacher_name = optional($course->teacher->user)->name;
+            unset($course->teacher);
+            return $course;
+        });
+
+        return $this->successResponse($courses, 'Top rated courses retrieved successfully');
+    } catch (\Exception $e) {
+        return $this->errorResponse('Failed to retrieve top rated courses', $e->getMessage(), 500);
+    }
+}
 }

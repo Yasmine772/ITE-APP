@@ -1,104 +1,89 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Specialization;
 use App\Models\Year;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\SpecializationRequest;
 use App\Traits\ApiResponseTrait;
 
 class SpecializationController extends Controller
 {
     use ApiResponseTrait;
 
+
     public function index()
     {
         $data = Specialization::all();
-
         if ($data->isEmpty()) {
             return $this->errorResponse('No specializations found', null, 200);
         }
-
         return $this->successResponse($data, 'Specializations retrieved successfully');
     }
 
-    public function show($id)
+    public function show(Specialization $specialization)
     {
-        try {
-            $data = Specialization::findOrFail($id);
-            return $this->successResponse($data, 'Specialization retrieved successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Specialization not found', $e->getMessage(), 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error occurred', $e->getMessage(), 500);
-        }
+        return $this->successResponse($specialization, 'Specialization retrieved successfully');
     }
 
-    public function store(Request $request)
+    public function store(SpecializationRequest $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:specializations,name',
-            ]);
-
-            $specialization = Specialization::create($validatedData);
-
-            return $this->successResponse($specialization, 'Specialization created successfully', 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->errorResponse('Validation failed', $e->errors(), 422);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error during creation', $e->getMessage(), 500);
-        }
+        $specialization = Specialization::create($request->validated());
+        return $this->successResponse($specialization, 'Specialization created successfully', 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(SpecializationRequest $request, Specialization $specialization)
     {
-        try {
-            $specialization = Specialization::findOrFail($id);
-
-            $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:specializations,name,'  . $id,
-
-            ]);
-
-            $specialization->update($validated);
-
-            return $this->successResponse($specialization, 'Specialization updated successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Specialization not found', $e->getMessage(), 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error during update', $e->getMessage(), 500);
-        }
+        $specialization->update($request->validated());
+        return $this->successResponse($specialization, 'Specialization updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Specialization $specialization)
     {
-        try {
-            $specialization = Specialization::findOrFail($id);
-            $specialization->delete();
-
-            return $this->successResponse(null, 'Specialization deleted successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Specialization not found', $e->getMessage(), 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error during deletion', $e->getMessage(), 500);
-        }
+        $specialization->delete();
+        return $this->successResponse(null, 'Specialization deleted successfully');
     }
 
-    public function AddSpecializationToYear(Request $request, $specializationId)
+    public function addSpecializationToYear(Request $request, Specialization $specialization)
     {
-        try {
-            $specialization = Specialization::findOrFail($specializationId);
-            $year = Year::findOrFail($request->year_id);
+        $request->validate(['year_id' => 'required|exists:years,id']);
+        $year = Year::findOrFail($request->year_id);
+        $specialization->years()->syncWithoutDetaching($year->id);
+        return $this->successResponse(null, 'Specialization assigned to year successfully');
+    }
 
-            $specialization->years()->attach($year);
 
-            return $this->successResponse(null, 'Specialization assigned to year successfully');
-        } catch (ModelNotFoundException $e) {
-            return $this->errorResponse('Specialization or Year not found', $e->getMessage(), 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error during assignment', $e->getMessage(), 500);
-        }
+    public function bladeIndex()
+    {
+        $specializations = Specialization::all();
+        return view('specializations.index', compact('specializations'));
+    }
+
+    public function bladeCreate()
+    {
+        return view('specializations.create');
+    }
+
+    public function bladeStore(SpecializationRequest $request)
+    {
+        Specialization::create($request->validated());
+        return redirect()->route('specializations.index')->with('success', 'Specialization created successfully');
+    }
+
+    public function bladeEdit(Specialization $specialization)
+    {
+        return view('specializations.edit', compact('specialization'));
+    }
+
+    public function bladeUpdate(SpecializationRequest $request, Specialization $specialization)
+    {
+        $specialization->update($request->validated());
+        return redirect()->route('specializations.index')->with('success', 'Specialization updated successfully');
+    }
+
+    public function bladeDestroy(Specialization $specialization)
+    {
+        $specialization->delete();
+        return redirect()->route('specializations.index')->with('success', 'Specialization deleted successfully');
     }
 }

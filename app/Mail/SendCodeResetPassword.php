@@ -21,7 +21,9 @@ class SendCodeResetPassword extends Mailable
     }
     public function build()
     {
+
         return $this->markdown('emails.send-code-reset-password')->with(['code' => $this->code]);
+
     }
     /**
      * Get the message envelope.

@@ -10,12 +10,12 @@ class SemesterSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+       public function run(): void
     {
-         $semesters = ['First Semester', 'Second Semester'];
+        $semesters = ['First Semester', 'Second Semester'];
 
         foreach ($semesters as $semester) {
-            Semester::create(['name' => $semester]);
+            Semester::updateOrCreate(['name' => $semester]);
         }
     }
 }

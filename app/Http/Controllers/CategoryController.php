@@ -37,6 +37,7 @@ class CategoryController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255|unique:categories',
+                'cover_image'=>'required|image'
             ]);
 
             $this->categoryService->createCategory($validated);
@@ -66,6 +67,8 @@ class CategoryController extends Controller
 
             $validated = $request->validate([
                 'name' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($id)],
+                'cover_image'=>'nullable|image'
+
             ]);
 
             $this->categoryService->updateCategory($category, $validated);
@@ -112,6 +115,8 @@ class CategoryController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255|unique:categories',
+                'cover_image'=>'required|image'
+
             ]);
 
             $category = $this->categoryService->createCategory($validated);
@@ -128,6 +133,8 @@ class CategoryController extends Controller
 
             $validated = $request->validate([
                 'name' => ['required', 'string', 'max:255', Rule::unique('categories')->ignore($id)],
+                'cover_image'=>'nullable|image'
+
             ]);
 
             $updated = $this->categoryService->updateCategory($category, $validated);
