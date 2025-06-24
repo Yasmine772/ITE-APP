@@ -21,14 +21,15 @@ class ArticleController extends Controller
             if ($validator->fails()) {
                 return $this->errorResponse($validator->errors(), 400);
             }
-
-            $article = Article::create([
+            Article::create([
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
                 'user_details' =>  json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
             ]);
-            return $this->successResponse($article, 'Article has been added successfully', 200);
+
+            //notification to user that ..we send your article to admin
+
         } catch (\Exception $e) {
             return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
@@ -47,7 +48,7 @@ class ArticleController extends Controller
         }
     }
     //************************************************************************************************* */
-    public function showArticles()
+    public function showAllArticles()
     {
         try {
             $articles = Article::all();
@@ -59,28 +60,66 @@ class ArticleController extends Controller
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+    ////////////////////////////////////////////////////////////
+    public function showPendingArticles()
+    {
+        try {
+            $articles = Article::where('status','Pending')->get();
+            if ($articles->isEmpty()) {
+                return $this->errorResponse('No pending articles yet!', 500);
+            }
+            return $this->successResponse($articles, 'Pending articles', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    /////////////////////////////////////////////////////////////
+    public function showRejectArticles()
+    {
+        try {
+            $articles = Article::where('status','Reject')->get();
+            if ($articles->isEmpty()) {
+                return $this->errorResponse('No reject articles yet!', 500);
+            }
+            return $this->successResponse($articles, 'Reject articles', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    ////////////////////////////////////////////////////////////
+    public function showAcceptArticles()
+    {
+        try {
+            $articles = Article::where('status', 'Accept')->get();
+            if ($articles->isEmpty()) {
+                return $this->errorResponse('No accept articles yet!', 500);
+            }
+            return $this->successResponse($articles, 'Accept articles', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
     //************************************************************************************************* */
     public function editArticles(Request $request)
     {
         try {
             $article = Article::find($request->article_id);
-
-            if ($article->is_accepted == 1) {
-                $validator = Validator::make($request->all(), [
-                    'title'   => 'nullable|string|min:10|max:100',
-                    'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
-                ]);
-                if ($validator->fails()) {
+            $validator = Validator::make($request->all(), [
+                'title'   => 'nullable|string|min:10|max:100',
+                'content' => 'nullable|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
+            ]);
+            if ($validator->fails()) {
                     return $this->errorResponse($validator->errors(), 400);
-                }
-                $article->title = $request->title ?? $article->title;
-                $article->content = $request->content ?? $article->content;
-                $article->user_id = auth()->user()->id;
-                $article->user_details =  json_encode(auth()->user()->only(['name', 'profile_photo_path']));
-                $article->save();
-                return $this->successResponse($article, 'Article has been updated successfully', 200);
             }
-            return $this->successResponse('we send an order to the admin for edit your article', 200);
+            $article->title = $request->title ?? $article->title;
+            $article->content = $request->content ?? $article->content;
+            $article->status = 'Pending';
+            $article->user_id = auth()->user()->id;
+            $article->user_details =  json_encode(auth()->user()->only(['name', 'profile_photo_path']));
+            $article->save();
+
+            //notification to user that.. we send request to the admin for edit your article.
+
         } catch (\Exception $e) {
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
@@ -94,39 +133,63 @@ class ArticleController extends Controller
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
-    //************************************************************************************************** */
-    public function acceptEditArticle(Request $request)
-    {
-        try {
-            $article = Article::find($request->article_id);
-            $article->is_accepted = '1' ;
-            $article->save();
-
-           // return $this->successResponse('successfull', 200);
-             return redirect()->back()->with('successfuly');
-
-        } catch (\Exception $e) {
-            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
-        }
-    }
 //************************************************************************************************** */
-    public function showNoneAcceptArticle()
+    public function showPendingArticleforAdmin()
     {
         try {
-            $articles = Article::where('is_accepted','0')->get();
+            $articles = Article::where('status', 'Pending')->get();
 
-            if($articles->isEmpty()){
+            if ($articles->isEmpty()) {
                 //return response()->json(['data' => 'There are not articles not acceppted!']);
-                return redirect()->back()->withErrors('There are not articles not acceppted! ', 500);
+                return redirect()->back()->withErrors('No pending articles! ', 500);
             }
-            //return $this->successResponse($articles, 'all not accept articles', 200);
-            return view('Aricles.NoneAcceptArticles',compact('articles'));
-           
-
+            //return $this->successResponse($articles, 'All pending articles', 200);
+            return view('Articles.PendingArticles', compact('articles'));
         } catch (\Exception $e) {
             //  return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+//************************************************************************************************** */
+    public function acceptArticle(Request $request)
+    {
+        try {
+            $article = Article::find($request->article_id);
+            $article->status = 'Accept' ;
+            $article->save();
 
+            //notification to user for accept his article
+
+           // return $this->successResponse('successfull', 200);
+            return redirect()->back()->with('successfull');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
+           // return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+//////////////////////////////////////////////////////////////
+    public function RejectArticle(Request $request)
+    {
+        try {
+            $article = Article::find($request->article_id);
+            $article->status = 'Reject';
+            $validator = Validator::make($request->all(), [
+                'reasonsOfReject' => 'required|string|min:10|max:1000',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->errors(), 400);
+            }
+            $article->reasonsOfReject = $request->reasonsOfReject;
+            $article->save();
+
+            //notification to user that.. your article has been rejected for this reasons (reasonsOfReject)
+
+            // return $this->successResponse('successfull', 200);
+            return redirect()->back()->with('successfuly');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    //************************************************************************************************** */
 }

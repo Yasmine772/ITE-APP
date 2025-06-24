@@ -94,7 +94,14 @@ Route::middleware('auth:sanctum')->group(function () {
     //articles:
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
-    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']); //
+
+    Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
+    Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
+    Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
+
+
+
 
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
@@ -142,7 +149,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::get('/showArticles', [ArticleController::class, 'showArticles']);
+Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
+// Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
+// Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
+// Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
 Route::post('/displayAssignmentdetails', [AssignmentController::class, 'displayAssignmentdetails']);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -163,6 +164,18 @@ Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
 Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
 Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
 Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
+
+Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
+    //Admin & articles
+    Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
+    Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
+    Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+});
+
+
+
+
+
 
 
 Route::get('/test-stripe-config', function () {
