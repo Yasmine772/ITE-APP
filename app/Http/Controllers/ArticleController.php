@@ -51,7 +51,7 @@ class ArticleController extends Controller
     public function showAllArticles()
     {
         try {
-            $articles = Article::all();
+            $articles = Article::where('status','Accept')->get();
             if($articles->isEmpty()){
                 return $this->errorResponse('No articles yet!', 500);
             }
