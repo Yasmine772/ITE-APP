@@ -88,14 +88,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //articles:
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
-    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']); //
-
+    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']); 
     Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
     Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
     Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
-
-
-
 
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
@@ -119,21 +115,20 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
     // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
 
-    //Exams:
-    Route::post('/addExam', [ExamController::class, 'addExam']);
-    Route::post('/deleteExam', [ExamController::class, 'deleteExam']);
-    Route::post('/editExam', [ExamController::class, 'editExam']);
+    // //Exams:
+    // Route::post('/addExam', [ExamController::class, 'addExam']);
+    // Route::post('/deleteExam', [ExamController::class, 'deleteExam']);
+    // Route::post('/editExam', [ExamController::class, 'editExam']);
 
+    // //Questions:
+    // Route::post('/addQuestion', [QuestionController::class, 'addQuestion']);
+    // Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion']);
+    // Route::post('/editQuestion', [QuestionController::class, 'editQuestion']);
 
-    //Questions:
-    Route::post('/addQuestion', [QuestionController::class, 'addQuestion']);
-    Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion']);
-    Route::post('/editQuestion', [QuestionController::class, 'editQuestion']);
-
-    //Options:
-    Route::post('/addOption', [OptionController::class, 'addOption']);
-    Route::post('/deleteOption', [OptionController::class, 'deleteOption']);
-    Route::post('/editOption', [OptionController::class, 'editOption']);
+    // //Options:
+    // Route::post('/addOption', [OptionController::class, 'addOption']);
+    // Route::post('/deleteOption', [OptionController::class, 'deleteOption']);
+    // Route::post('/editOption', [OptionController::class, 'editOption']);
 
     //Answer:
     Route::post('/addAnswer', [AnswerController::class, 'addAnswer']);
@@ -143,19 +138,23 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
+
+// Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
+// Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
+// Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
+
 // Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
 // Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
 // Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
+
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
 Route::post('/displayAssignmentdetails', [AssignmentController::class, 'displayAssignmentdetails']);
 
 Route::post('/displaySolutions', [SolutionController::class, 'displaySolutions']);
 Route::post('/displaySolutionsdetails', [SolutionController::class, 'displaySolutionsdetails']);
 
-Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
-Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
-Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
+Route::post('/downloadFiles', [AssignmentController::class, 'downloadFiles']);
 
 Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
 

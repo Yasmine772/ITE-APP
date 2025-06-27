@@ -164,6 +164,7 @@ Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
 Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
 Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
 Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
+//Route::get('/downloadFiles', [AssignmentController::class, 'downloadFiles']);
 
 Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
     //Admin & articles
@@ -171,9 +172,6 @@ Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
     Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
     Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
 });
-
-
-
 
 
 

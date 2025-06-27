@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignment;
+use App\Models\Solution;
 use App\Models\Teacher;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AssignmentController extends Controller
 {
@@ -104,7 +106,7 @@ class AssignmentController extends Controller
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
-    //********************************************************************************************* */
+//********************************************************************************************* */
     public function displayAssignmentdetails(Request $request)
     {
         try {
@@ -114,4 +116,36 @@ class AssignmentController extends Controller
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
+//********************************************************************************************* */
+    public function downloadFiles(Request $request)
+    {
+        try {
+            $assignment = Assignment::find($request->assignment_id);
+            $solution = Solution::find($request->solution_id);
+            if ($assignment) {
+                $downloadAssignment = $assignment->file;
+                $headers = [
+                    'Content-Type' => 'application/pdf',
+                ];
+                return Storage::download($downloadAssignment, $assignment->title.'.pdf', $headers);
+            }
+            if ($solution) {
+                $downloadSolution = $solution->file;
+                $headers = [
+                    'Content-Type' => 'application/pdf',
+                ];
+                return Storage::download($downloadSolution, $solution->title.'.pdf', $headers);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
+        }
+    }
+    //للتجربة على المتصفح
+    //http://127.0.0.1:8000/downloadFiles
+    // $filePath = 'public/folderOfImages/Assignments/1.pdf';
+    // $fileName = '1.pdf';
+    // $headers = [
+    //     'Content-Type' => 'pdf',
+    // ];
+    // return Storage::download($filePath, $fileName, $headers);
 }

@@ -18,9 +18,9 @@ class OptionController extends Controller
 
             $options = Option::where('question_id', $request->question_id)->get();
 
-            if (count($options) > 2) {
+            if (count($options) !== 3 ) {
                 return response()->json([
-                    'error' => 'You can not add answers greater than 3!'
+                    'error' => 'You must provide exactly 3 answers!'
                 ]);
                 //   return redirect()->back()->withErrors('There should not be answers greater than 3!');
             }
