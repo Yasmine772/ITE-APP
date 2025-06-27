@@ -17,7 +17,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->role === 'admin')
+        if(Auth::check() && Auth::user()->hasRole('admin'))
         return $next($request);
         return $this->errorResponse(['Unauthorized'], 'Not having access',403);
     }

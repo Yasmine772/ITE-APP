@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\AdvertisementRequest;
 use App\Http\Requests\StoreAdvertisementRequest;
 use App\Http\Requests\UpdateAdvertisementRequest;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Notification;
 
 class AdvertisementController extends Controller
 {
-    use ApiResponseTrait ;
+    use ApiResponseTrait;
     protected NotificationService $notificationService;
 
     public function __construct(NotificationService $notificationService)
@@ -27,37 +28,35 @@ class AdvertisementController extends Controller
     public function index(): JsonResponse
     {
         $advertisements = auth()->user()->advertisements()->get();
-        return $this->successResponse(['Your Advertisements'=>$advertisements]);
+        return $this->successResponse(['Your Advertisements' => $advertisements]);
     }
     public function store(StoreAdvertisementRequest $request): JsonResponse
     {
-         $user = auth()->user();
-         $advertisementData = $request->validated();
-         $advertisementData['user_id'] = $user->id ;
+        $user = auth()->user();
+        $advertisementData = $request->validated();
+        $advertisementData['user_id'] = $user->id;
+        $advertisement = Advertisement::create($advertisementData);
 
-        $advertisement= Advertisement::create($advertisementData);
+        $title = $advertisementData['title'];
+        $message = $advertisementData['description'];
+        $advertisementId = $advertisement->id;
+        $teacherInformation = "{$user->name} ";
 
-         $title = $advertisementData['title'];
-         $message = $advertisementData['description'];
-         $advertisementId = $advertisement->id;
-         $teacherInformation = "{$user->name} ";
-
-          $students = User::where('role', 'student')->get();
-               $this->notificationService->sendToUsers($students, $title, $message, $advertisementId, $teacherInformation);
+        $students = User::role('student')->get();
+        $this->notificationService->sendAdvertToUsers($students, $title, $message, $advertisementId, $teacherInformation);
 
         return $this->successResponse([
             'advertisement' => $advertisement,
             'TeacherInformation' => $teacherInformation
         ], 'Saved Successfully', 201);
-
     }
 
     public function update(UpdateAdvertisementRequest $request, int $id): JsonResponse
     {
         $user_id = Auth::user()->id;
         $advertisement = Advertisement::findOrFail($id);
-        if($advertisement->user_id != $user_id){
-            return $this->errorResponse('You are not authorized to perform this action',403);
+        if ($advertisement->user_id != $user_id) {
+            return $this->errorResponse('You are not authorized to perform this action', 403);
         }
         $advertisementData = $request->validated();
         $advertisement->update($advertisementData);
@@ -65,13 +64,12 @@ class AdvertisementController extends Controller
     }
     public function destroy(int $id): JsonResponse
     {
-       $advertisement = Advertisement::findOrFail($id);
-       if(!$advertisement)
-       {
-           return $this->errorResponse('Advertisement not found',404);
-       }
-       $advertisement->delete();
-       return $this->successResponse([], 'Advertisement deleted Successfully', 200);
+        $advertisement = Advertisement::findOrFail($id);
+        if (!$advertisement) {
+            return $this->errorResponse('Advertisement not found', 404);
+        }
+        $advertisement->delete();
+        return $this->successResponse([], 'Advertisement deleted Successfully', 200);
     }
     public function destroyAll(): JsonResponse
     {
@@ -81,9 +79,8 @@ class AdvertisementController extends Controller
     public function destroyAdmin(int $id): JsonResponse
     {
         $advertisement = Advertisement::findOrFail($id);
-        if(!$advertisement)
-        {
-            return $this->errorResponse('Advertisement not found',404);
+        if (!$advertisement) {
+            return $this->errorResponse('Advertisement not found', 404);
         }
         $advertisement->delete();
         return $this->successResponse([], 'Advertisement deleted Successfully', 200);
@@ -95,8 +92,7 @@ class AdvertisementController extends Controller
     }
     public function showAll(): JsonResponse
     {
-       $allAdvertisements= Advertisement::get();
-       return $this->successResponse(['allAdvertisements'=>$allAdvertisements]);
+        $allAdvertisements = Advertisement::get();
+        return $this->successResponse(['allAdvertisements' => $allAdvertisements]);
     }
-
 }

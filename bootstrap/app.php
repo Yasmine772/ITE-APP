@@ -25,12 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'CheckUser' => CheckUserRole::class,
-             'active.subscription' => App\Http\Middleware\EnsureActiveSubscription::class,
-
-            'CheckUser' => CheckUser::class ,
-            'Admin' => Admin::class,
-            'Teacher' => Teacher::class
+            'active.subscription' => App\Http\Middleware\EnsureActiveSubscription::class,
+            'checkUser' => CheckUser::class ,
+            'admin' => Admin::class,
+            'teacher' => Teacher::class
 
 
         ]);

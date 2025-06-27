@@ -11,12 +11,16 @@ use App\Models\Teacher;
 
 class SubjectSeeder extends Seeder
 {
-   
+
 public function run()
 {
     $specializations = Specialization::all();
     $years = Year::all();
-    $teachers = Teacher::has('user')->get();
+    $teachers = Teacher::has('user')->get(); $teachersSubjects = [
+    'مدحت الصوص' => ['البرمجة 1', 'البرمجة 2'],
+    'روان قرعوني' => ['قواعد البيانات'],
+    'محمد الأحمد'=> ['مشروع التخرج'],
+];
 
     $subjects = [
         ['name' => 'الرياضيات 1', 'type' => 'theoretical', 'specializations' => ['Artificial Intelligence', 'Software Engineering'], 'semester_id' => 1],
@@ -35,14 +39,23 @@ public function run()
         foreach ($subject['specializations'] as $specName) {
             $specialization = $specializations->where('name', $specName)->first();
 
-            if ($specialization) {
+            if ($specialization) { $teacherId = null;
+                foreach ($teachersSubjects as $teacherName => $subjectNames) {
+                    if (in_array($subject['name'], $subjectNames)) {
+                        $teacher = $teachers->firstWhere('user.name', $teacherName);
+                        if ($teacher) {
+                            $teacherId = $teacher->id;
+                            break;
+                        }
+                    }
+                }
                 DB::table('subjects')->insert([
                     'name' => $subject['name'],
                     'type' => $subject['type'],
                     'year_id' => $years->random()->id,
                     'specialization_id' => $specialization->id,
                     'semester_id' => $subject['semester_id'],
-                    'teacher_id' => $teachers->isNotEmpty() ? $teachers->random()->id : null,
+                    'teacher_id' => $teacherId,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

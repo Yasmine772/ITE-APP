@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Notifications\BasicNotification;
 use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
+use App\Notifications\NewResourceNotification;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -18,9 +19,13 @@ class NotificationService
     {
         return auth()->user()->notifications;
     }
-    public function sendToUsers($users, string $title, string $message, int $advertisementId, string $teacherInfo): void
+    public function sendAdvertToUsers($users, string $title, string $message, int $advertisementId, string $teacherInfo): void
     {
         Notification::send($users, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
+    }
+    public function sendResourceToUsers($users, string $title, string $message, int $resourceId): void
+    {
+        Notification::send($users, new NewResourceNotification($title, $message, $resourceId));
     }
     public function sendToUser($user, string $title, string $message): void
     {

@@ -3,16 +3,16 @@
 use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\MyResourceListController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\AdviceController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Middleware\verifiedEmail;
-use App\Http\Middleware\CheckUser;
-use App\Http\Middleware\Admin;
 use App\Models\User;
 use App\Response\Response;
 use Illuminate\Auth\Events\Verified;
@@ -34,7 +34,6 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
-
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CourseSubscriptionController;
 use App\Http\Controllers\CourseProgressController;
@@ -48,7 +47,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 // when clicking on verification link
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
@@ -173,11 +174,11 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'notifications'], func
     Route::get('/unread/count', [NotificationController::class, 'countUnreadNotifications']);
     Route::get('/unread', [NotificationController::class, 'unreadNotifications']);
 });
-Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+Route::group(['middleware' => 'auth:sanctum', 'checkUser'], function () {
     Route::post('notifications/send', [NotificationController::class, 'send']);
 });
 //Advertisements
-Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+Route::group(['middleware' => 'auth:sanctum', 'checkUser'], function () {
     Route::get('advertisement/index', [AdvertisementController::class, 'index']);
     Route::post('advertisement/store', [AdvertisementController::class, 'store']);
     Route::put('advertisement/{id}/update', [AdvertisementController::class, 'update']);
@@ -185,17 +186,44 @@ Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
     Route::delete('advertisement/destroyAll', [AdvertisementController::class, 'destroyAll']);
 });
 
-Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
     Route::delete('advertisement/{id}/destroyAdmin', [AdvertisementController::class, 'destroyAdmin']);
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
-});
-//resources
-Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {});
+    //Resources
+    Route::get('resource/showAll', [ResourceController::class, 'showAll']);
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
+});
+//Resources
+Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
+    Route::get('resource/index', [ResourceController::class, 'index']);
+    Route::post('resource/store', [ResourceController::class, 'store']);
+    Route::post('resource/{id}/update', [ResourceController::class, 'update']);
+    Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
+    Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
+});
+
+//To show resource file
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/resources/view/{filename}', function ($filename) {
+        $path = storage_path('app/public/resources/' . $filename);
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        return response()->file($path, [
+            'Content-Type' => mime_content_type($path)
+        ]);
+    });
+
+});
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
+    Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
+
+});
+
+
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');

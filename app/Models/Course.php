@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Traits\SubjectsAndCoursesMorphTrait;
 
 class Course extends Model
 {
     use HasFactory;
+    use SubjectsAndCoursesMorphTrait;
 
     protected $fillable = [
         'title',
@@ -23,7 +26,7 @@ class Course extends Model
         'average_rating',
     ];
 
-    public function teacher()
+    public function teacher(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
@@ -80,8 +83,5 @@ class Course extends Model
         return $this->hasMany(Exam::class, 'exams');
     }
 
-    public function resources(): BelongsToMany
-    {
-        return $this->belongsToMany(Resource::class);
-    }
+
 }

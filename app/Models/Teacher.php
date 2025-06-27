@@ -19,7 +19,6 @@ class Teacher extends Model
 
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-
     {
         return $this->belongsTo(User::class);
     }
@@ -33,6 +32,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Course::class);
     }
-
+    public function resources(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Resource::class);
+    }
 
 }
