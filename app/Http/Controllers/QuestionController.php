@@ -30,6 +30,7 @@ class QuestionController extends Controller
                 //   return redirect()->back()->withErrors('Question is exist!');
                 return response()->json(['message' => 'Question is exist']);
             }
+            
             $question  = Question::create([
                 'question_text' => $request->question_text,
                 'photo' => $pathOfPhoto, 

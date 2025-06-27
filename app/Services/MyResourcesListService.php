@@ -39,7 +39,20 @@ class MyResourcesListService
                 'message' => $ex->getMessage(),
             ];
         }
-
+    }
+    public function remove(int $resourceId): array
+    {
+        try{
+            $user = auth()->user();
+            $resource = Resource::findOrFail($resourceId);
+            $user->myResources()->detach($resourceId);
+        }
+        catch (\Exception $ex) {
+            return [
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ];
+        }
     }
 }
 
