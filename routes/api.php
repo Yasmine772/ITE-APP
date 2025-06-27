@@ -47,9 +47,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('signup', [UserController::class, 'register']);
+Route::post('signin', [UserController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function () {
+    Route::get('/user', [UserController::class, 'user']);
+    Route::get('/logout', [UserController::class, 'logout']);
+});
 // when clicking on verification link
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
@@ -64,13 +68,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
 
-Route::post('signup', [UserController::class, 'register']);
-Route::post('signin', [UserController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function () {
-    Route::get('/user', [UserController::class, 'user']);
-    Route::get('/logout', [UserController::class, 'logout']);
-});
 //To send  password reset links
 Route::post('user/password/email', [UserController::class, 'UserForgetPassword'])->middleware('guest');
 Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
