@@ -17,7 +17,7 @@ class MyResourceListController extends Controller
     {
         $this->myResourcesListService = $myResourcesListService;
     }
-    public function show(): \Illuminate\Http\JsonResponse
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $myResources = $this->myResourcesListService->getMyResources();
         return $this->successResponse(['Your Resources:'=> $myResources]);

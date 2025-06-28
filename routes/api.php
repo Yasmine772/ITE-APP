@@ -87,7 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //articles:
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
-    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']); 
+    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
     Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
     Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
     Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
@@ -201,19 +201,14 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
 });
 
-//To show resource file
+// My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/resources/view/{filename}', function ($filename) {
-        $path = storage_path('app/public/resources/' . $filename);
-        if (!file_exists($path)) {
-            abort(404);
-        }
-        return response()->file($path, [
-            'Content-Type' => mime_content_type($path)
-        ]);
-    });
+    Route::get('myresource/index', [MyResourceListController::class, 'index']);
+    Route::get('myresource/store', [MyResourceListController::class, 'store']);
+    Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
 
 });
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
