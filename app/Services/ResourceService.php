@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Resource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Imagick;
 
 class ResourceService
 {
@@ -23,8 +24,7 @@ class ResourceService
                 $resourceable = $teacher->courses()->where('name', $data['resourceable_name'])->firstOrFail();
             } elseif ($data['resourceable_type'] === 'subject') {
                 $resourceable = $teacher->subjects()->where('name', $data['resourceable_name'])->firstOrFail();
-            }
-            else {
+            } else {
                 throw new \InvalidArgumentException('Invalid resourceable type');
             }
 
@@ -37,13 +37,17 @@ class ResourceService
             }
 
             $baseName = pathinfo($realPath, PATHINFO_FILENAME);
-            $coverImagePath = 'resources/covers/' . $baseName . '_cover.jpg'; // لحفظه في قاعدة البيانات
-            $coverPathWithoutExt = $coverDir . DIRECTORY_SEPARATOR . $baseName . '_cover'; // لإعطائه لـ pdftoppm
+            $coverImagePath = 'resources/covers/' . $baseName . '_cover.jpg';
+            $coverFullPath = storage_path('app/public/' . $coverImagePath);
 
 
-            $popplerPath = config('services.poppler_path');
-            exec("\"$popplerPath\" -jpeg -f 1 -singlefile \"$pdfPath\" \"$coverPathWithoutExt\"");
-
+            $imagick = new Imagick();
+            $imagick->setResolution(150, 150);
+            $imagick->readImage($pdfPath . '[0]');
+            $imagick->setImageFormat('jpeg');
+            $imagick->writeImage($coverFullPath);
+            $imagick->clear();
+            $imagick->destroy();
 
             $resource = Resource::create([
                 'title' => $data['title'],
@@ -54,7 +58,6 @@ class ResourceService
                 'cover_image' => $coverImagePath,
             ]);
 
-
             $title = 'New reference has been added';
             $message = $resource['title'];
             $resourceId = $resourceable->id;
@@ -63,7 +66,6 @@ class ResourceService
 
             return [
                 'data' => $resource,
-                //'cover_url' => asset('storage/' . $coverImagePath),
             ];
         } catch (\Exception $ex) {
             return [
@@ -73,19 +75,21 @@ class ResourceService
             ];
         }
     }
+
     public function update(array $data, int $id): array
     {
-        try{
-            $teacher= Auth::user()->teacher;
+        try {
+            $teacher = Auth::user()->teacher;
             $resource = Resource::query()->findOrFail($id);
-            if($resource->teacher_id !== $teacher->id)
-            {
-              return [
-                  'status' => 'error',
-                  'message' => 'Unauthorized',
-                  'code' => 403,
-              ];
+
+            if ($resource->teacher_id !== $teacher->id) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Unauthorized',
+                    'code' => 403,
+                ];
             }
+
             if (isset($data['file'])) {
                 if ($resource->file && \Storage::disk('public')->exists($resource->file)) {
                     \Storage::disk('public')->delete($resource->file);
@@ -98,7 +102,6 @@ class ResourceService
                 $realPath = $data['file']->store('resources', 'public');
                 $pdfPath = storage_path('app/public/' . $realPath);
 
-
                 $coverDir = storage_path('app/public/resources/covers');
                 if (!file_exists($coverDir)) {
                     mkdir($coverDir, 0755, true);
@@ -106,25 +109,29 @@ class ResourceService
 
                 $baseName = pathinfo($realPath, PATHINFO_FILENAME);
                 $coverImagePath = 'resources/covers/' . $baseName . '_cover.jpg';
-                $coverPathWithoutExt = $coverDir . DIRECTORY_SEPARATOR . $baseName . '_cover';
+                $coverFullPath = storage_path('app/public/' . $coverImagePath);
 
-                $popplerPath = config('services.poppler_path');
 
-                exec("\"$popplerPath\" -jpeg -f 1 -singlefile \"$pdfPath\" \"$coverPathWithoutExt\"");
-
+                $imagick = new Imagick();
+                $imagick->setResolution(150, 150);
+                $imagick->readImage($pdfPath . '[0]');
+                $imagick->setImageFormat('jpeg');
+                $imagick->writeImage($coverFullPath);
+                $imagick->clear();
+                $imagick->destroy();
 
                 $data['file'] = $realPath;
                 $data['cover_image'] = $coverImagePath;
             }
+
             $resource->update($data);
+
             return [
                 'status' => 'success',
                 'message' => 'Resource updated successfully',
                 'data' => $resource,
             ];
-        }
-        catch (\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             return [
                 'status' => 'error',
                 'message' => $ex->getMessage(),
@@ -132,32 +139,38 @@ class ResourceService
             ];
         }
     }
+
     public function destroy(int $id): array
     {
-        $teacher = auth()->user()->teacher ;
+        $teacher = auth()->user()->teacher;
         $resource = Resource::query()->findOrFail($id);
-        if ($resource->teacher_id !== $teacher->id)
-        {
+
+        if ($resource->teacher_id !== $teacher->id) {
             return [
                 'status' => 'error',
                 'message' => 'Unauthorized',
                 'code' => 403,
             ];
         }
+
         $resource->delete();
+
         return [
             'status' => 'success',
         ];
     }
+
     public function destroyAll(): array
     {
         $teacher = auth()->user()->teacher;
         $resources = $teacher->resources;
+
         foreach ($resources as $resource) {
             $resource->delete();
         }
+
         return [
-            'status' => 'success'
+            'status' => 'success',
         ];
     }
 }

@@ -6,6 +6,8 @@ use App\Notifications\BasicNotification;
 use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
 use App\Notifications\NewResourceNotification;
+use App\Notifications\SendRequestToAdminToAddArticleNotification;
+use App\Notifications\SendRequestToAdminToEditArticleNotification;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -30,6 +32,14 @@ class NotificationService
     public function sendToUser($user, string $title, string $message): void
     {
         Notification::send($user, new WelcomeNotification($user , $title, $message));
+    }
+    public function sendToUserForArticle($user, string $title, string $message): void
+    {
+        Notification::send($user, new SendRequestToAdminToAddArticleNotification($title, $message));
+    }
+    public function sendToUserForEditArticle($user, string $title, string $message): void
+    {
+        Notification::send($user, new SendRequestToAdminToEditArticleNotification($title, $message));
     }
 
     public function markAsRead($notificationId): bool

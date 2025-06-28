@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,12 +11,16 @@ use Illuminate\Support\Facades\Validator;
 class ArticleController extends Controller
 {
     use ApiResponseTrait;
-
+    protected NotificationService $notificationService;
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     public function addArticle(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'title'   => 'required|string|min:10|max:100',
+                'title' => 'required|string|min:10|max:100',
                 'content' => 'required|string|min:50|max:10000|regex:/^[\p{Arabic}a-zA-Z0-9\s.,\-_:;()@!?؟\n؛]+$/u',
             ]);
             if ($validator->fails()) {
@@ -25,17 +30,21 @@ class ArticleController extends Controller
                 'title' => $request->title,
                 'content' => $request->content,
                 'user_id' => auth()->user()->id,
-                'user_details' =>  json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
+                'user_details' => json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
             ]);
 
-            //notification to user that ..we send your article to admin
-
+            $user = auth()->user();
+            $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
+            return $this->successResponse([
+                'message' => 'Article added successfully'
+            ]);
         } catch (\Exception $e) {
             return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
         }
+
     }
     //************************************************************************************************ */
-    public function deleteArticle(Request $request)
+    public function deleteArticle(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $article = Article::find($request->article_id);
@@ -48,7 +57,7 @@ class ArticleController extends Controller
         }
     }
     //************************************************************************************************* */
-    public function showAllArticles()
+    public function showAllArticles(): \Illuminate\Http\JsonResponse
     {
         try {
             $articles = Article::where('status','Accept')->get();
@@ -61,7 +70,7 @@ class ArticleController extends Controller
         }
     }
     ////////////////////////////////////////////////////////////
-    public function showPendingArticles()
+    public function showPendingArticles(): \Illuminate\Http\JsonResponse
     {
         try {
             $articles = Article::where('status','Pending')->get();
@@ -74,7 +83,7 @@ class ArticleController extends Controller
         }
     }
     /////////////////////////////////////////////////////////////
-    public function showRejectArticles()
+    public function showRejectArticles(): \Illuminate\Http\JsonResponse
     {
         try {
             $articles = Article::where('status','Reject')->get();
@@ -87,7 +96,7 @@ class ArticleController extends Controller
         }
     }
     ////////////////////////////////////////////////////////////
-    public function showAcceptArticles()
+    public function showAcceptArticles(): \Illuminate\Http\JsonResponse
     {
         try {
             $articles = Article::where('status', 'Accept')->get();
@@ -119,7 +128,8 @@ class ArticleController extends Controller
             $article->save();
 
             //notification to user that.. we send request to the admin for edit your article.
-
+            $user = auth()->user();
+            $this->notificationService->sendToUserForEditArticle($user, 'Hi' . $user->name, 'Your update has been sent to the admin for verification.');
         } catch (\Exception $e) {
             return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }

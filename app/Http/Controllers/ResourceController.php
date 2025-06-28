@@ -47,13 +47,14 @@ class ResourceController extends Controller
     }
     public function destroyAll(): \Illuminate\Http\JsonResponse
     {
-    $this->resourceService->destroyAll();
-     return $this->successResponse(null,'Resources deleted successfully',200);
+        $this->resourceService->destroyAll();
+        return $this->successResponse(null,'Resources deleted successfully',200);
     }
     public function showAll(): \Illuminate\Http\JsonResponse
     {
         $resources = Resource::get();
-        return $this->successResponse(['All Resources :'=> $resources]);
+        return $this->successResponse(['resources' => $resources]);
+
     }
 
 }

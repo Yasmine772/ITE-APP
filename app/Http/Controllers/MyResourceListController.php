@@ -28,4 +28,5 @@ class MyResourceListController extends Controller
         return $this->successResponse($resource,$resource['message'],200);
     }
 
+
 }

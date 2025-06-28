@@ -46,6 +46,10 @@ class MyResourcesListService
             $user = auth()->user();
             $resource = Resource::findOrFail($resourceId);
             $user->myResources()->detach($resourceId);
+            return [
+                'status' => 'success',
+                'message' => 'Resource removed successfully.',
+            ];
         }
         catch (\Exception $ex) {
             return [
