@@ -27,6 +27,11 @@ class MyResourceListController extends Controller
         $resource = $this->myResourcesListService->add($Id);
         return $this->successResponse($resource,$resource['message'],200);
     }
+    public function remove(int $Id): \Illuminate\Http\JsonResponse
+    {
+        $resource = $this->myResourcesListService->remove($Id);
+        return $this->successResponse($resource,$resource['message'],200);
+    }
 
 
 }
