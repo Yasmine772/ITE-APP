@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\MyResourceListController;
+use App\Http\Controllers\PersonalBlogController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\AdviceController;
@@ -210,12 +211,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 //Personal Blog
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('mynotes/index', [MyResourceListController::class, 'index']);
-    Route::get('mynotes/{id}/show', [MyResourceListController::class, 'show']);
-    Route::get('mynotes/store', [MyResourceListController::class, 'store']);
-    Route::post('mynotes/{id}/update', [MyResourceListController::class, 'update']);
-    Route::delete('mynotes/{id}/destroy', [MyResourceListController::class, 'destroy']);
-    Route::delete('mynotes/destroyAll', [MyResourceListController::class, 'destroyAll']);
+    Route::get('mynotes/index', [PersonalBlogController::class, 'index']);
+    Route::get('mynotes/{id}/show', [PersonalBlogController::class, 'show']);
+    Route::get('mynotes/store', [PersonalBlogController::class, 'store']);
+    Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
+    Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
+    Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
 
 });
 
