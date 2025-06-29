@@ -208,6 +208,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
 
 });
+//Personal Blog
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('mynotes/index', [MyResourceListController::class, 'index']);
+    Route::get('mynotes/{id}/show', [MyResourceListController::class, 'show']);
+    Route::get('mynotes/store', [MyResourceListController::class, 'store']);
+    Route::post('mynotes/{id}/update', [MyResourceListController::class, 'update']);
+    Route::delete('mynotes/{id}/destroy', [MyResourceListController::class, 'destroy']);
+    Route::delete('mynotes/destroyAll', [MyResourceListController::class, 'destroyAll']);
+
+});
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
