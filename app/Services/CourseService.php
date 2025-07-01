@@ -12,6 +12,7 @@ class CourseService
     {
         return Course::with(['teacher.user', 'category', 'subject'])->latest()->get();
     }
+    
 
     public function getCourseById($id)
     {
@@ -90,11 +91,21 @@ class CourseService
         return $query->with($relations)->get();
     }
 
-    public function getTopRatedCourses($limit = 10)
-    {
-        return Course::with(['teacher.user', 'category', 'subject'])
-                    ->orderByDesc('average_rating')
-                    ->limit($limit)
-                    ->get();
-    }
+    
+   public function getTopRatedCourses($limit = 10)
+{
+    //   dd('Reached getTopRatedCourses');
+    return Course::with(['teacher.user:id,name'])
+        ->withCount([
+            'subscriptions as active_subscriptions_count' => function ($query) {
+                $query->where('status', 'active');
+            }
+        ])
+        ->orderByDesc('active_subscriptions_count') 
+        ->orderByDesc('average_rating')             
+        ->limit($limit)
+        ->get();
+}
+
+
 }

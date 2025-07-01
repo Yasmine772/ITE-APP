@@ -15,6 +15,7 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubjectController extends Controller
 {
@@ -211,4 +212,70 @@ class SubjectController extends Controller
     {
         return $this->errorResponse($message, $e->getMessage(), $statusCode);
     }
+
+    
+public function getSubjectsForCurrentTeacher()
+{
+    try {
+        $subjects = $this->subjectService->getSubjectsForCurrentTeacher();
+
+        return view('subjects.index', compact('subjects'));
+    } catch (\Exception $e) {
+        return $this->handleExceptionForWeb($e, 'Unable to fetch your subjects');
+    }
+}
+public function apigetSubjectsForCurrentTeacher()
+{
+    try {
+        $subjects = $this->subjectService->getSubjectsForCurrentTeacher();
+
+        return $this->successResponse($subjects, 'Subjects retrieved successfully');
+    } catch (\Exception $e) {
+        return $this->handleExceptionForApi($e, 'Unable to fetch your subjects');
+    }
+}
+public function filter(Request $request)
+{
+    try {
+        $filters = $request->only(['name', 'type', 'year_id', 'specialization_id', 'teacher_id']);
+        $subjects = $this->subjectService->filterSubjects($filters);
+        return view('subjects.index', compact('subjects'));
+    } catch (\Exception $e) {
+        return $this->handleExceptionForWeb($e, 'Unable to filter subjects');
+    }
+}
+public function apiFilter(Request $request)
+{
+    try {
+        $filters = $request->only(['name', 'type', 'year_id', 'specialization_id', 'teacher_id']);
+        Log::info('Received filters:', $filters);
+        $subjects = $this->subjectService->filterSubjects($filters);
+        return $this->successResponse($subjects, 'Subjects filtered successfully');
+    } catch (\Exception $e) {
+        return $this->handleExceptionForApi($e, 'Unable to filter subjects');
+    }
+}
+public function show($id)
+{
+    try {
+        $subject = $this->subjectService->getSubjectById($id);
+        return view('subjects.show', compact('subject'));
+    } catch (ModelNotFoundException $e) {
+        return $this->handleExceptionForWeb($e, 'Subject not found', 404);
+    } catch (\Exception $e) {
+        return $this->handleExceptionForWeb($e);
+    }
+}
+public function apiShow($id)
+{
+    try {
+        $subject = $this->subjectService->getSubjectById($id);
+        return $this->successResponse($subject, 'Subject retrieved successfully');
+    } catch (ModelNotFoundException $e) {
+        return $this->handleExceptionForApi($e, 'Subject not found', 404);
+    } catch (\Exception $e) {
+        return $this->handleExceptionForApi($e);
+    }
+}
+
 }

@@ -77,7 +77,7 @@ Route::post('user/password/email', [UserController::class, 'UserForgetPassword']
 Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
 Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
 
-
+Route::get('/courses/mm/top-rated', [CourseController::class, 'topRatedCourses']);
 
 
 
@@ -204,7 +204,7 @@ Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctu
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');   
+    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');   
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
@@ -212,14 +212,19 @@ Route::prefix('subjects')->name('subjects.')->group(function () {
 });
 
 
+Route::middleware(['auth:sanctum'])->group(function () {
 
-Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
-    Route::get('/', [ContentSubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [ContentSubjectController::class, 'apiSearch'])->name('search');
-    Route::get('{id}', [ContentSubjectController::class, 'apiShow'])->name('show');
-    Route::post('/', [ContentSubjectController::class, 'apiStore'])->name('store');
-    Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
-    Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
+    Route::get('/subjects/my/sub', [SubjectController::class, 'apigetSubjectsForCurrentTeacher']);
+
+    Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
+        Route::get('/', [ContentSubjectController::class, 'apiIndex'])->name('index');
+        Route::get('search', [ContentSubjectController::class, 'apiSearch'])->name('search');
+        Route::get('{id}', [ContentSubjectController::class, 'apiShow'])->name('show');
+        Route::post('/', [ContentSubjectController::class, 'apiStore'])->name('store');
+        Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
+        Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
+    });
+
 });
 
 Route::prefix('categories')->group(function () {
@@ -231,8 +236,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/search', [CategoryController::class, 'apiSearch']);
 });
 
-
-Route::prefix('courses')->group(function () {
+Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
     Route::get('/', [CourseController::class, 'apiIndex']);
     Route::get('/search', [CourseController::class, 'apiFilter']);
     Route::get('/{id}', [CourseController::class, 'apiShow']);
@@ -240,6 +244,11 @@ Route::prefix('courses')->group(function () {
     Route::post('/{id}', [CourseController::class, 'apiUpdate']);
     Route::delete('/{id}', [CourseController::class, 'apiDestroy']);
 
+});
+Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
+
+Route::prefix('courses')->group(function () {
+   
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
         
@@ -287,20 +296,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
 });
 
+Route::get('/courses/top-rated', [CourseController::class, 'topRatedCourses']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('roadmaps')->group(function () {
-        Route::get('/', [RoadmapController::class, 'index']);
+        Route::get('/', [RoadmapController::class, 'apiindex']);
 
-        Route::get('{roadmapId}', [RoadmapController::class, 'show']);
+        Route::get('{roadmapId}', [RoadmapController::class, 'apishow']);
 
-        Route::post('/', [RoadmapController::class, 'store']);
+        Route::post('/', [RoadmapController::class, 'apiStore']);
 
-        Route::put('{roadmapId}', [RoadmapController::class, 'update']);
+        Route::put('{roadmapId}', [RoadmapController::class, 'apiupdate']);
 
-        Route::delete('{roadmapId}', [RoadmapController::class, 'destroy']);
+        Route::delete('{roadmapId}', [RoadmapController::class, 'apidestroy']);
     });
 
     Route::prefix('roadmap-progress')->group(function () {

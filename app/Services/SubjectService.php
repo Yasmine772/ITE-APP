@@ -3,13 +3,25 @@ namespace App\Services;
 
 use App\Models\Subject;
 use Illuminate\Database\Eloquent\Collection;
-
+use Illuminate\Support\Facades\Auth;
 class SubjectService
 {
     public function getAllSubjects(): Collection
     {
         return Subject::with(['year', 'specialization', 'semester', 'teacher'])->get();
     }
+    public function getSubjectsForCurrentTeacher()
+{
+    $teacher = Auth::user()->teacher;
+
+    if (!$teacher) {
+        throw new \Exception("User is not a teacher");
+    }
+
+ return Subject::where('teacher_id', $teacher->id)
+                  ->with(['year', 'semester', 'specialization']) 
+                  ->get();
+                }
 
     public function getSubjectById(int $id): Subject
     {
