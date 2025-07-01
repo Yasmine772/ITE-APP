@@ -17,7 +17,7 @@ class Teacher
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->role  === 'Teacher'){
+        if(Auth::check() && Auth::user()->hasRole('teacher')){
             return $next($request);
         }
         return $this->errorResponse('Unauthorized', 'Not having access',403);

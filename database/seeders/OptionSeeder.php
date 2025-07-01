@@ -18,14 +18,25 @@ class OptionSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        $questionIds = Question::pluck('id')->toArray();
+        $questions = Question::all();
 
-        for ($i = 0; $i < 20; $i++) {
-            Option::create([
-                'answer_text' => $faker->text,
-                'is_correct' =>  $faker->boolean,
-                'question_id' => $faker->randomElement($questionIds),
-            ]);
+        foreach ($questions as $question) {
+            $correctOptionAdded = false;
+
+            for ($i = 0; $i < 3; $i++) {
+                $isCorrect = false;
+
+                if (!$correctOptionAdded) {
+                    $isCorrect = true;
+                    $correctOptionAdded = true; 
+                }
+
+                Option::create([
+                    'answer_text' => $faker->sentence(rand(3, 8)),
+                    'is_correct' => $isCorrect, 
+                    'question_id' => $question->id,
+                ]);
+            }
         }
     }
 }

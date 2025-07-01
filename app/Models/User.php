@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +12,8 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -110,7 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Teacher::class);
     }
-    public function ratings()
+    public function ratings(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Rating::class);
     }
@@ -124,13 +127,46 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot(['status', 'is_paid', 'paid_at'])
             ->withTimestamps();
     }
-       public function courseProgresses()
+    public function courseProgresses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseProgress::class);
     }
 
-    public function courseContentProgresses()
+    public function courseContentProgresses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CourseContentProgress::class);
     }
+
+    public function resources(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Resource::class,Teacher::class );
+    }
+    public function personalBlogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PersonalBlog::class);
+    }
+    public function assignDefaultRole(): void
+    {
+        $studentRole = Role::firstOrCreate(['name' => 'student']);
+        $studentPermission = [];
+        foreach (config('permission.roles_permissions.student') as $group => $actions) {
+            foreach ($actions as $action) {
+                $studentPermission[] = "$group.$action";
+            }
+        }
+        foreach ($studentPermission as $permissionName) {
+            $permission = Permission::firstOrCreate(['name' => $permissionName]);
+            if (! $studentRole->hasPermissionTo($permission)) {
+                $studentRole->givePermissionTo($permission);
+            }
+        }
+        if ($this->roles->isEmpty()) {
+            $this->assignRole('student');
+        }
+
+    }
+   public function myResources(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+   {
+        return $this->belongsToMany(Resource::class);
+   }
 }

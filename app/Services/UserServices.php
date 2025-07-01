@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
-
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Role;
+
+
 
 class UserServices
 {
@@ -22,12 +20,12 @@ class UserServices
             'email' => $request['email'],
             'password' => Hash::make($request['password'])
         ]);
+        $user->assignDefaultRole();
         $user->sendEmailVerificationNotification();
-        $token =$user['token'] = $user->createToken('token')->plainTextToken;
+        $token = $user['token'] = $user->createToken('token')->plainTextToken;
         return [
-            'token' =>$token
+            'token' => $token
         ];
-
     }
 
     public function login($request): array
@@ -41,10 +39,8 @@ class UserServices
         }
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user['token'] = $user->createToken('token')->plainTextToken;
-        $message = 'User login successfully';
         return [
-            'token'=>$token ,
-            'message'=> $message
+            'token' => $token,
         ];
     }
 
@@ -53,11 +49,9 @@ class UserServices
         $user = Auth::user();
         if (!is_null($user)) {
             $user->currentAccessToken()->delete();
-
         } else {
             $message = 'Invalid token';
             $code = 404;
         }
-
     }
 }

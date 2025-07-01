@@ -3,16 +3,17 @@
 use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\MyResourceListController;
+use App\Http\Controllers\PersonalBlogController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\AdviceController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Middleware\verifiedEmail;
-use App\Http\Middleware\CheckUser;
-use App\Http\Middleware\Admin;
 use App\Models\User;
 use App\Response\Response;
 use Illuminate\Auth\Events\Verified;
@@ -34,7 +35,6 @@ use App\Http\Controllers\MarkController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SolutionController;
-
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CourseSubscriptionController;
 use App\Http\Controllers\CourseProgressController;
@@ -48,23 +48,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
-// when clicking on verification link
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
-    {
-    $request->fulfill();
-    event(new Verified(User::query()->find($request->route('id'))));
-    return $this->successResponse(true,'Email Verified Successfully');
-
-    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
-
-// resend verification email
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return $this->successResponse(true,'Verification link sent!');
-})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
-
-
 Route::post('signup', [UserController::class, 'register']);
 Route::post('signin', [UserController::class, 'login']);
 
@@ -72,13 +55,28 @@ Route::group(['middleware' => ['auth:sanctum', verifiedEmail::class]], function 
     Route::get('/user', [UserController::class, 'user']);
     Route::get('/logout', [UserController::class, 'logout']);
 });
+// when clicking on verification link
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    event(new Verified(User::query()->find($request->route('id'))));
+    return $this->successResponse(true, 'Email Verified Successfully');
+})->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
+// resend verification email
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return $this->successResponse(true, 'Verification link sent!');
+})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+
+
 //To send  password reset links
 Route::post('user/password/email', [UserController::class, 'UserForgetPassword'])->middleware('guest');
 Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
 Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
 
-Route::get('/courses/mm/top-rated', [CourseController::class, 'topRatedCourses']);
 
+Route::get('/courses/mm/top-rated', [CourseController::class, 'topRatedCourses']);
 
 
 Route::apiResource('years', YearController::class);
@@ -95,6 +93,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+    Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
+    Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
+    Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
 
     //complaints:
     Route::post('/addComplaint', [ComplaintController::class, 'addComplaint']);
@@ -118,41 +119,46 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
     // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
 
-    //Exams:
-    Route::post('/addExam', [ExamController::class, 'addExam']);
-    Route::post('/deleteExam', [ExamController::class, 'deleteExam']);
-    Route::post('/editExam', [ExamController::class, 'editExam']);
+    // //Exams:
+    // Route::post('/addExam', [ExamController::class, 'addExam']);
+    // Route::post('/deleteExam', [ExamController::class, 'deleteExam']);
+    // Route::post('/editExam', [ExamController::class, 'editExam']);
 
+    // //Questions:
+    // Route::post('/addQuestion', [QuestionController::class, 'addQuestion']);
+    // Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion']);
+    // Route::post('/editQuestion', [QuestionController::class, 'editQuestion']);
 
-    //Questions:
-    Route::post('/addQuestion', [QuestionController::class, 'addQuestion']);
-    Route::post('/deleteQuestion', [QuestionController::class, 'deleteQuestion']);
-    Route::post('/editQuestion', [QuestionController::class, 'editQuestion']);
-
-    //Options:
-    Route::post('/addOption', [OptionController::class, 'addOption']);
-    Route::post('/deleteOption', [OptionController::class, 'deleteOption']);
-    Route::post('/editOption', [OptionController::class, 'editOption']);
+    // //Options:
+    // Route::post('/addOption', [OptionController::class, 'addOption']);
+    // Route::post('/deleteOption', [OptionController::class, 'deleteOption']);
+    // Route::post('/editOption', [OptionController::class, 'editOption']);
 
     //Answer:
     Route::post('/addAnswer', [AnswerController::class, 'addAnswer']);
     //status of student exam :
     Route::post('/startExam', [MarkController::class, 'startExam']);
     Route::post('/finishExam', [MarkController::class, 'finishExam']);
-
 });
 
-Route::get('/showArticles', [ArticleController::class, 'showArticles']);
+Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
+
+// Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
+// Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
+// Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
+
+// Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
+// Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
+// Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
+
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
 Route::post('/displayAssignmentdetails', [AssignmentController::class, 'displayAssignmentdetails']);
 
 Route::post('/displaySolutions', [SolutionController::class, 'displaySolutions']);
 Route::post('/displaySolutionsdetails', [SolutionController::class, 'displaySolutionsdetails']);
 
-Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
-Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
-Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
+Route::post('/downloadFiles', [AssignmentController::class, 'downloadFiles']);
 
 Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails']);
 
@@ -170,11 +176,11 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'notifications'], func
     Route::get('/unread/count', [NotificationController::class, 'countUnreadNotifications']);
     Route::get('/unread', [NotificationController::class, 'unreadNotifications']);
 });
-Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+Route::group(['middleware' => 'auth:sanctum', 'checkUser'], function () {
     Route::post('notifications/send', [NotificationController::class, 'send']);
 });
 //Advertisements
-Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
+Route::group(['middleware' => 'auth:sanctum', 'checkUser'], function () {
     Route::get('advertisement/index', [AdvertisementController::class, 'index']);
     Route::post('advertisement/store', [AdvertisementController::class, 'store']);
     Route::put('advertisement/{id}/update', [AdvertisementController::class, 'update']);
@@ -182,29 +188,55 @@ Route::group(['middleware' => 'auth:sanctum', 'CheckUser'], function () {
     Route::delete('advertisement/destroyAll', [AdvertisementController::class, 'destroyAll']);
 });
 
-Route::group(['middleware' => ['auth:sanctum','Admin']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
     Route::delete('advertisement/{id}/destroyAdmin', [AdvertisementController::class, 'destroyAdmin']);
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
-});
-//resources
-Route::group(['middleware' => ['auth:sanctum','Teacher']], function () {
-
+    //Resources
+    Route::get('resource/showAll', [ResourceController::class, 'showAll']);
 
 
 });
+//Resources
+Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
+    Route::get('resource/index', [ResourceController::class, 'index']);
+    Route::post('resource/store', [ResourceController::class, 'store']);
+    Route::post('resource/{id}/update', [ResourceController::class, 'update']);
+    Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
+    Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
+});
+
+// My Resources list
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('myresource/index', [MyResourceListController::class, 'index']);
+    Route::get('myresource/store', [MyResourceListController::class, 'store']);
+    Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
+
+});
+//Personal Blog
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('mynotes/index', [PersonalBlogController::class, 'index']);
+    Route::get('mynotes/{id}/show', [PersonalBlogController::class, 'show']);
+    Route::get('mynotes/store', [PersonalBlogController::class, 'store']);
+    Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
+    Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
+    Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
+
+});
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
+    Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
+
+});
 
 
-
-
-
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
+
     Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');   
+
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
@@ -251,7 +283,7 @@ Route::prefix('courses')->group(function () {
    
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
-        
+
         Route::post('/{courseId}/recalculate-progress', [CourseProgressController::class, 'recalculateProgress']);
     });
 });
@@ -264,13 +296,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
 });
 
-    Route::post('contents', [CourseContentController::class, 'store']);
-    Route::post('contents/{content}', [CourseContentController::class, 'update']);
-    Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
-   Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+Route::post('contents', [CourseContentController::class, 'store']);
+Route::post('contents/{content}', [CourseContentController::class, 'update']);
+Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
+Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
 
 Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
-  //  Route::get('{courseId}', [CourseContentController::class, 'index']);
+    //  Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
 
@@ -330,9 +362,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
     });
-
 });
-
-
-
-

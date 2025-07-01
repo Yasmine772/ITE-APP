@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Exam;
-use App\Models\Option;
-use App\Models\Question;
-use App\Response\Response;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
+    use ApiResponseTrait;
+
     public function addExam(Request $request)
     {
         try {
@@ -40,11 +40,11 @@ class ExamController extends Controller
             // $exams = Exam::where('user_id',auth()->user()->id)->get();
             // return view('Exams.showExam', compact('exams', 'success'));
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
 
            //return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-           return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+           return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
           //  return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
@@ -116,12 +116,12 @@ class ExamController extends Controller
             }
                 $exam = $exam->get();
                 if(!$exam->isEmpty()){
-                    return Response::Success($exam, 'All exams', 200);
+                    return $this->successResponse($exam, 'All exams', 200);
                 }
-                return Response::Error('No exams yet!', 500);
+                return $this->errorResponse('No exams yet!', 500);
             }
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //********************************************************************************************** */
@@ -137,7 +137,7 @@ class ExamController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //********************************************************************************************** */

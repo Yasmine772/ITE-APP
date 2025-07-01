@@ -32,7 +32,6 @@ class NotificationController extends Controller
         ]);
 
         $user = auth()->user();
-
         $this->notificationService->send($user, $input['title'], $input['message']);
 
         return response()->json([

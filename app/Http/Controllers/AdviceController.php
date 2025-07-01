@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Advice;
 use App\Models\Subject;
 use App\Models\Teacher;
-use App\Response\Response;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponseTrait;
+
 
 class AdviceController extends Controller
 {
+    use ApiResponseTrait;
+
     public function addAdvice(Request $request)
     {
         try {
-            if(auth()->user()->role !== 'teacher'){
-                return redirect()->back()->withErrors('You are not a teacher!');
-            }
                 $subject = Subject::find($request->subject_id);
                 $teacher = Teacher::where('user_id', auth()->user()->id)->first();
 
@@ -101,11 +101,11 @@ class AdviceController extends Controller
         try {
             $advices = Advice::where('subject_id', $request->subject_id)->get();
             if($advices->isEmpty()){
-                return Response::Error('No advices yet!', 500);
+                return $this->errorResponse('No advices yet!', 500);
             }
-            return Response::Success($advices, 'All advices for this subject', 200);
+            return $this->successResponse($advices, 'All advices for this subject', 200);
         } catch (\Exception $e) {
-            return Response::Error('Something went wrong: ' . $e->getMessage(), 500);
+            return $this->errorResponse('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
 }

@@ -15,15 +15,18 @@ class QuestionSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        $examIds = Exam::pluck('id')->toArray();
+        $exams = Exam::all();
+        $questionsPerExam = 5;
 
-        for ($i = 0; $i < 20; $i++) {
-            Question::create([
-                'question_text' => $faker->text,
-                'photo' =>  $faker->imageUrl(),
-                'mark' =>  $faker->numberBetween(0,100),
-                'exam_id' => $faker->randomElement($examIds),
-            ]);
+        foreach ($exams as $exam) {
+            for ($i = 0; $i < $questionsPerExam; $i++) {
+                Question::create([
+                    'question_text' => $faker->sentence(rand(5, 15), true), 
+                    'photo' => $faker->imageUrl(640, 480, 'questions', true), 
+                    'mark' => $faker->numberBetween(5, 20), 
+                    'exam_id' => $exam->id, 
+                ]);
+            }
         }
     }
 }

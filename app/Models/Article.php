@@ -10,7 +10,8 @@ class Article extends Model
         'title',
         'content',
         'user_id',
-        'is_accepted',
+        'status',
+        'reasonsOfReject',
         'user_details',
     ];
 

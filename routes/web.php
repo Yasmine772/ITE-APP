@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\Web\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,14 +38,27 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
+Route::middleware(['auth:sanctum',
+    config('jetstream.auth_session'),])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::get('students/show',[AdminController::class,'studentShow']);
+    Route::get('teacher/show',[AdminController::class,'teacherShow']);
+    //Resources
+    Route::get('resource/showAll', [ResourceController::class, 'showAll']);
+});
+
+//Resources
+Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
+    Route::get('resource/index', [ResourceController::class, 'index']);
+    Route::post('resource/store', [ResourceController::class, 'store'])->name('resource.store');
+
+    Route::post('resource/{id}/update', [ResourceController::class, 'update']);
+    Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
+    Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
 });
 
 
@@ -124,7 +140,7 @@ Route::prefix('course_contents')->group(function () {
     Route::get('web/show/{content}', [CourseContentController::class, 'webShow'])->name('course_contents.webShow');
 });
 
-Route::middleware('auth:sanctum')->group(function (){
+Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
     //advices:
     Route::post('/addAdvices', [AdviceController::class, 'addAdvice'])->name('advices.addAdvice');
     Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');
@@ -163,6 +179,16 @@ Route::middleware('auth:sanctum')->group(function (){
 Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
 Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
 Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
+//Route::get('/downloadFiles', [AssignmentController::class, 'downloadFiles']);
+
+Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
+    //Admin & articles
+    Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
+    Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
+    Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+});
+
+
 
 
 Route::get('/test-stripe-config', function () {

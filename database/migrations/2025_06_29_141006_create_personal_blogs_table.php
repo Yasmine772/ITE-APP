@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
+        Schema::create('personal_blogs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('title');
-            $table->longText('content');
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->string('status')->default('Pending');
-            $table->string('reasonsOfReject')->nullable();
-            $table->json('user_details');
+            $table->text('body');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles');
+        Schema::dropIfExists('personal_blogs');
     }
 };

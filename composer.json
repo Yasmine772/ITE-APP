@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-    
         "composer": "*",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/firebase-php": "^7.18",
@@ -21,7 +20,8 @@
         "spatie/laravel-permission": "^6.18",
         "stripe/stripe-php": "^17.3",
         "symfony/process": "^7.3",
-        "tightenco/ziggy": "^2.0"
+        "tightenco/ziggy": "^2.0",
+        "ext-imagick": "*"
     },
 
     "require-dev": {
