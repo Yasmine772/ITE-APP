@@ -24,7 +24,8 @@ class UserServices
         $user->sendEmailVerificationNotification();
         $token = $user['token'] = $user->createToken('token')->plainTextToken;
         return [
-            'token' => $token
+            'token' => $token ,
+            'user_id'=>$user->id
         ];
     }
 
@@ -41,6 +42,7 @@ class UserServices
         $token = $user['token'] = $user->createToken('token')->plainTextToken;
         return [
             'token' => $token,
+            'user_id'=>$user->id
         ];
     }
 
