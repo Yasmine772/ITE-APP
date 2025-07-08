@@ -141,6 +141,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasManyThrough(Resource::class,Teacher::class );
     }
+    public function personalBlogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PersonalBlog::class);
+    }
     public function assignDefaultRole(): void
     {
         $studentRole = Role::firstOrCreate(['name' => 'student']);

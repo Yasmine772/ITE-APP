@@ -17,7 +17,7 @@ class MyResourceListController extends Controller
     {
         $this->myResourcesListService = $myResourcesListService;
     }
-    public function show(): \Illuminate\Http\JsonResponse
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $myResources = $this->myResourcesListService->getMyResources();
         return $this->successResponse(['Your Resources:'=> $myResources]);
@@ -25,6 +25,11 @@ class MyResourceListController extends Controller
     public function store(int $Id): \Illuminate\Http\JsonResponse
     {
         $resource = $this->myResourcesListService->add($Id);
+        return $this->successResponse($resource,$resource['message'],200);
+    }
+    public function remove(int $Id): \Illuminate\Http\JsonResponse
+    {
+        $resource = $this->myResourcesListService->remove($Id);
         return $this->successResponse($resource,$resource['message'],200);
     }
 

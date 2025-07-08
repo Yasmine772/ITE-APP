@@ -32,7 +32,6 @@ class MyResourcesListService
                 ];
 
         }
-
         catch (\Exception $ex) {
             return [
                 'status' => 'error',
@@ -45,7 +44,7 @@ class MyResourcesListService
         try{
             $user = auth()->user();
             $resource = Resource::findOrFail($resourceId);
-            $user->myResources()->detach($resourceId);
+            $user->myResources()->detach($resource);
             return [
                 'status' => 'success',
                 'message' => 'Resource removed successfully.',

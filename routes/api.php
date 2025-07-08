@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\MyResourceListController;
+use App\Http\Controllers\PersonalBlogController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\AdviceController;
@@ -73,6 +74,10 @@ Route::post('user/password/email', [UserController::class, 'UserForgetPassword']
 Route::post('user/password/code/check', [UserController::class, 'userCheckCode'])->middleware('guest');
 Route::post('user/password/reset', [UserController::class, 'UserResetPassword'])->middleware('guest');
 
+
+Route::get('/courses/mm/top-rated', [CourseController::class, 'topRatedCourses']);
+
+
 Route::apiResource('years', YearController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('specializations', SpecializationController::class);
@@ -87,7 +92,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
     Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
-    Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
     Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
     Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
     Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
@@ -203,19 +207,24 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
 });
 
-//To show resource file
+// My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/resources/view/{filename}', function ($filename) {
-        $path = storage_path('app/public/resources/' . $filename);
-        if (!file_exists($path)) {
-            abort(404);
-        }
-        return response()->file($path, [
-            'Content-Type' => mime_content_type($path)
-        ]);
-    });
+    Route::get('myresource/index', [MyResourceListController::class, 'index']);
+    Route::get('myresource/store', [MyResourceListController::class, 'store']);
+    Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
 
 });
+//Personal Blog
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('mynotes/index', [PersonalBlogController::class, 'index']);
+    Route::get('mynotes/{id}/show', [PersonalBlogController::class, 'show']);
+    Route::get('mynotes/store', [PersonalBlogController::class, 'store']);
+    Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
+    Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
+    Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
+
+});
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
@@ -226,7 +235,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [SubjectController::class, 'apiSearch'])->name('search');
+
+    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');   
+
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
     Route::put('{id}', [SubjectController::class, 'apiUpdate'])->name('update');
@@ -234,14 +245,19 @@ Route::prefix('subjects')->name('subjects.')->group(function () {
 });
 
 
+Route::middleware(['auth:sanctum'])->group(function () {
 
-Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
-    Route::get('/', [ContentSubjectController::class, 'apiIndex'])->name('index');
-    Route::get('search', [ContentSubjectController::class, 'apiSearch'])->name('search');
-    Route::get('{id}', [ContentSubjectController::class, 'apiShow'])->name('show');
-    Route::post('/', [ContentSubjectController::class, 'apiStore'])->name('store');
-    Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
-    Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
+    Route::get('/subjects/my/sub', [SubjectController::class, 'apigetSubjectsForCurrentTeacher']);
+
+    Route::prefix('content-subjects')->name('content_subjects.')->group(function () {
+        Route::get('/', [ContentSubjectController::class, 'apiIndex'])->name('index');
+        Route::get('search', [ContentSubjectController::class, 'apiSearch'])->name('search');
+        Route::get('{id}', [ContentSubjectController::class, 'apiShow'])->name('show');
+        Route::post('/', [ContentSubjectController::class, 'apiStore'])->name('store');
+        Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
+        Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
+    });
+
 });
 
 Route::prefix('categories')->group(function () {
@@ -253,8 +269,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/search', [CategoryController::class, 'apiSearch']);
 });
 
-
-Route::prefix('courses')->group(function () {
+Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
     Route::get('/', [CourseController::class, 'apiIndex']);
     Route::get('/search', [CourseController::class, 'apiFilter']);
     Route::get('/{id}', [CourseController::class, 'apiShow']);
@@ -262,6 +277,11 @@ Route::prefix('courses')->group(function () {
     Route::post('/{id}', [CourseController::class, 'apiUpdate']);
     Route::delete('/{id}', [CourseController::class, 'apiDestroy']);
 
+});
+Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
+
+Route::prefix('courses')->group(function () {
+   
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
 
@@ -309,20 +329,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/subscriptions/mark-paid', [CourseSubscriptionController::class, 'apiMarkAsPaid']);
 });
 
+Route::get('/courses/top-rated', [CourseController::class, 'topRatedCourses']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('roadmaps')->group(function () {
-        Route::get('/', [RoadmapController::class, 'index']);
+        Route::get('/', [RoadmapController::class, 'apiindex']);
 
-        Route::get('{roadmapId}', [RoadmapController::class, 'show']);
+        Route::get('{roadmapId}', [RoadmapController::class, 'apishow']);
 
-        Route::post('/', [RoadmapController::class, 'store']);
+        Route::post('/', [RoadmapController::class, 'apiStore']);
 
-        Route::put('{roadmapId}', [RoadmapController::class, 'update']);
+        Route::put('{roadmapId}', [RoadmapController::class, 'apiupdate']);
 
-        Route::delete('{roadmapId}', [RoadmapController::class, 'destroy']);
+        Route::delete('{roadmapId}', [RoadmapController::class, 'apidestroy']);
     });
 
     Route::prefix('roadmap-progress')->group(function () {

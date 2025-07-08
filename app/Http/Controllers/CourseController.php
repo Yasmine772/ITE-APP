@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Models\Category;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -10,8 +9,8 @@ use Illuminate\Http\Request;
 use App\Services\CourseService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\CourseRequest;
+
 class CourseController extends Controller
 {
     use ApiResponseTrait;
@@ -41,7 +40,11 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
         try {
+            $user = $request->user();
+
             $validated = $request->validated();
+
+            $validated['teacher_id'] = $user->teacher->id;
 
             $this->courseService->createCourse($validated);
 
@@ -101,48 +104,46 @@ class CourseController extends Controller
             return redirect()->route('courses.index')->with('error', 'Unexpected error: ' . $e->getMessage());
         }
     }
-public function filter(Request $request)
-{
-    $validated = $request->validate([
-        'title' => 'nullable|string|max:255',
-        'teacher_id' => 'nullable|exists:teachers,id',
-        'category_id' => 'nullable|exists:categories,id',
-        'subject_id' => 'nullable|exists:subjects,id',
-        'is_free' => 'nullable|boolean',
-    ]);
 
-    $filters = $validated;
+    public function filter(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'teacher_id' => 'nullable|exists:teachers,id',
+            'category_id' => 'nullable|exists:categories,id',
+            'subject_id' => 'nullable|exists:subjects,id',
+            'is_free' => 'nullable|boolean',
+        ]);
 
-    $courses = $this->courseService->filterCourses($filters);
+        $filters = $validated;
 
-    $courses->transform(function ($course) {
-        $course->teacher_name = $course->teacher && $course->teacher->user
-            ? $course->teacher->user->name
-            : null;
+        $courses = $this->courseService->filterCourses($filters);
 
-        return $course;
-    });
+        $courses->transform(function ($course) {
+            $course->teacher_name = $course->teacher && $course->teacher->user
+                ? $course->teacher->user->name
+                : null;
 
-    return view('courses.index', compact('courses'));
-}
-public function show($id)
-{
-    try {
-        $course = $this->courseService->getCourseById($id);
+            return $course;
+        });
 
-        $course->load(['teacher.user']);
-
-        return view('courses.show', compact('course'));
-    } catch (ModelNotFoundException $e) {
-        return redirect()->route('courses.index')->with('error', 'Course not found');
-    } catch (\Exception $e) {
-        return redirect()->route('courses.index')->with('error', 'Unexpected error: ' . $e->getMessage());
+        return view('courses.index', compact('courses'));
     }
-}
 
+    public function show($id)
+    {
+        try {
+            $course = $this->courseService->getCourseById($id);
 
+            $course->load(['teacher.user']);
 
-
+            return view('courses.show', compact('course'));
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('courses.index')->with('error', 'Course not found');
+        } catch (\Exception $e) {
+            return redirect()->route('courses.index')->with('error', 'Unexpected error: ' . $e->getMessage());
+        }
+    }
 
     public function apiIndex()
     {
@@ -150,26 +151,29 @@ public function show($id)
         return $this->successResponse($courses, 'Courses retrieved successfully');
     }
 
-  public function apiShow($id)
-{
-    try {
-        $course = $this->courseService->getCourseById($id);
-        $course->load(['teacher.user']);
-
-        $course->teacher_name = optional($course->teacher->user)->name;
-        unset($course->teacher);
-
-        return $this->successResponse($course, 'Course retrieved successfully');
-    } catch (ModelNotFoundException $e) {
-        return $this->errorResponse('Course not found', null, 404);
-    }
-}
-
-
-    public function apiStore( CourseRequest $request)
+    public function apiShow($id)
     {
         try {
+            $course = $this->courseService->getCourseById($id);
+            $course->load(['teacher.user']);
+
+            $course->teacher_name = optional($course->teacher->user)->name;
+            unset($course->teacher);
+
+            return $this->successResponse($course, 'Course retrieved successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Course not found', null, 404);
+        }
+    }
+
+    public function apiStore(CourseRequest $request)
+    {
+        try {
+            $user = $request->user();
+
             $validated = $request->validated();
+
+            $validated['teacher_id'] = $user->teacher->id;
 
             $course = $this->courseService->createCourse($validated);
             return $this->successResponse($course, 'Course created successfully', 201);
@@ -185,7 +189,7 @@ public function show($id)
         try {
             $course = $this->courseService->getCourseById($id);
 
-            $validated = $request->validated();   ;
+            $validated = $request->validated();
 
             $updated = $this->courseService->updateCourse($course, $validated);
             return $this->successResponse($updated, 'Course updated successfully');
@@ -231,7 +235,6 @@ public function show($id)
         }
     }
 
-
     public function apiDestroy($id)
     {
         try {
@@ -244,28 +247,60 @@ public function show($id)
             return $this->errorResponse('Unexpected error', $e->getMessage(), 500);
         }
     }
-    public function topRated()
-{
-    $courses = $this->courseService->getTopRatedCourses();
 
-    return view('courses.top-rated', compact('courses'));
-}
-public function apiTopRated()
-{
-    try {
+    public function topRated()
+    {
         $courses = $this->courseService->getTopRatedCourses();
 
-        $courses->load(['teacher.user']);
+        return view('courses.top-rated', compact('courses'));
+    }
 
-        $courses->transform(function ($course) {
-            $course->teacher_name = optional($course->teacher->user)->name;
-            unset($course->teacher);
-            return $course;
-        });
+    public function topRatedCourses()
+    {
+        try {
+            $courses = $this->courseService->getTopRatedCourses(10);
+            return response()->json($courses);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ], 500);
+        }
+    }
+ public function apiMyCourses(Request $request)
+{
+    try {
+        $user = $request->user();
 
-        return $this->successResponse($courses, 'Top rated courses retrieved successfully');
+        if (!$user->teacher) {
+            return $this->errorResponse('You are not associated with any teacher profile.', null, 403);
+        }
+
+        $courses = $user->teacher->courses;
+
+        return $this->successResponse($courses, 'Courses retrieved successfully.');
     } catch (\Exception $e) {
-        return $this->errorResponse('Failed to retrieve top rated courses', $e->getMessage(), 500);
+        return $this->errorResponse('Unexpected error occurred.', $e->getMessage(), 500);
     }
 }
+public function myCourses(Request $request)
+{
+    try {
+        $user = $request->user();
+
+        if (!$user->teacher) {
+            return redirect()->route('courses.index')->with('error', 'You are not associated with any teacher profile.');
+        }
+
+        $courses = $user->teacher->courses;
+
+        return view('courses.my-courses', compact('courses'));
+    } catch (\Exception $e) {
+        return redirect()->route('courses.index')->with('error', 'Unexpected error: ' . $e->getMessage());
+    }
+}
+
+
+
 }

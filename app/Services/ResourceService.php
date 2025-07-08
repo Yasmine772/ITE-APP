@@ -40,10 +40,11 @@ class ResourceService
             $coverImagePath = 'resources/covers/' . $baseName . '_cover.jpg';
             $coverFullPath = storage_path('app/public/' . $coverImagePath);
 
-
             $imagick = new Imagick();
             $imagick->setResolution(150, 150);
             $imagick->readImage($pdfPath . '[0]');
+            $imagick->setImageBackgroundColor('white');
+            $imagick = $imagick->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN);
             $imagick->setImageFormat('jpeg');
             $imagick->writeImage($coverFullPath);
             $imagick->clear();
@@ -111,10 +112,11 @@ class ResourceService
                 $coverImagePath = 'resources/covers/' . $baseName . '_cover.jpg';
                 $coverFullPath = storage_path('app/public/' . $coverImagePath);
 
-
                 $imagick = new Imagick();
                 $imagick->setResolution(150, 150);
                 $imagick->readImage($pdfPath . '[0]');
+                $imagick->setImageBackgroundColor('white');
+                $imagick = $imagick->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN);
                 $imagick->setImageFormat('jpeg');
                 $imagick->writeImage($coverFullPath);
                 $imagick->clear();

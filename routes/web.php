@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdviceController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\Web\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,14 +39,27 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
+Route::middleware(['auth:sanctum',
+    config('jetstream.auth_session'),])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::get('students/show',[AdminController::class,'studentShow']);
+    Route::get('teacher/show',[AdminController::class,'teacherShow']);
+    //Resources
+    Route::get('resource/showAll', [ResourceController::class, 'showAll']);
+});
+
+//Resources
+Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
+    Route::get('resource/index', [ResourceController::class, 'index']);
+    Route::post('resource/store', [ResourceController::class, 'store'])->name('resource.store');
+
+    Route::post('resource/{id}/update', [ResourceController::class, 'update']);
+    Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
+    Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
 });
 
 
