@@ -40,8 +40,7 @@ use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
 use App\Http\Controllers\RoadmapStepController;
-
-
+use App\Http\Controllers\RulesForArticlesController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -87,7 +86,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //articles:
     Route::post('/addArticle', [ArticleController::class, 'addArticle']);
     Route::post('/editArticles', [ArticleController::class, 'editArticles']);
-    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']); 
+    Route::post('/deleteArticle', [ArticleController::class, 'deleteArticle']);
+    Route::post('/articleDetails', [ArticleController::class, 'articleDetails']);
     Route::get('/showPendingArticles', [ArticleController::class, 'showPendingArticles']);
     Route::get('/showRejectArticles', [ArticleController::class, 'showRejectArticles']);
     Route::get('/showAcceptArticles', [ArticleController::class, 'showAcceptArticles']);
@@ -142,9 +142,11 @@ Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
 // Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
 // Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
 
-// Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
-// Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
-// Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+Route::get('/showPendingArticleforAdmin', [RulesForArticlesController::class, 'showPendingArticleforAdmin']);
+Route::post('/acceptOrRejectArticle', [RulesForArticlesController::class, 'acceptOrRejectArticle']);
+Route::get('/showRejectionReason', [RulesForArticlesController::class, 'showRejectionReason']);
+
+//
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
 
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);

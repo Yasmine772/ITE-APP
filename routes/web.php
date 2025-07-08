@@ -23,6 +23,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use App\Http\Controllers\CourseSubscriptionController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
+use App\Http\Controllers\RulesForArticlesController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\SemesterController;
@@ -169,8 +170,9 @@ Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])-
 Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
     //Admin & articles
     Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
-    Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
-    Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+    Route::post('/acceptOrRejectArticle', [ArticleController::class, 'acceptOrRejectArticle']);
+    Route::get('/showRejectionReason', [RulesForArticlesController::class, 'showRejectionReason']);
+    Route::post('/articleDetailsForAdmin', [RulesForArticlesController::class, 'articleDetailsForAdmin']);
 });
 
 
