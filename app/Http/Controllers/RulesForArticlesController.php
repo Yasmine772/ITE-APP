@@ -58,7 +58,9 @@ class RulesForArticlesController extends Controller
                 $article->reasonsOfReject = null;
                 $article->save();
 
+
                 //notification
+
 
                 return $this->successResponse('Accepted successfully', 200);
                 //return redirect()->back()->with('Accepted successfully');
@@ -68,7 +70,9 @@ class RulesForArticlesController extends Controller
             $article->status = 'Reject';
             $article->save();
 
+
             //notification
+            
             
             return $this->successResponse('Rejection successfully..The rejection of reasons are ' . implode(', ', $rejection_reason), 200);
 
