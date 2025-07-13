@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\NotificationService;
@@ -32,11 +31,16 @@ class NotificationController extends Controller
         ]);
 
         $user = auth()->user();
-        $this->notificationService->send($user, $input['title'], $input['message']);
+        $this->notificationService->sendToStudents($user, $input['title'], $input['message']);
 
         return response()->json([
             'message' => 'Notification sent successfully',
         ], 200);
+    }
+    public function markAsRead($notificationId): \Illuminate\Http\JsonResponse
+    {
+        $this->notificationService->markAsRead($notificationId);
+        return response()->json(['message' => 'Notification read successfully'], 200);
     }
 
 

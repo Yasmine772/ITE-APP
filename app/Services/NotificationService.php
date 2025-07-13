@@ -6,6 +6,8 @@ use App\Notifications\BasicNotification;
 use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
 use App\Notifications\NewResourceNotification;
+use App\Notifications\sendNotificationToStudent;
+use App\Notifications\sendNotificationToStudentNotification;
 use App\Notifications\SendRequestToAdminToAddArticleNotification;
 use App\Notifications\SendRequestToAdminToEditArticleNotification;
 use App\Notifications\WelcomeNotification;
@@ -25,6 +27,7 @@ class NotificationService
     {
         Notification::send($users, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
     }
+
     public function sendResourceToUsers($users, string $title, string $message, int $resourceId): void
     {
         Notification::send($users, new NewResourceNotification($title, $message, $resourceId));
@@ -40,6 +43,14 @@ class NotificationService
     public function sendToUserForEditArticle($user, string $title, string $message): void
     {
         Notification::send($user, new SendRequestToAdminToEditArticleNotification($title, $message));
+    }
+    public function sendToStudents($user, string $title, string $message): void
+    {
+        $students = User::role('student')->get();
+        foreach ($students as $student) {
+            $student->notify(new sendNotificationToStudent($title, $message));
+        }
+
     }
 
     public function markAsRead($notificationId): bool

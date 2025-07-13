@@ -197,6 +197,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
 
 
+
 });
 //Resources
 Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
@@ -205,6 +206,7 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::post('resource/{id}/update', [ResourceController::class, 'update']);
     Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
+
 });
 
 // My Resources list
@@ -237,7 +239,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
 
-    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');   
+    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');
 
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
@@ -282,7 +284,7 @@ Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
 Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
 
 Route::prefix('courses')->group(function () {
-   
+
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
 
