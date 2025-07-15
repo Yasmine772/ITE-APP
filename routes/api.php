@@ -165,7 +165,8 @@ Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails'
 
 Route::post('/showExamForStudent', [ExamController::class, 'showExamForStudent']);
 Route::post('/detailsOfExam', [ExamController::class, 'detailsOfExam']);
-
+//fcm token store
+Route::post('notifications/store-token', [NotificationController::class, 'store']);
 
 //Notifications
 Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'notifications'], function () {

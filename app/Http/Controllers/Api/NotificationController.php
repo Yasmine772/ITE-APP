@@ -8,6 +8,10 @@ use App\Models\User;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -23,7 +27,21 @@ class NotificationController extends Controller
      {
          return $this->notificationService->index();
      }
-    public function send(Request $request): \Illuminate\Http\JsonResponse
+
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'fcm_token' => 'required|string',
+        ]);
+        $user = User::find($request->user_id);
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+        return response()->json(['message' => 'Token stored successfully.']);
+    }
+
+
+public function send(Request $request): \Illuminate\Http\JsonResponse
     {
         $input = $request->validate([
             'title' => 'required|string|max:50',

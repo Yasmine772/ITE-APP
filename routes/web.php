@@ -5,11 +5,8 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\Web\AdminController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\SubjectController;
-
 use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
@@ -29,22 +26,21 @@ use App\Http\Controllers\RulesForArticlesController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\HomeController;
+
+
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return view('welcome');
 });
 
-Route::middleware(['auth:sanctum',
-    config('jetstream.auth_session'),])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth')->name('dashboard');
+
+Auth::routes();
+
+
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('students/show',[AdminController::class,'studentShow']);
     Route::get('teacher/show',[AdminController::class,'teacherShow']);
@@ -197,3 +193,7 @@ Route::get('/test-stripe-config', function () {
 
     dd(config('stripe.publishable_key'), config('stripe.secret_key'));
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

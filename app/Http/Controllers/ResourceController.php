@@ -33,6 +33,8 @@ class ResourceController extends Controller
         $data = $request->validated();
         $resource = $this->resourceService->store($data);
         return $this->successResponse($resource,'Resource created successfully.',200);
+        $admin = user::role('admin');
+        $this->notificationService->sendToAdmin($admin,'New refrence has been added ');
        // return view('addResource');
     }
     public function update(ResourceRequest $request, int $id): \Illuminate\Http\JsonResponse

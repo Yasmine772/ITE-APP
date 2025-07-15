@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\User;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class ArticleController extends Controller
     {
         $this->notificationService = $notificationService;
     }
-    public function addArticle(Request $request)
+    public function addArticle(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -33,6 +34,10 @@ class ArticleController extends Controller
                 'user_id' => auth()->user()->id,
                 'user_details' => json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
             ]);
+            $studentInfo = auth()->user();
+            //Notification for admin
+            $admin = User::where('name', 'admin')->get();
+            $this->notificationService->sendToAdmin($admin, 'New Article', 'You have an article to verify for publication',$article,$studentInfo);
 
             $user = auth()->user();
             $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
@@ -59,10 +64,14 @@ class ArticleController extends Controller
             $article->user_id = auth()->user()->id;
             $article->user_details =  json_encode(auth()->user()->only(['name', 'profile_photo_path']));
             $article->save();
-
-            //notification to user that.. we send request to the admin for edit your article.
+            //Notification for admin
+            $studentInfo = auth()->user();
+            $admin = User::role('admin')->get();
+            $this->notificationService->sendToAdmin($admin, 'Article updated', 'An article was edited after publishing , check it for republishing',$article,$studentInfo);
+            //Notification for student
             $user = auth()->user();
             $this->notificationService->sendToUserForEditArticle($user, 'Hi' . $user->name, 'Your update has been sent to the admin for verification.');
+            $this->notificationService->sendFCMNotification($user,'Hi' . $user->name, 'Your update has been sent to the admin for verification.');
             return $this->successResponse($article, 'Your update has been sent to the admin for verification.', 200);
 
             // return $this->successResponse(null, 'Your Article has been sent to the admin for verification', 200);

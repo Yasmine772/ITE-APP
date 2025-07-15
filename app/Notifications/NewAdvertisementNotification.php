@@ -35,7 +35,7 @@ class NewAdvertisementNotification extends Notification
     public function toDatabase($notifiable): DatabaseMessage
     {
         return new DatabaseMessage([
-            'title' => $this->title,
+            'title' => $this->title ,
             'message' => $this->message,
             'advertisement_id' => $this->advertisementId,
             'teacher_info' => $this->teacherInfo,
