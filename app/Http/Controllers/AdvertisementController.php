@@ -105,7 +105,14 @@ class AdvertisementController extends Controller
         if (!$advertisement) {
             return $this->errorResponse('Advertisement not found or not accessible.', 404);
         }
-        return $this->successResponse(['advertisement' => $advertisement]);
+        return $this->successResponse(['Details' => [
+            $advertisement->title,
+            $advertisement->description ,
+            $advertisement->teacher_name,
+            $advertisement->created_at,
+            $advertisement->updated_at,
+
+            ]]);
         }
         catch (ModelNotFoundException $e)
         {
