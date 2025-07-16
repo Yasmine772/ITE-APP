@@ -197,6 +197,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     //Resources
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
 });
+//Advertisement for student
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('advertisement/showAllStudent', [AdvertisementController::class, 'showAllStudent']);
     Route::get('advertisement/{id}/showDetails', [AdvertisementController::class, 'showDetails']);
