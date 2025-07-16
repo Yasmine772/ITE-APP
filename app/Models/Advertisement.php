@@ -14,7 +14,9 @@ class Advertisement extends Model
         'file',
         'image'
     ];
-   public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    protected $hidden = ['pivot'];
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
    {
        return $this->belongsTo('App\Models\User');
    }

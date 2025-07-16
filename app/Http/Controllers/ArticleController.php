@@ -42,7 +42,6 @@ class ArticleController extends Controller
 
             $user = auth()->user();
             $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
-            $this->notificationService->sendFCMNotification($user->fcm_token,'Hi' . $user->name,'We have sent your article to the admin for review.');
             return $this->successResponse($article, 'We have sent your article to the admin for review.', 200);
         } catch (\Exception $e) {
             return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
@@ -74,7 +73,6 @@ class ArticleController extends Controller
             //Notification for student
             $user = auth()->user();
             $this->notificationService->sendToUserForEditArticle($user, 'Hi' . $user->name, 'Your update has been sent to the admin for verification.');
-            $this->notificationService->sendFCMNotification($user,'Hi' . $user->name, 'Your update has been sent to the admin for verification.');
             return $this->successResponse($article, 'Your update has been sent to the admin for verification.', 200);
 
             // return $this->successResponse(null, 'Your Article has been sent to the admin for verification', 200);

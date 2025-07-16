@@ -63,7 +63,7 @@ class NotificationService
     {
         Notification::send($users, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
       foreach ($users as $user) {
-            $this->sendFCMNotification($user->fcm_token, $title, $message);
+        //    $this->sendFCMNotification($user->fcm_token, $title, $message);
         }
     }
 
@@ -90,9 +90,8 @@ class NotificationService
         Notification::send($user, new SendRequestToAdminToEditArticleNotification($title, $message));
         $this->sendFCMNotification($user->fcm_token, $title, $message);
     }
-    public function sendToStudents($user, string $title, string $message): void
+    public function sendToStudents($students, string $title, string $message): void
     {
-        $students = User::role('student')->get();
         foreach ($students as $student) {
             $student->notify(new sendNotificationToStudent($title, $message));
             $this->sendFCMNotification($student->fcm_token, $title, $message);

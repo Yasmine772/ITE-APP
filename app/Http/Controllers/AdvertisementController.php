@@ -123,7 +123,7 @@ class AdvertisementController extends Controller
     public function showAllStudent(): JsonResponse
     {
         $student = auth()->user();
-        $adverts = $student->receivedAdvertisements()->latest()->get();
+        $adverts = $student->receivedAdvertisements()->get();
         return $this->successResponse(['receivedAdvertisements' => $adverts]);
 
     }
