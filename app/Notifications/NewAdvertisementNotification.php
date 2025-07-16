@@ -45,16 +45,15 @@ class NewAdvertisementNotification extends Notification
     public function toFcm($notifiable): FcmMessage
     {
         return FcmMessage::create()
-            ->setData([
-                'title' => $this->title,
-                'message' => $this->message,
-                'advertisement_id' => (string) $this->advertisementId,
-                'teacher_info' => $this->teacherInfo,
-            ])
             ->setNotification(
                 FcmNotification::create()
                     ->setTitle($this->title)
                     ->setBody($this->message . "\n" . $this->teacherInfo)
-            );
+            )
+            ->setData([
+                'advertisement_id' => (string) $this->advertisementId,
+                'teacher_info' => $this->teacherInfo,
+            ]);
     }
+
 }

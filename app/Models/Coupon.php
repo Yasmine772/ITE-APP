@@ -14,9 +14,11 @@ class Coupon extends Model
          'used_count',
         'valid_from',
         'valid_until',
-        'min_order_amount'
+        'min_order_amount',
+        'teacher_id',
+        'course_id '
     ];
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

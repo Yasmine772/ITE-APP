@@ -8,6 +8,7 @@ use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
 
 class SendRequestToAdminToAddArticleNotification extends Notification
 {
@@ -44,17 +45,19 @@ class SendRequestToAdminToAddArticleNotification extends Notification
      */
     public function toFcm(object $notifiable): FcmMessage
     {
-        return FcmMessage::create() ->setData([
-            'title' => $this->title,
-            'message' => $this->message,
-
-        ])
+        return FcmMessage::create()
             ->setNotification(
                 FcmNotification::create()
                     ->setTitle($this->title)
                     ->setBody($this->message)
-            );
+            )
+            ->setData([
+                'resource_title' => $this->title,
+                'resource_message' => $this->message,
+                'resource_id' => (string) $this->resourceId ?? '',
+            ]);
     }
+
 
     /**
      * Get the array representation of the notification.

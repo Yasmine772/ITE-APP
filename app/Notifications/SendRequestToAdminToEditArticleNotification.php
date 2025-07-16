@@ -48,16 +48,18 @@ class SendRequestToAdminToEditArticleNotification extends Notification
      */
     public function toFcm(object $notifiable): FcmMessage
     {
-        return FcmMessage::create() ->setData([
-            'title' => $this->title,
-            'message' => $this->message,
-
-        ])
+        return FcmMessage::create()
             ->setNotification(
                 FcmNotification::create()
                     ->setTitle($this->title)
                     ->setBody($this->message)
-            );
+            )
+            ->setData([
+                'resource_title' => $this->title,
+                'resource_message' => $this->message,
+
+                'resource_id' => (string) $this->resourceId ?? '',
+            ]);
     }
 
     /**

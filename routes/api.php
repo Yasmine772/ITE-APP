@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\CouponsController;
 use App\Http\Controllers\MyResourceListController;
 use App\Http\Controllers\PersonalBlogController;
 use App\Http\Controllers\UserController;
@@ -235,6 +236,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
 
+});
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('coupon/store', [CouponsController::class, 'store']);
 });
 
 

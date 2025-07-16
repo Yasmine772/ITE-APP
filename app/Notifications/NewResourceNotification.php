@@ -56,17 +56,16 @@ class NewResourceNotification extends Notification
     public function toFcm(object $notifiable): FcmMessage
     {
         return FcmMessage::create()
-            ->setData([
-                'title' => $this->title,
-                'message' => $this->message,
-                'resourceId' => $this->resourceId,
-
-            ])
             ->setNotification(
                 FcmNotification::create()
                     ->setTitle($this->title)
                     ->setBody($this->message)
-            );
+            )
+            ->setData([
+                'resource_id' => (string) $this->resourceId,
+                'teacher_title' => $this->title,
+                'teacher_message' => $this->message,
+            ]);
     }
 
     /**

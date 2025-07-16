@@ -28,16 +28,23 @@ class CouponsController extends Controller
        try{
            $couponData = $request->validated();
            $coupon = Coupon::create($couponData);
+
            $students = User::role('student')->get()->toArray();
-           $this->successResponse($coupon,'Coupon created successfully.',200);
            $this->notificationService->sendToStudents($students,'New coupon created','You have a new coupon you can use.');
+
            $admin = User::role('admin')->get();
-           $message = 'New coupon has been add by teacher: '.
-           $this->notificationService->sendToAdmin($admin,'New coupon created',$message);
+           $teacher = auth()->user()->teacher;
+
+           $message = 'New coupon has been add by teacher: '.$teacher->name;
+           $content = Coupon::find($coupon->id);
+           $information = $teacher->academic_qualification ;
+           $this->notificationService->sendToAdmin($admin,'New coupon created',$message,$content ,$information);
+
+           return $this->successResponse($coupon,'Coupon created successfully.',200);
        }
        catch (\Exception $exception)
        {
-           $this->errorResponse($exception->getMessage(),'error',500);
+           return $this->errorResponse($exception->getMessage(),'error',500);
 
        }
 

@@ -23,7 +23,7 @@ class CopounStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code'=>'required|unique|min:4|max:6|',
+            'code'=>'required|min:4|max:6|',
             'discount_type'=>'required|string|in:percent,fixed',
             'discount_value'=>'required|numeric|min:0|max:100',
             'usage_limit'=>'nullable|int|min:1|max:100',
