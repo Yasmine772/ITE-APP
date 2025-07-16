@@ -74,8 +74,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
         'academic_qualification',
         'experience',
         'degree'
@@ -163,4 +161,9 @@ class User extends Authenticatable implements MustVerifyEmail
    {
         return $this->belongsToMany(Resource::class);
    }
+    public function receivedAdvertisements()
+    {
+        return $this->belongsToMany(Advertisement::class, 'advertisement_user')->withTimestamps();
+    }
+
 }

@@ -15,13 +15,13 @@ class AdminNotification extends Notification
      protected string $title ;
      protected string $message ;
      protected string  $content ;
-     protected string  $studentInfo ;
-    public function __construct(string $title,string $message , string $content , string $studentInfo)
+     protected string  $information ;
+    public function __construct(string $title,string $message , string $content , string $information)
     {
        $this->title = $title;
        $this->message = $message;
        $this->content  = $content ;
-       $this->studentInfo = $studentInfo ;
+       $this->information = $information ;
     }
 
     /**
@@ -50,7 +50,7 @@ class AdminNotification extends Notification
             'title' => $this->title ,
             'message' => $this->message,
              'content' => $this->content,
-             'studentInfo' => $this->studentInfo,
+             'Information' => $this->information,
 
         ]);
     }

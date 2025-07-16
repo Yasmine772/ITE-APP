@@ -196,9 +196,10 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
     //Resources
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
-
-
-
+});
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
+    Route::get('advertisement/{id}/showDetails', [AdvertisementController::class, 'showDetails']);
 });
 //Resources
 Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {

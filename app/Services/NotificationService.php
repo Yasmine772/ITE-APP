@@ -55,9 +55,9 @@ class NotificationService
             return[ 'message'=>$e->getMessage()];
         }
     }
-    public function sendToAdmin($admin, string $title, string $message, string $article ,string $studentInfo): void
+    public function sendToAdmin($admin, string $title, string $message, string $content ,string $information): void
     {
-        Notification::send($admin, new AdminNotification($title,  $message, $article , $studentInfo));
+        Notification::send($admin, new AdminNotification($title,  $message, $content , $information));
     }
     public function sendAdvertToUsers($users, string $title, string $message, int $advertisementId, string $teacherInfo): void
     {

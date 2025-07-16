@@ -34,10 +34,11 @@ class ArticleController extends Controller
                 'user_id' => auth()->user()->id,
                 'user_details' => json_encode(auth()->user()->only(['name', 'profile_photo_path'])),
             ]);
-            $studentInfo = auth()->user();
+            $information = auth()->user();
+            $content = Article::find($article->id);
             //Notification for admin
             $admin = User::where('name', 'admin')->get();
-            $this->notificationService->sendToAdmin($admin, 'New Article', 'You have an article to verify for publication',$article,$studentInfo);
+            $this->notificationService->sendToAdmin($admin, 'New Article', 'You have an article to verify for publication',$content,$information);
 
             $user = auth()->user();
             $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
@@ -65,9 +66,10 @@ class ArticleController extends Controller
             $article->user_details =  json_encode(auth()->user()->only(['name', 'profile_photo_path']));
             $article->save();
             //Notification for admin
-            $studentInfo = auth()->user();
+            $information = auth()->user();
+            $content = Article::find($article->id);
             $admin = User::role('admin')->get();
-            $this->notificationService->sendToAdmin($admin, 'Article updated', 'An article was edited after publishing , check it for republishing',$article,$studentInfo);
+            $this->notificationService->sendToAdmin($admin, 'Article updated', 'An article was edited after publishing , check it for republishing',$content,$information);
             //Notification for student
             $user = auth()->user();
             $this->notificationService->sendToUserForEditArticle($user, 'Hi' . $user->name, 'Your update has been sent to the admin for verification.');

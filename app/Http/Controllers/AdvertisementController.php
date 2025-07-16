@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +44,7 @@ class AdvertisementController extends Controller
         $teacherInformation = "{$user->name} ";
 
         $students = User::role('student')->get();
+        $advertisement->recipients()->attach($students->pluck('id'));
         $this->notificationService->sendAdvertToUsers($students, $title, $message, $advertisementId, $teacherInformation);
 
         return $this->successResponse([
@@ -94,5 +96,28 @@ class AdvertisementController extends Controller
     {
         $allAdvertisements = Advertisement::get();
         return $this->successResponse(['allAdvertisements' => $allAdvertisements]);
+    }
+    public function showDetails(int $id): JsonResponse
+    {
+        try {
+            $student = auth()->user();
+            $advertisement = $student->receivedAdvertisements()->where('advertisement_id', $id)->first();
+        if (!$advertisement) {
+            return $this->errorResponse('Advertisement not found or not accessible.', 404);
+        }
+        return $this->successResponse(['advertisement' => $advertisement]);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            $this->errorResponse($e->getMessage(), 404);
+        }
+
+    }
+    public function showAllStudent(): JsonResponse
+    {
+        $student = auth()->user();
+        $adverts = $student->receivedAdvertisements()->latest()->get();
+        return $this->successResponse(['receivedAdvertisements' => $adverts]);
+
     }
 }

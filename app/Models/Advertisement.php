@@ -18,5 +18,10 @@ class Advertisement extends Model
    {
        return $this->belongsTo('App\Models\User');
    }
+    public function recipients()
+    {
+        return $this->belongsToMany(User::class, 'advertisement_user')->withTimestamps();
+    }
+
 
 }
