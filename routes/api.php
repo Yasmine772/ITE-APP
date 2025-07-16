@@ -198,7 +198,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
 });
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('advertisement/showAll', [AdvertisementController::class, 'showAll']);
+    Route::get('advertisement/showAllStudent', [AdvertisementController::class, 'showAllStudent']);
     Route::get('advertisement/{id}/showDetails', [AdvertisementController::class, 'showDetails']);
 });
 //Resources
@@ -223,7 +223,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('mynotes/index', [PersonalBlogController::class, 'index']);
     Route::get('mynotes/{id}/show', [PersonalBlogController::class, 'show']);
-    Route::get('mynotes/store', [PersonalBlogController::class, 'store']);
+    Route::post('mynotes/store', [PersonalBlogController::class, 'store']);
     Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
     Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
     Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
