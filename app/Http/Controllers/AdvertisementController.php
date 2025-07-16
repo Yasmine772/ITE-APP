@@ -106,11 +106,11 @@ class AdvertisementController extends Controller
             return $this->errorResponse('Advertisement not found or not accessible.', 404);
         }
         return $this->successResponse(['Details' => [
-            $advertisement->title,
-            $advertisement->description ,
-            $advertisement->teacher_name,
-            $advertisement->created_at,
-            $advertisement->updated_at,
+             'title'=> $advertisement->title,
+            'description'=> $advertisement->description ,
+            'Teacher name'=>$advertisement->teacher_name,
+            'Created at'=>  $advertisement->created_at,
+            'Updated at'=>  $advertisement->updated_at,
 
             ]]);
         }

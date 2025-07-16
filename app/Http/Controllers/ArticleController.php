@@ -42,6 +42,7 @@ class ArticleController extends Controller
 
             $user = auth()->user();
             $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
+            $this->notificationService->sendFCMNotification($user->fcm_token,'Hi' . $user->name,'We have sent your article to the admin for review.');
             return $this->successResponse($article, 'We have sent your article to the admin for review.', 200);
         } catch (\Exception $e) {
             return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);
