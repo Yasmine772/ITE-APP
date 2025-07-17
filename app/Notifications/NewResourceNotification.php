@@ -53,30 +53,10 @@ class NewResourceNotification extends Notification
             'resourceId' => $this->resourceId,
         ]);
     }
-    public function toFcm(object $notifiable): FcmMessage
-    {
-        return FcmMessage::create()
-            ->setNotification(
-                FcmNotification::create()
-                    ->setTitle($this->title)
-                    ->setBody($this->message)
-            )
-            ->setData([
-                'resource_id' => (string) $this->resourceId,
-                'teacher_title' => $this->title,
-                'teacher_message' => $this->message,
-            ]);
-    }
 
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
-    }
 }

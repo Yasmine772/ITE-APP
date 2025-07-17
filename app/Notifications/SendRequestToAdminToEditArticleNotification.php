@@ -46,32 +46,13 @@ class SendRequestToAdminToEditArticleNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toFcm(object $notifiable): FcmMessage
-    {
-        return FcmMessage::create()
-            ->setNotification(
-                FcmNotification::create()
-                    ->setTitle($this->title)
-                    ->setBody($this->message)
-            )
-            ->setData([
-                'resource_title' => $this->title,
-                'resource_message' => $this->message,
 
-                'resource_id' => (string) $this->resourceId ?? '',
-            ]);
-    }
 
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
-    }
+
 }
 

@@ -94,7 +94,7 @@ class NotificationService
     {
         foreach ($students as $student) {
             Notification::send ($student,new sendNotificationToStudent($title, $message));
-            $this->sendFCMNotification($student->fcm_token, $title, $message);
+            //$this->sendFCMNotification($student->fcm_token, $title, $message);
         }
 
     }

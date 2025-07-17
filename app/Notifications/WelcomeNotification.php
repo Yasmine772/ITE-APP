@@ -40,14 +40,9 @@ class WelcomeNotification extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @return array<string, mixed>
+     * @param $notifiable
+     * @return DatabaseMessage
      */
-    public function toArray(object $notifiable): array
-    {
-        return [
-
-        ];
-    }
 
 public function toDatabase($notifiable): DatabaseMessage
 {

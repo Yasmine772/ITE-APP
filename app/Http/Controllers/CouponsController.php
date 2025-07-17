@@ -20,7 +20,7 @@ class CouponsController extends Controller
    public function index(): object
    {
        $coupons = Coupon::get()->toArray();
-       $this->successResponse('coupon you have created', $coupons,200);
+       return $this->successResponse('coupon you have created', $coupons,200);
       // return view('coupons.index', compact('coupons'));
    }
    public function store(CopounStoreRequest $request): object
@@ -29,15 +29,17 @@ class CouponsController extends Controller
            $couponData = $request->validated();
            $coupon = Coupon::create($couponData);
 
-           $students = User::role('student')->get()->toArray();
+           $students = User::role('student')->get();
            $this->notificationService->sendToStudents($students,'New coupon created','You have a new coupon you can use.');
 
            $admin = User::role('admin')->get();
+
            $teacher = auth()->user()->teacher;
 
-           $message = 'New coupon has been add by teacher: '.$teacher->name;
+           $message = 'New coupon has been add by teacher: '.auth()->user()->name;
            $content = Coupon::find($coupon->id);
-           $information = $teacher->academic_qualification ;
+           $information = $teacher?->academic_qualification ?? 'null';
+
            $this->notificationService->sendToAdmin($admin,'New coupon created',$message,$content ,$information);
 
            return $this->successResponse($coupon,'Coupon created successfully.',200);
