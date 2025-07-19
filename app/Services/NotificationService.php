@@ -14,6 +14,7 @@ use App\Notifications\WelcomeNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 
@@ -34,22 +35,19 @@ class NotificationService
             ];
         }
         try {
-            $factory = (new Factory)
-                ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')));
-
-            $messaging = $factory->createMessaging();
             $message = CloudMessage::withTarget('token', $fcmToken)
                 ->withNotification(FirebaseNotification::create($title, $message))
                 ->withData([
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     'sound' => 'default',
-                ]);
-
-            $messaging->send($message);
-            return[
-                'status'=>'true',
-                'message'=> 'Notification Sent successfully'
-            ];
+                ])
+                ->withAndroidConfig(AndroidConfig::fromArray([
+                    'priority' => 'high',
+                    'notification' => [
+                        'sound' => 'default',
+                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                    ],
+                ]));
 
         } catch (\Throwable $e) {
             return[ 'message'=>$e->getMessage()];
