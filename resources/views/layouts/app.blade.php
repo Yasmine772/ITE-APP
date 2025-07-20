@@ -42,7 +42,59 @@
                 </ul>
 
                 <!-- Right Side Of Navbar -->
+                <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- Notifications Dropdown -->
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle text-white position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    3
+                                </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown" style="width: 320px;">
+                            <li class="dropdown-header d-flex justify-content-between align-items-center px-3">
+                                <span class="fw-bold">Notifications (3)</span>
+                                <a href="#" class="text-decoration-none text-primary small">Mark all as read</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-start" href="#">
+                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" width="40" alt="User Image">
+                                    <div>
+                                        <strong>Aya Ahmad</strong><br>
+                                        Uploaded a new file<br>
+                                        <small class="text-muted">Just now</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-start" href="#">
+                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" width="40" alt="User Image">
+                                    <div>
+                                        <strong>Mohamad Ali</strong><br>
+                                        Sent you a message<br>
+                                        <small class="text-muted">5 mins ago</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-start" href="#">
+                                    <img src="https://via.placeholder.com/40" class="rounded-circle me-2" width="40" alt="User Image">
+                                    <div>
+                                        <strong>Lina Hasan</strong><br>
+                                        Commented on your post<br>
+                                        <small class="text-muted">10 mins ago</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center text-primary fw-bold" href="#">View All</a></li>
+                        </ul>
+                    </li>
+
+
+                    <ul class="navbar-nav ms-auto align-items-center">
                     <!-- Authentication Links -->
                     @guest
                         @if (Route::has('login'))

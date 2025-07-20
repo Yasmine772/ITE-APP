@@ -48,6 +48,8 @@ class NotificationService
                         'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     ],
                 ]));
+            return ['status' => true, 'message' => $message];
+
 
         } catch (\Throwable $e) {
             return[ 'message'=>$e->getMessage()];
