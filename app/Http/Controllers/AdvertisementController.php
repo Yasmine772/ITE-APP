@@ -47,6 +47,9 @@ class AdvertisementController extends Controller
         $advertisement->recipients()->attach($students->pluck('id'));
         $this->notificationService->sendAdvertToUsers($students, $title, $message, $advertisementId, $teacherInformation);
 
+        $admin = User::role('admin')->get();
+        $this->notificationService->sendToAdmin($admin, $title, $message, $advertisementId, $teacherInformation);
+
         return $this->successResponse([
             'advertisement' => $advertisement,
             'TeacherInformation' => $teacherInformation

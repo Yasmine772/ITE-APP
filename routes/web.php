@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ResourceController;
@@ -39,6 +40,7 @@ Route::get('/dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 Auth::routes();
+Route::get('/notifications',[AdminController::class,'showAllNotification']);
 
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {

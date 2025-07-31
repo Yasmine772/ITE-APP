@@ -40,9 +40,11 @@ class UserServices
         }
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user['token'] = $user->createToken('token')->plainTextToken;
+        $message = 'User login successfully';
         return [
             'token' => $token,
-            'user_id'=>$user->id
+            'user_id'=>$user->id ,
+            'message'=> $message
         ];
     }
 

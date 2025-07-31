@@ -11,6 +11,7 @@
 </head>
 <body>
 
+
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container">
         <a class="navbar-brand text-white" href="#">ITE App</a>
@@ -22,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link text-white" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Posts</a></li>
+
             </ul>
 
             <!-- Notification Dropdown -->
@@ -31,12 +32,14 @@
                     <a class="nav-link dropdown-toggle text-white position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-bell fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              3
+             {{ auth()->user()->unreadNotifications()->count() }}
+
             </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown" style="width: 320px;">
                         <li class="dropdown-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">Notifications (3)</span>
+                            <span class="fw-bold"> Notifications ({{ auth()->user()->unreadNotifications()->count() }}
+)</span>
                             <a href="#" class="text-decoration-none text-primary small">Mark all as read</a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
@@ -49,30 +52,6 @@
                                     <strong>Aya Ahmad</strong><br>
                                     Uploaded a new file<br>
                                     <small class="text-muted">Just now</small>
-                                </div>
-                            </a>
-                        </li>
-
-                        <!-- Notification 2 -->
-                        <li>
-                            <a class="dropdown-item d-flex align-items-start" href="#">
-                                <img src="https://via.placeholder.com/40" class="rounded-circle me-2" width="40">
-                                <div>
-                                    <strong>Mohamad Ali</strong><br>
-                                    Sent you a message<br>
-                                    <small class="text-muted">5 mins ago</small>
-                                </div>
-                            </a>
-                        </li>
-
-                        <!-- Notification 3 -->
-                        <li>
-                            <a class="dropdown-item d-flex align-items-start" href="#">
-                                <img src="https://via.placeholder.com/40" class="rounded-circle me-2" width="40">
-                                <div>
-                                    <strong>Lina Hasan</strong><br>
-                                    Commented on your post<br>
-                                    <small class="text-muted">10 mins ago</small>
                                 </div>
                             </a>
                         </li>

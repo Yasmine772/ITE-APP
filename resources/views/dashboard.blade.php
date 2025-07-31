@@ -13,10 +13,10 @@
     <script>
         function fetchNotifications() {
             $.ajax({
-                url: '/api/notifications/unread', // تأكد من المسار هنا
+                url: '/api/notifications/unread',
                 method: 'GET',
                 success: function (response) {
-                    // تأكد من البنية الصحيحة للاستجابة
+
                     const notifications = response.data || [];
 
                     const list = $('#notificationList');
@@ -35,7 +35,7 @@
                         });
                     }
 
-                    $('#notificationCount').text(notifications.length);
+                   // $('#notificationCount').text(notifications.length);
                 },
                 error: function () {
                     console.error('فشل تحميل الإشعارات');
@@ -45,6 +45,7 @@
 
         $(document).ready(fetchNotifications);
     </script>
+
     </div>
 </x-app-layout>
 

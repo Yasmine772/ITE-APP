@@ -27,15 +27,17 @@ class NotificationService
     }
     public function sendFCMNotification(string $fcmToken, string $title, string $message): array
     {
-        if(! $fcmToken)
-        {
+        if (!$fcmToken) {
             return [
                 'status' => false,
-                'message' =>'Fcm token is required',
+                'message' => 'Fcm token is required',
             ];
         }
         try {
-            $message = CloudMessage::withTarget('token', $fcmToken)
+            $messaging = (new Factory)->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+                ->createMessaging();
+
+            $messageObject = CloudMessage::withTarget('token', $fcmToken)
                 ->withNotification(FirebaseNotification::create($title, $message))
                 ->withData([
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
@@ -48,13 +50,16 @@ class NotificationService
                         'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     ],
                 ]));
-            return ['status' => true, 'message' => $message];
-
+             return $this->$messaging->send($messageObject);
 
         } catch (\Throwable $e) {
-            return[ 'message'=>$e->getMessage()];
+            return [
+                'status' => false,
+                'message' => $e->getMessage(),
+            ];
         }
     }
+
     public function sendToAdmin($admin, string $title, string $message, string $content ,string $information): void
     {
         Notification::send($admin, new AdminNotification($title,  $message, $content , $information));
