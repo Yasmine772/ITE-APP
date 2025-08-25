@@ -41,8 +41,7 @@ use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
 use App\Http\Controllers\RoadmapStepController;
-
-
+use App\Http\Controllers\PaymentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -299,10 +298,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('contents', [CourseContentController::class, 'store']);
 Route::post('contents/{content}', [CourseContentController::class, 'update']);
 Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
-Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+//Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
 
 Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
-    //  Route::get('{courseId}', [CourseContentController::class, 'index']);
+      Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
 
@@ -354,7 +353,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('{stepId}', [RoadmapStepController::class, 'showStep']);
 
-        Route::post('/', [RoadmapStepController::class, 'store']);
+        Route::post('{roadmapId}', [RoadmapStepController::class, 'store']);
 
         Route::put('{stepId}', [RoadmapStepController::class, 'update']);
 
@@ -362,4 +361,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
     });
+    Route::middleware(['auth:sanctum'])->post('/purchase', [PaymentController::class, 'createPaymentIntent']);
+Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->middleware(['auth:sanctum']);
 });
+use Stripe\Stripe;
+use Stripe\Account;
+
+Route::get('/stripe/account-status/{accountId}', function ($accountId) {
+    Stripe::setApiKey(config('services.stripe.secret'));
+    try {
+        $account = Account::retrieve($accountId);
+
+        return response()->json([
+            'id' => $account->id,
+            'email' => $account->email,
+            'type' => $account->type,
+            'country' => $account->country,
+            'capabilities' => $account->capabilities,
+            'details_submitted' => $account->details_submitted,
+            'charges_enabled' => $account->charges_enabled,
+            'payouts_enabled' => $account->payouts_enabled,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+        ], 400);
+    }
+});
+use App\Http\Controllers\StripeWebhookController;
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

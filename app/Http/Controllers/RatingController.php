@@ -17,7 +17,8 @@ class RatingController extends Controller
     }
 
     public function store(RatingRequest $request)
-    {
+{
+    try {
         $userId = auth()->id();
 
         $rating = $this->service->rateContent(
@@ -29,6 +30,13 @@ class RatingController extends Controller
         return response()->json([
             'message' => 'Rating saved successfully.',
             'data' => $rating
-        ]);
+        ], 201); 
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'An error occurred while saving the rating.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
+
 }

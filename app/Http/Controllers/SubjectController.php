@@ -28,9 +28,7 @@ class SubjectController extends Controller
         $this->subjectService = $subjectService;
     }
 
-    /**
-     * Handle index for web views
-     */
+    
     public function index()
     {
         try {
@@ -41,9 +39,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle index for API
-     */
+    
     public function apiIndex()
     {
         try {
@@ -54,9 +50,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle create for web views
-     */
+    
     public function create()
     {
         try {
@@ -71,9 +65,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle store for web views
-     */
+    
     public function store(StoreSubjectRequest $request)
     {
         try {
@@ -88,9 +80,6 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle store for API
-     */
     public function apiStore(StoreSubjectRequest $request)
     {
         try {
@@ -103,9 +92,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle edit for web views
-     */
+    
     public function edit(Subject $subject)
     {
         try {
@@ -122,9 +109,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle update for web views
-     */
+    
     public function update(UpdateSubjectRequest $request, Subject $subject)
     {
         try {
@@ -141,9 +126,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle update for API
-     */
+    
     public function apiUpdate(UpdateSubjectRequest $request, Subject $subject)
     {
         try {
@@ -158,9 +141,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle delete for web views
-     */
+    
     public function destroy(Subject $subject)
     {
         try {
@@ -174,9 +155,7 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Handle delete for API
-     */
+    
     public function apiDestroy(Subject $subject)
     {
         try {
@@ -189,26 +168,22 @@ class SubjectController extends Controller
         }
     }
 
-    // ** Handle validation exceptions for web views **
     private function handleValidationExceptionForWeb(ValidationException $e)
     {
         return redirect()->back()->withErrors($e->errors())->withInput();
     }
 
-    // ** Handle general exceptions for web views **
     private function handleExceptionForWeb(\Exception $e, $message = 'Unexpected error occurred', $statusCode = 500)
     {
         return redirect()->route('subjects.index')->with('error', $message . ': ' . $e->getMessage());
     }
 
-    // ** Handle validation exceptions for API **
     private function handleValidationExceptionForApi(ValidationException $e)
     {
         return $this->errorResponse('Validation error', $e->errors(), 422);
     }
 
-    // ** Handle general exceptions for API **
-    private function handleExceptionForApi(\Exception $e, $message = 'Unexpected error occurred', $statusCode = 500)
+     private function handleExceptionForApi(\Exception $e, $message = 'Unexpected error occurred', $statusCode = 500)
     {
         return $this->errorResponse($message, $e->getMessage(), $statusCode);
     }
@@ -247,7 +222,7 @@ public function filter(Request $request)
 public function apiFilter(Request $request)
 {
     try {
-        $filters = $request->only(['name', 'type', 'year_id', 'specialization_id', 'teacher_id']);
+        $filters = $request->only(['name', 'type', 'year_id', 'specialization_id', 'teacher_id','semester_id']);
         Log::info('Received filters:', $filters);
         $subjects = $this->subjectService->filterSubjects($filters);
         return $this->successResponse($subjects, 'Subjects filtered successfully');
