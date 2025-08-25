@@ -6,9 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\DatabaseMessage;
-use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
+//use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
+
+
 
 class NewAdvertisementNotification extends Notification
 {
@@ -29,7 +30,7 @@ class NewAdvertisementNotification extends Notification
 
     public function via($notifiable): array
     {
-        return ['database', FcmChannel::class];
+        return ['database'];
     }
 
     public function toDatabase($notifiable): DatabaseMessage
@@ -42,19 +43,6 @@ class NewAdvertisementNotification extends Notification
         ]);
     }
 
-    public function toFcm($notifiable): FcmMessage
-    {
-        return FcmMessage::create()
-            ->setData([
-                'title' => $this->title,
-                'message' => $this->message,
-                'advertisement_id' => (string) $this->advertisementId,
-                'teacher_info' => $this->teacherInfo,
-            ])
-            ->setNotification(
-                FcmNotification::create()
-                    ->setTitle($this->title)
-                    ->setBody($this->message . "\n" . $this->teacherInfo)
-            );
-    }
+
 }
+

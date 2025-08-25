@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ResourceRequest;
+use App\Models\Article;
 use App\Models\Course;
 use App\Models\Resource;
 use App\Models\Subject;
+use App\Models\User;
 use App\Services\NotificationService;
 use App\Services\ResourceService;
 use App\Traits\ApiResponseTrait;
@@ -32,7 +34,13 @@ class ResourceController extends Controller
     {
         $data = $request->validated();
         $resource = $this->resourceService->store($data);
+        $content = Resource::find($resource->id);
+        $information = auth()->user();
+        $admin = User::role('admin');
+        $message = 'New reference has been added by'.$information->name;
+        $this->notificationService->sendToAdmin($admin,'New reference ',$message,$content,$information);
         return $this->successResponse($resource,'Resource created successfully.',200);
+
        // return view('addResource');
     }
     public function update(ResourceRequest $request, int $id): \Illuminate\Http\JsonResponse

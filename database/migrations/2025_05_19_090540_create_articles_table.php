@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('content');
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('status')->default('Pending');
-            $table->string('reasonsOfReject')->nullable();
+            $table->json('reasonsOfReject')->nullable();
             $table->json('user_details');
             $table->timestamps();
         });

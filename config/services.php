@@ -31,13 +31,15 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    'fcm' => [
-        'key' => env('FCM_SERVER_KEY'),
+    'firebase' => [
+        'credentials' => base_path(env('FIREBASE_CREDENTIALS')),
     ],
     'stripe' => [
         'key' => env('STRIPE_PUBLIC_KEY'),
         'secret' => env('STRIPE_SECRET_KEY'),
     ],
+
+
 
 
 ];

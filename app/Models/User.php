@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Permission;
@@ -21,9 +18,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory;
     use Notifiable;
     use HasRoles;
-    use HasProfilePhoto;
-    use HasTeams;
-    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -79,9 +73,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $hidden = [
         'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
         'academic_qualification',
         'experience',
         'degree'
@@ -92,9 +83,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+
 
     /**
      * Get the attributes that should be cast.
@@ -169,6 +158,7 @@ class User extends Authenticatable implements MustVerifyEmail
    {
         return $this->belongsToMany(Resource::class);
    }
+
    public function purchases()
 {
     return $this->hasMany(Purchase::class);
@@ -180,5 +170,14 @@ public function purchasedCourses()
                 ->withPivot('amount_paid', 'payment_status')
                 ->withTimestamps();
 }
+    public function receivedAdvertisements()
+    {
+        return $this->belongsToMany(Advertisement::class, 'advertisement_user')->withTimestamps();
+    }
+    public function coupons(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Coupon::class,Teacher::class);
+    }
+
 
 }

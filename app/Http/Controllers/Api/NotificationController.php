@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -24,7 +27,21 @@ class NotificationController extends Controller
      {
          return $this->notificationService->index();
      }
-    public function send(Request $request): \Illuminate\Http\JsonResponse
+
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'fcm_token' => 'required|string',
+        ]);
+        $user = User::find($request->user_id);
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+        return response()->json(['message' => 'Token stored successfully.']);
+    }
+
+
+public function send(Request $request): \Illuminate\Http\JsonResponse
     {
         $input = $request->validate([
             'title' => 'required|string|max:50',
@@ -32,11 +49,16 @@ class NotificationController extends Controller
         ]);
 
         $user = auth()->user();
-        $this->notificationService->send($user, $input['title'], $input['message']);
+        $this->notificationService->sendToStudents($user, $input['title'], $input['message']);
 
         return response()->json([
             'message' => 'Notification sent successfully',
         ], 200);
+    }
+    public function markAsRead($notificationId): \Illuminate\Http\JsonResponse
+    {
+        $this->notificationService->markAsRead($notificationId);
+        return response()->json(['message' => 'Notification read successfully'], 200);
     }
 
 

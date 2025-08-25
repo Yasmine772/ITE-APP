@@ -1,15 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdviceController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\Web\AdminController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\SubjectController;
-
 use App\Http\Controllers\ContentSubjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
@@ -25,25 +23,26 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use App\Http\Controllers\CourseSubscriptionController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
+use App\Http\Controllers\RulesForArticlesController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\HomeController;
+
+
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return view('welcome');
 });
 
-Route::middleware(['auth:sanctum',
-    config('jetstream.auth_session'),])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth')->name('dashboard');
+
+Auth::routes();
+Route::get('/notifications',[AdminController::class,'showAllNotification']);
+
+
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('students/show',[AdminController::class,'studentShow']);
     Route::get('teacher/show',[AdminController::class,'teacherShow']);
@@ -184,8 +183,9 @@ Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])-
 Route::group(['middleware' => ['auth:sanctum', 'Admin']], function () {
     //Admin & articles
     Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
-    Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
-    Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+    Route::post('/acceptOrRejectArticle', [ArticleController::class, 'acceptOrRejectArticle']);
+    Route::get('/showRejectionReason', [RulesForArticlesController::class, 'showRejectionReason']);
+    Route::post('/articleDetailsForAdmin', [RulesForArticlesController::class, 'articleDetailsForAdmin']);
 });
 
 
@@ -195,3 +195,7 @@ Route::get('/test-stripe-config', function () {
 
     dd(config('stripe.publishable_key'), config('stripe.secret_key'));
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

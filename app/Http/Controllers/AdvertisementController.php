@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\NewAdvertisementNotification;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,11 @@ class AdvertisementController extends Controller
         $teacherInformation = "{$user->name} ";
 
         $students = User::role('student')->get();
+        $advertisement->recipients()->attach($students->pluck('id'));
         $this->notificationService->sendAdvertToUsers($students, $title, $message, $advertisementId, $teacherInformation);
+
+        $admin = User::role('admin')->get();
+        $this->notificationService->sendToAdmin($admin, $title, $message, $advertisementId, $teacherInformation);
 
         return $this->successResponse([
             'advertisement' => $advertisement,
@@ -94,5 +99,35 @@ class AdvertisementController extends Controller
     {
         $allAdvertisements = Advertisement::get();
         return $this->successResponse(['allAdvertisements' => $allAdvertisements]);
+    }
+    public function showDetails(int $id): JsonResponse
+    {
+        try {
+            $student = auth()->user();
+            $advertisement = $student->receivedAdvertisements()->where('advertisement_id', $id)->first();
+        if (!$advertisement) {
+            return $this->errorResponse('Advertisement not found or not accessible.', 404);
+        }
+        return $this->successResponse(['Details' => [
+             'title'=> $advertisement->title,
+            'description'=> $advertisement->description ,
+            'Teacher name'=>$advertisement->teacher_name,
+            'Created at'=>  $advertisement->created_at,
+            'Updated at'=>  $advertisement->updated_at,
+
+            ]]);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            $this->errorResponse($e->getMessage(), 404);
+        }
+
+    }
+    public function showAllStudent(): JsonResponse
+    {
+        $student = auth()->user();
+        $adverts = $student->receivedAdvertisements()->get();
+        return $this->successResponse(['receivedAdvertisements' => $adverts]);
+
     }
 }

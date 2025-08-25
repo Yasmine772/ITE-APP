@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         ExamSeeder::class,
         QuestionSeeder::class,
         OptionSeeder::class,
+        RulesForArticlesSeeder::class,
 
         ]);
 

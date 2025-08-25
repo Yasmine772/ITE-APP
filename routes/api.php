@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvicesController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\CouponsController;
 use App\Http\Controllers\MyResourceListController;
 use App\Http\Controllers\PersonalBlogController;
 use App\Http\Controllers\UserController;
@@ -41,7 +42,9 @@ use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
 use App\Http\Controllers\RoadmapStepController;
+
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RulesForArticlesController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -146,9 +149,11 @@ Route::get('/showAllArticles', [ArticleController::class, 'showAllArticles']);
 // Route::post('/acceptEditArticle', [ArticleController::class, 'acceptEditArticle']);
 // Route::get('/showNoneAcceptArticle', [ArticleController::class, 'showNoneAcceptArticle']);
 
-// Route::get('/showPendingArticleforAdmin', [ArticleController::class, 'showPendingArticleforAdmin']);
-// Route::post('/RejectArticle', [ArticleController::class, 'RejectArticle']);
-// Route::post('/acceptArticle', [ArticleController::class, 'acceptArticle']);
+Route::get('/showPendingArticleforAdmin', [RulesForArticlesController::class, 'showPendingArticleforAdmin']);
+Route::post('/acceptOrRejectArticle', [RulesForArticlesController::class, 'acceptOrRejectArticle']);
+Route::get('/showRejectionReason', [RulesForArticlesController::class, 'showRejectionReason']);
+
+//
 Route::post('/displayAdvices', [AdviceController::class, 'displayAdvices']);
 
 Route::post('/displayAssignment', [AssignmentController::class, 'displayAssignment']);
@@ -163,7 +168,8 @@ Route::post('/complaintDetails', [ComplaintController::class, 'complaintDetails'
 
 Route::post('/showExamForStudent', [ExamController::class, 'showExamForStudent']);
 Route::post('/detailsOfExam', [ExamController::class, 'detailsOfExam']);
-
+//fcm token store
+Route::post('notifications/store-token', [NotificationController::class, 'store']);
 
 //Notifications
 Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'notifications'], function () {
@@ -193,8 +199,11 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::delete('advertisement/destroyAllAdmin', [AdvertisementController::class, 'destroyAllAdmin']);
     //Resources
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
-
-
+});
+//Advertisement for student
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('advertisement/showAllStudent', [AdvertisementController::class, 'showAllStudent']);
+    Route::get('advertisement/{id}/showDetails', [AdvertisementController::class, 'showDetails']);
 });
 //Resources
 Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
@@ -203,10 +212,12 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::post('resource/{id}/update', [ResourceController::class, 'update']);
     Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
+
 });
 
 // My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('resource/showAll', [ResourceController::class, 'showAll']);
     Route::get('myresource/index', [MyResourceListController::class, 'index']);
     Route::get('myresource/store', [MyResourceListController::class, 'store']);
     Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
@@ -216,7 +227,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('mynotes/index', [PersonalBlogController::class, 'index']);
     Route::get('mynotes/{id}/show', [PersonalBlogController::class, 'show']);
-    Route::get('mynotes/store', [PersonalBlogController::class, 'store']);
+    Route::post('mynotes/store', [PersonalBlogController::class, 'store']);
     Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
     Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
     Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
@@ -228,13 +239,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
 
 });
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('coupon/store', [CouponsController::class, 'store']);
+});
 
 
 
 Route::prefix('subjects')->name('subjects.')->group(function () {
     Route::get('/', [SubjectController::class, 'apiIndex'])->name('index');
 
-    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');   
+    Route::get('search', [SubjectController::class, 'apiFilter'])->name('search');
 
     Route::get('{id}', [SubjectController::class, 'apiShow'])->name('show');
     Route::post('/', [SubjectController::class, 'apiStore'])->name('store');
@@ -279,7 +293,7 @@ Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
 Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
 
 Route::prefix('courses')->group(function () {
-   
+
     Route::middleware(['auth:sanctum', 'active.subscription'])->group(function () {
         Route::get('/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress']);
 

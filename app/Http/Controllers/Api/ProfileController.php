@@ -13,7 +13,7 @@ class profileController extends Controller
 {
     use ApiResponseTrait;
 
-    public function updateUserProfile(Request $request)
+    public function updateUserProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -54,7 +54,7 @@ class profileController extends Controller
         }
     }
     //*************************************************************************************************
-    public function showUserProfile()
+    public function showUserProfile(): \Illuminate\Http\JsonResponse
     {
         try {
             if (!auth()->user()) {

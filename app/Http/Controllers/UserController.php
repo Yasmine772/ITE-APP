@@ -44,7 +44,7 @@ class UserController extends Controller
     {
         try {
             $data = $this->userService->login($request);
-            return $this->successResponse($data, 'User login successfully');
+            return $this->successResponse($data, $data['message']);
         } catch (Throwable $th) {
             return $this->errorResponse($th->getMessage(), $th->getCode());
         }
