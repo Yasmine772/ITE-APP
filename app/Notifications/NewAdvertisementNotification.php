@@ -44,5 +44,6 @@ class NewAdvertisementNotification extends Notification
     }
 
 
+
 }
 

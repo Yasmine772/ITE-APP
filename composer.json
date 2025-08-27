@@ -8,6 +8,8 @@
         "php": "^8.2",
         "ext-imagick": "*",
         "composer": "*",
+        "blade-ui-kit/blade-heroicons": "^2.6",
+        "filament/filament": "^3.3",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/firebase-php": "^7.19",
         "kreait/laravel-firebase": "^6.0",
@@ -20,10 +22,11 @@
         "php-ffmpeg/php-ffmpeg": "^1.3",
         "spatie/laravel-permission": "^6.18",
         "stripe/stripe-php": "^17.3",
+        "symfony/cache": "^7.3",
+        "symfony/cache-contracts": "^3.6",
         "symfony/process": "^7.3",
         "tightenco/ziggy": "^2.0"
     },
-
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
@@ -31,7 +34,8 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
         "phpunit/phpunit": "^10.5",
-        "spatie/laravel-ignition": "^2.4"
+        "spatie/laravel-ignition": "^2.4",
+        "symfony/contracts": "^3.6"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +52,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

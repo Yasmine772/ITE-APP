@@ -33,16 +33,29 @@ class ResourceController extends Controller
     public function store(ResourceRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
-        $resource = $this->resourceService->store($data);
-        $content = Resource::find($resource->id);
-        $information = auth()->user();
-        $admin = User::role('admin');
-        $message = 'New reference has been added by'.$information->name;
-        $this->notificationService->sendToAdmin($admin,'New reference ',$message,$content,$information);
-        return $this->successResponse($resource,'Resource created successfully.',200);
 
-       // return view('addResource');
+        $resource = $this->resourceService->store($data);
+        $content = $resource->title;
+
+        $information = auth()->user();
+        $admin = \App\Models\User::role('admin')->first();
+        $message = 'New reference has been added by ' . $information->name;
+
+        $this->notificationService->sendToAdmin(
+            $admin,
+            'New reference',
+            $message,
+            $content,
+            $information
+        );
+
+        return $this->successResponse(
+            $resource,
+            'Resource created successfully.',
+            200
+        );
     }
+
     public function update(ResourceRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
@@ -65,6 +78,16 @@ class ResourceController extends Controller
         return $this->successResponse(['resources' => $resources]);
 
     }
+    public function showAllResourse(): \Illuminate\Http\JsonResponse
+    {
+        // جلب كل الموارد بدون تقييد بالمعلم
+        $resources = Resource::with('teacher', 'resourceable')->get();
+
+        return $this->successResponse([
+            'resources' => $resources
+        ]);
+    }
+
 
 }
 

@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Filament\Resources\TeacherResource\Pages;
+
+use App\Filament\Resources\TeacherResource;
+use Filament\Resources\Pages\ViewRecord;
+
+class ViewTeacher extends ViewRecord
+{
+    protected static string $resource = TeacherResource::class;
+}

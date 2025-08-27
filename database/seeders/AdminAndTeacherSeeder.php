@@ -87,7 +87,7 @@ class AdminAndTeacherSeeder extends Seeder
             ['name' => 'نور الحكيم', 'email' => 'nour.hakim@example.com', 'academic_qualification' => 'معيدة نظم وسائط متعددة', 'years_of_experience' => 5, 'degree' => 'أستاذة عملي'],
             ['name' => 'آلاء الشماع', 'email' => 'alaa.shamaa@example.com', 'academic_qualification' => 'معيدة نظم وسائط متعددة', 'years_of_experience' => 4, 'degree' => 'أستاذة عملي'],
             ['name' => 'كرم البعيني', 'email' => 'karam.baaini@example.com', 'academic_qualification' => 'ماجستير في هندسة البرمجيات', 'years_of_experience' => 8, 'degree' => 'أستاذ عملي'],
-            ['name' => 'ريناد نوفل', 'email' => 'rinad.noufal@example.com', 'academic_qualification' => 'معيدة في البرمجة التفرعية', 'years_of_experience' => 3, 'degree' => 'مأستاذ عملي'],
+            ['name' => 'ريناد نوفل', 'email' => 'rinad.noufal@example.com', 'academic_qualification' => 'معيدة في البرمجة التفرعية', 'years_of_experience' => 3, 'degree' => 'أستاذ عملي'],
             ['name' => 'عمار المصري', 'email' => 'ammar.masri@example.com', 'academic_qualification' => 'معيد في البرمجة التفرعية', 'years_of_experience' => 4, 'degree' => 'أستاذ عملي'],
             ['name' => 'يوسف الرفاعي', 'email' => 'youssef.rafie@example.com', 'academic_qualification' => 'ماجستير في الشبكات', 'years_of_experience' => 9, 'degree' => 'أستاذ عملي'],
             ['name' => 'حلا مرعي', 'email' => 'hala.marai@example.com', 'academic_qualification' => 'معيدة شبكات', 'years_of_experience' => 4, 'degree' => 'أستاذة عملي'],

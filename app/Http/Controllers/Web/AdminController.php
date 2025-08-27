@@ -23,10 +23,10 @@ class AdminController extends Controller
        $students = User::role('student')->get();
        return $students;
    }
-   public function teacherShow()
+   public function teacherShow(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory
    {
-       $teachers = User::role('teacher')->get();
-       return $teachers;
+       $teachers = User::role('teacher')->with('teacher')->get();
+       return view('showTeachers', compact('teachers'));
    }
      public function showAllNotification()
      {

@@ -212,7 +212,11 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
 
 });
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::get('resource/index', [ResourceController::class, 'showAllResourse']);
 
+
+});
 // My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
