@@ -32,13 +32,13 @@
                     <a class="nav-link dropdown-toggle text-white position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-bell fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-             {{ auth()->user()->unreadNotifications()->count() }}
+              {{ auth()->user()->unreadNotifications->count() }}
 
             </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown" style="width: 320px;">
                         <li class="dropdown-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold"> Notifications ({{ auth()->user()->unreadNotifications()->count() }}
+                            <span class="fw-bold"> Notifications ( {{ auth()->user()->unreadNotifications->count() }} )
 )</span>
                             <a href="#" class="text-decoration-none text-primary small">Mark all as read</a>
                         </li>
