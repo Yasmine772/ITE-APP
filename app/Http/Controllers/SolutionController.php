@@ -23,13 +23,8 @@ class SolutionController extends Controller
             $teacher = Teacher::where('user_id', auth()->user()->id)->first();
 
             $assignment = Assignment::find($request->assignment_id);
-            // $sameSolution = Solution::where('assignment_id', $request->assignment_id)->first();
-            // if ($request->assignment_id == $sameSolution->assignment_id) {
-            //     return 'error';
-            //     return redirect()->back()->withErrors('you add solution for this assignment!');
-            // }
             $sameSolution = Solution::where('assignment_id', $request->assignment_id)->first();
-            if ($sameSolution) {
+            if ($request->assignment_id == $sameSolution->assignment_id) {
                 return redirect()->back()->withErrors('you add solution for this assignment!');
             }
 
@@ -43,8 +38,7 @@ class SolutionController extends Controller
             ]);
             $success = 'Solution has been added successfully';
             $solutions = Solution::where('assignment_id', $request->assignment_id)->get();
-            return response()->json(['data' => 'ok']);
-           // view('Solutions.All_solutions', compact('solutions', 'success'));
+            return view('Solutions.All_solutions', compact('solutions', 'success'));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {

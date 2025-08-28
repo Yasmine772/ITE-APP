@@ -46,20 +46,20 @@ class AdviceController extends Controller
     {
         try {
             $advice = Advice::find($advice_id);
-           // if (auth()->user()->id == $advice->teacher_id) {
+            if (auth()->user()->id == $advice->teacher_id) {
                 $advice->delete();
                 return view('advices.All_Advices')->with('success', 'Advice has been deleted successfully');
-           // }
+            }
             return redirect()->back()->withErrors('You are not reponsible about this advice !');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);
         }
     }
     //************************************************************************************************* */
-    public function showAdvices($subject_id)
+    public function showAdvices(Request $request)
     {
         try {
-            $advices = Advice::where('subject_id', $subject_id)->get();
+            $advices = Advice::where('subject_id', $request->subject_id)->get();
             return view('advices.All_Advices',compact('advices'));
         } catch (\Exception $e) {
             return redirect()->back()->withErrors('Something went wrong: ' . $e->getMessage(), 500);

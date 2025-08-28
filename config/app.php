@@ -149,12 +149,14 @@ return [
     Illuminate\Translation\TranslationServiceProvider::class,
     Illuminate\Validation\ValidationServiceProvider::class,
     Illuminate\View\ViewServiceProvider::class,
+    App\Providers\Filament\AdminPanelPanelProvider::class,
+
 
     /*
      * Application Service Providers...
      */
     App\Providers\AppServiceProvider::class,
-    App\Providers\EventServiceProvider::class, // <-- أضف هنا مزود الخدمة الخاص بك
+    App\Providers\EventServiceProvider::class,
 ],
 
 ];

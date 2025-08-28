@@ -26,7 +26,6 @@ class AdviceSeeder extends Seeder
                 'subject_id' => $faker->randomElement($subjectIds),
             ]);
         }
-        
     //     DB::table('advice')->insert([
     //         'content' => 'very easy subject kkkkkkkkkkk',
     //         'teacher_id' => 1,

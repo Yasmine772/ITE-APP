@@ -13,6 +13,9 @@ return [
     | This will allow your users to receive real-time notifications.
     |
     */
+    'colors' => [
+        'primary' => '#3B82F6',
+    ],
 
     'broadcasting' => [
 
@@ -85,5 +88,27 @@ return [
     */
 
     'livewire_loading_delay' => 'default',
+
+    /*
+    |--------------------------------------------------------------------------
+    | System Route Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This is the prefix used for the system routes that Filament registers,
+    | such as the routes for downloading exports and failed import rows.
+    |
+    */
+
+    'system_route_prefix' => 'filament',
+    'default_panel' => 'adminPanel',
+
+    'panels' => [
+        'adminPanel' => [
+            'path' => 'adminPanel',
+            'resources' => [],
+            'pages' => [],
+            'widgets' => [],
+        ],
+    ],
 
 ];

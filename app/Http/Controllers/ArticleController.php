@@ -38,10 +38,10 @@ class ArticleController extends Controller
             $content = Article::find($article->id);
             //Notification for admin
             $admin = User::where('name', 'admin')->get();
-           // $this->notificationService->sendToAdmin($admin, 'New Article', 'You have an article to verify for publication',$content,$information);
+            $this->notificationService->sendToAdmin($admin, 'New Article', 'You have an article to verify for publication',$content,$information);
 
             $user = auth()->user();
-           // $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
+            $this->notificationService->sendToUserForArticle($user, 'Hi' . $user->name, 'We have sent your article to the admin for review.');
             return $this->successResponse($article, 'We have sent your article to the admin for review.', 200);
         } catch (\Exception $e) {
             return $this->errorResponse(null, 'Something went wrong: ' . $e->getMessage(), 500);

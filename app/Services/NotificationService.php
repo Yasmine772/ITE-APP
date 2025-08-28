@@ -66,11 +66,15 @@ class NotificationService
     }
     public function sendAdvertToUsers($users, string $title, string $message, int $advertisementId, string $teacherInfo): void
     {
-        Notification::send($users, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
-      foreach ($users as $user) {
-            $this->sendFCMNotification($user->fcm_token, $title, $message);
+        foreach ($users as $user) {
+            Notification::send($user, new NewAdvertisementNotification($title, $message, $advertisementId, $teacherInfo));
+
+            if ($user->fcm_token) {
+                $this->sendFCMNotification($user->fcm_token, $title, $message);
+            }
         }
     }
+
 
     public function sendResourceToUsers($users, string $title, string $message, int $resourceId): void
     {
