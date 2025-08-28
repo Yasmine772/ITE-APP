@@ -111,15 +111,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
     // Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
 
-    // //assignments:
-    // Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
-    // Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
-    // Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+    //assignments:
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
 
     // //Solutions of assignments:
-    // Route::post('/addSolution', [SolutionController::class, 'addSolution']);
-    // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
-    // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
+    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
 
     // //Exams:
     // Route::post('/addExam', [ExamController::class, 'addExam']);
@@ -218,13 +218,26 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('resource/index', [ResourceController::class, 'showAllResourse']);
 
 
+
 });
+
+
+
+
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::get('resource/index', [ResourceController::class, 'showAllResourse']);
+
+
+});
+
 // My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
     Route::get('myresource/index', [MyResourceListController::class, 'index']);
     Route::get('myresource/store', [MyResourceListController::class, 'store']);
     Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
+
+
 
 });
 //Personal Blog
@@ -243,9 +256,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
 
 });
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('coupon/store', [CouponsController::class, 'store']);
-});
+
 
 
 
@@ -407,6 +418,6 @@ Route::get('/stripe/account-status/{accountId}', function ($accountId) {
         ], 400);
     }
 });
-use App\Http\Controllers\StripeWebhookController;
 
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
+

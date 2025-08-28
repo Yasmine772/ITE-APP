@@ -177,4 +177,11 @@ public function purchasedCourses()
 
 
 
+    public function coupons(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Coupon::class, Teacher::class);
+    }
+
+
+
 }

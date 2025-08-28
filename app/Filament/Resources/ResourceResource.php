@@ -31,10 +31,9 @@ class ResourceResource extends FilamentResource
                     ->disk('public')
                     ->directory('resources')
                     ->visibility('public'),
-                Forms\Components\SpatieMediaLibraryFileUpload::make('cover_image')
-                    ->label('Cover Image')
-                    ->disk('public')
-                    ->directory('resources/covers'),
+
+
+
             ]);
     }
 
@@ -43,17 +42,11 @@ class ResourceResource extends FilamentResource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')->label('Title')->sortable()->searchable(),
-                Tables\Columns\ImageColumn::make('cover_image')
-                    ->label('Cover')
-                    ->disk('public')
-                    ->height(80)
-                    ->width(60),
+
                 Tables\Columns\TextColumn::make('resourceable_type')
-                    ->label('Type')
+                    ->label('Type of resource')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('resourceable_id')
-                    ->label('Linked ID')
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime('d/m/Y H:i'),
@@ -63,18 +56,23 @@ class ResourceResource extends FilamentResource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+//                Tables\Actions\EditAction::make(),
+//                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+//                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getEloquentQuery(): Builder
     {
-        // لو بدك تعرض فقط المراجع الخاصة بالمعلم الحالي:
-        $teacher = auth()->user()->teacher;
+
+        $user = auth()->user();
+
+        if ($user->hasRole('admin')) {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()->where('teacher_id', $teacher->id);
     }
 
@@ -82,8 +80,8 @@ class ResourceResource extends FilamentResource
     {
         return [
             'index' => Pages\ListResources::route('/'),
-            'create' => Pages\CreateResource::route('/create'),
-            'edit' => Pages\EditResource::route('/{record}/edit'),
+            //'create' => Pages\CreateResource::route('/create'),
+            //'edit' => Pages\EditResource::route('/{record}/edit'),
            // 'view' => Pages\ViewResource::route('/{record}'),
         ];
     }

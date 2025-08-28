@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\AdviceController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\ArticleController;
@@ -140,7 +139,7 @@ Route::prefix('course_contents')->group(function () {
 Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
     //advices:
     Route::post('/addAdvices', [AdviceController::class, 'addAdvice'])->name('advices.addAdvice');
-    Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');
+  //  Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');
     Route::post('/editAdvices', [AdviceController::class, 'editAdvices'])->name('advices.editAdvices');
 
     //assignments:
@@ -173,7 +172,9 @@ Route::group(['middleware' => ['auth:sanctum', 'Teacher']], function () {
 
 
 });
-Route::post('/showAdvices', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
+Route::get('/showAdvices/{subject_id}', [AdviceController::class, 'showAdvices'])->name('advices.All_Advices');
+Route::delete('/deleteAdvice/{advice_id}', [AdviceController::class, 'deleteAdvice'])->name('advices.deleteAdvice');
+
 Route::post('/showSolutions', [SolutionController::class, 'showSolutions'])->name('solutions.All_solutions');
 Route::post('/showAssignment', [AssignmentController::class, 'showAssignment'])->name('assignments.All_assignments');
 //Route::get('/downloadFiles', [AssignmentController::class, 'downloadFiles']);
