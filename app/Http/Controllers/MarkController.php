@@ -49,18 +49,26 @@ class MarkController extends Controller
             }
 
             $exam = Exam::find($request->exam_id);
+            $due_mark = 0;
+            $answers = Answer::where('user_id', auth()->user()->id)->get();
 
             $minutesPassed = floor((time() - $examInProgress->start_time)/60);
 
             if($minutesPassed > $exam->duration){
+
+                foreach ($answers as  $answer) {
+                    $option = Option::find($answer->option_id);
+                    if ($option->is_correct === 1) {
+                        $question = Question::find($option->question_id);
+                        $due_mark += $question->mark;
+                    }
+                }
+                $examInProgress->due_mark = $due_mark;
                 $examInProgress->status = 'Timeout';
                 $examInProgress->end_time = time();
                 $examInProgress->save();
-                return $this->errorResponse('Timeout! minutesPassed :'. $minutesPassed .'minutes', 500);
+                return $this->errorResponse('Timeout! minutesPassed :'. $minutesPassed .' minutes ,the mark : '.$due_mark.' only ', 500);
             }
-
-            $due_mark = 0;
-            $answers = Answer::where('user_id', auth()->user()->id)->get();
 
             if ($answers->isEmpty()) {
                 $examInProgress->due_mark = 0 ;

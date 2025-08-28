@@ -45,7 +45,6 @@ class Subject extends Model
         return $this->hasMany(ContentSubject::class);
     }
 
-
     public function advice()
     {
         return $this->hasMany(Advice::class);
@@ -63,7 +62,7 @@ class Subject extends Model
     }
 
 
-    public function exam()
+    public function exams()
     {
         return $this->hasMany(Exam::class, 'exams');
     }

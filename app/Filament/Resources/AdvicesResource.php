@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AdvicesResource\Pages;
 use App\Models\Advice;
 use Filament\Forms;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,7 +16,7 @@ class AdvicesResource extends Resource
 {
     protected static ?string $model = Advice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
 
     public static function form(Form $form): Form
     {
@@ -44,9 +45,19 @@ class AdvicesResource extends Resource
                 Tables\Columns\TextColumn::make('content')->label('Content')->limit(70),
             ])
             ->filters([
-                SelectFilter::make('subject')
-                    ->label('Subject')
-                    ->relationship('subject', 'name'),
+            SelectFilter::make('subject_id')
+                ->relationship(
+                    'subject',
+                    'name',
+                    fn(Builder $query) => $query->where('teacher_id', auth()->user()->teacher->id)
+                )
+                ->placeholder(null)
+                ->label('Your subjects')
+                ->query(function (Builder $query, array $data) {
+                    if (isset($data['value'])) {
+                        $query->where('subject_id', $data['value']);
+                    }
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

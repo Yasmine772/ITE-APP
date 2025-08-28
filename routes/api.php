@@ -109,15 +109,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/deleteAdvice', [AdviceController::class, 'deleteAdvice']);
     // Route::post('/editAdvices', [AdviceController::class, 'editAdvices']);
 
-    // //assignments:
-    // Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
-    // Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
-    // Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
+    //assignments:
+    Route::post('/addAssignment', [AssignmentController::class, 'addAssignment']);
+    Route::post('/deleteAssignment', [AssignmentController::class, 'deleteAssignment']);
+    Route::post('/editAssignment', [AssignmentController::class, 'editAssignment']);
 
     // //Solutions of assignments:
-    // Route::post('/addSolution', [SolutionController::class, 'addSolution']);
-    // Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
-    // Route::post('/editSolution', [SolutionController::class, 'editSolution']);
+    Route::post('/addSolution', [SolutionController::class, 'addSolution']);
+    Route::post('/deleteSolution', [SolutionController::class, 'deleteSolution']);
+    Route::post('/editSolution', [SolutionController::class, 'editSolution']);
 
     // //Exams:
     // Route::post('/addExam', [ExamController::class, 'addExam']);
@@ -210,7 +210,6 @@ Route::group(['middleware' => ['auth:sanctum', 'teacher']], function () {
     Route::post('resource/{id}/update', [ResourceController::class, 'update']);
     Route::delete('resource/{id}/destroy', [ResourceController::class, 'destroy']);
     Route::delete('resource/destroyAll', [ResourceController::class, 'destroyAll']);
-
 });
 
 // My Resources list
@@ -219,7 +218,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresource/index', [MyResourceListController::class, 'index']);
     Route::get('myresource/store', [MyResourceListController::class, 'store']);
     Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
-
 });
 //Personal Blog
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -229,13 +227,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
     Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
     Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
-
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
-
 });
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('coupon/store', [CouponsController::class, 'store']);
@@ -267,7 +263,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
         Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
     });
-
 });
 
 Route::prefix('categories')->group(function () {
@@ -286,7 +281,6 @@ Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
     Route::post('/', [CourseController::class, 'apiStore']);
     Route::post('/{id}', [CourseController::class, 'apiUpdate']);
     Route::delete('/{id}', [CourseController::class, 'apiDestroy']);
-
 });
 Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
 

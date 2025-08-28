@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Solution extends Model
 {
     protected $fillable = [
+        'title',
         'solutionFile',
         'teacher_id',
         'assignment_id',

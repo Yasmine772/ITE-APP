@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Attribute;
+use Illuminate\Container\Attributes\Storage;
 use Illuminate\Database\Eloquent\Model;
 
 class Assignment extends Model
@@ -15,12 +17,19 @@ class Assignment extends Model
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class, 'subjects');
+        return $this->belongsTo(Subject::class);
     }
 
     public function solution()
     {
-        return $this->hasOne(Solution::class, 'solutions');
+        return $this->hasOne(Solution::class);
+    }
+
+    protected function fileUrl(): Attribute
+    { 
+        return Attribute::make(
+            get: fn() => $this->file ? Storage::disk('public')->url($this->file) : '#',
+        );
     }
 
 
