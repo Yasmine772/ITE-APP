@@ -14,7 +14,7 @@ return [
     |
     */
     'colors' => [
-        'primary' => '#3B82F6',
+        'primary' => '#3579e0ff',
     ],
 
     'broadcasting' => [

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f
+class ComposerStaticInit91935dc425bb656e594d7f1f55eb72ac
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -1005,24 +1005,9 @@ class ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\EditAdvertisement' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/EditAdvertisement.php',
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\ListAdvertisements' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/ListAdvertisements.php',
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\ViewAdvertisement' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/ViewAdvertisement.php',
-        'App\\Filament\\Resources\\AdvicesResource' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource.php',
-        'App\\Filament\\Resources\\AdvicesResource\\Pages\\CreateAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/CreateAdvices.php',
-        'App\\Filament\\Resources\\AdvicesResource\\Pages\\EditAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/EditAdvices.php',
-        'App\\Filament\\Resources\\AdvicesResource\\Pages\\ListAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/ListAdvices.php',
         'App\\Filament\\Resources\\ArticlesResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource.php',
         'App\\Filament\\Resources\\ArticlesResource\\Pages\\ListArticles' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource/Pages/ListArticles.php',
         'App\\Filament\\Resources\\ArticlesResource\\Pages\\ViewArticles' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource/Pages/ViewArticles.php',
-        'App\\Filament\\Resources\\AssignmentResource\\RelationManagers\\SolutionsRelationManager' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentResource/RelationManagers/SolutionsRelationManager.php',
-        'App\\Filament\\Resources\\AssignmentsResource' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource.php',
-        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\CreateAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/CreateAssignments.php',
-        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\EditAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/EditAssignments.php',
-        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\ListAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/ListAssignments.php',
-        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\ViewAssignment' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/ViewAssignment.php',
-        'App\\Filament\\Resources\\ExamsResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource.php',
-        'App\\Filament\\Resources\\ExamsResource\\Pages\\CreateExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/CreateExams.php',
-        'App\\Filament\\Resources\\ExamsResource\\Pages\\EditExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/EditExams.php',
-        'App\\Filament\\Resources\\ExamsResource\\Pages\\ListExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/ListExams.php',
-        'App\\Filament\\Resources\\ExamsResource\\Pages\\ViewExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/ViewExams.php',
         'App\\Filament\\Resources\\NotificationResource' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource.php',
         'App\\Filament\\Resources\\NotificationResource\\Pages\\EditNotification' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource/Pages/EditNotification.php',
         'App\\Filament\\Resources\\NotificationResource\\Pages\\ListNotifications' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource/Pages/ListNotifications.php',
@@ -1189,7 +1174,7 @@ class ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\Filament\\AdminPanelPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/AdminPanelPanelProvider.php',
-        'App\\Providers\\Filament\\AdminPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/AdminPanelProvider.php',
+        'App\\Providers\\Filament\\TeacherPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/TeacherPanelProvider.php',
         'App\\Rules\\OnlyOneCorrectOption' => __DIR__ . '/../..' . '/app/Rules/OnlyOneCorrectOption.php',
         'App\\Services\\CategoryService' => __DIR__ . '/../..' . '/app/Services/CategoryService.php',
         'App\\Services\\ContentSubjectService' => __DIR__ . '/../..' . '/app/Services/ContentSubjectService.php',
@@ -11710,16 +11695,16 @@ class ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f
         'Whoops\\Util\\SystemFacade' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
         'Whoops\\Util\\TemplateHelper' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
         'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
-        'ï¿½' => __DIR__ . '/..' . '/symfony/cache/Traits/ValueWrapper.php',
+        '©' => __DIR__ . '/..' . '/symfony/cache/Traits/ValueWrapper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit91935dc425bb656e594d7f1f55eb72ac::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit91935dc425bb656e594d7f1f55eb72ac::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit91935dc425bb656e594d7f1f55eb72ac::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit91935dc425bb656e594d7f1f55eb72ac::$classMap;
 
         }, null, ClassLoader::class);
     }
