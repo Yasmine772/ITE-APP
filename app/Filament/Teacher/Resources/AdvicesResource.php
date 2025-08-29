@@ -54,6 +54,7 @@ class AdvicesResource extends Resource
                 )
                 ->placeholder(null)
                 ->label('Your subjects')
+                ->default(fn() => auth()->user()->teacher->subjects->first()?->id)
                 ->query(function (Builder $query, array $data) {
                     if (isset($data['value'])) {
                         $query->where('subject_id', $data['value']);

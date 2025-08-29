@@ -27,7 +27,7 @@ class TeacherPanelProvider extends PanelProvider
             ->id('teacher')
             ->path('teacher')
             ->colors([
-                'primary' => Color::Amber,
+            'primary' =>  '#448cf8ff',
             ])
             ->discoverResources(in: app_path('Filament/Teacher/Resources'), for: 'App\\Filament\\Teacher\\Resources')
             ->discoverPages(in: app_path('Filament/Teacher/Pages'), for: 'App\\Filament\\Teacher\\Pages')

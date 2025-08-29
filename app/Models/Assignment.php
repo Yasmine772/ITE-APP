@@ -15,12 +15,12 @@ class Assignment extends Model
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class, 'subjects');
+        return $this->belongsTo(Subject::class);
     }
 
     public function solution()
     {
-        return $this->hasOne(Solution::class, 'solutions');
+        return $this->hasOne(Solution::class);
     }
 
 

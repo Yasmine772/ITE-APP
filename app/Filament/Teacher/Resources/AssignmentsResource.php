@@ -38,7 +38,7 @@ class AssignmentsResource extends Resource
                     ->acceptedFileTypes(['application/pdf'])
                     ->required(),
 
-                    Hidden::make('teacher_id')->default(fn() => auth()->user()->teacher?->id),
+                    Hidden::make('teacher_id')->default(fn() => auth()->user()->teacher->id),
                 Select::make('subject_id')
                     ->label('subject')
                     ->required()

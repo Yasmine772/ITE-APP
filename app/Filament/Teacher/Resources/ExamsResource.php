@@ -46,7 +46,7 @@ class ExamsResource extends Resource
                             Hidden::make('user_id')->default(auth()->user()->id)->required()
                         ]),
 
-                    Wizard\Step::make('Add Questions')
+                    Wizard\Step::make('Questions')
                         ->schema([
                             Repeater::make('questions')
                                 ->relationship()
@@ -83,7 +83,6 @@ class ExamsResource extends Resource
                                 ->columns(1)
                                 ->defaultItems(1)
                                 ->addActionLabel('New Question')
-                                ->collapsible()
                                 ->columnSpan('full'),
                         ])
             ])
