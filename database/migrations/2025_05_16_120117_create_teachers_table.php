@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('academic_qualification');
             $table->integer('years_of_experience');
             $table->string('degree');
+              $table->string('stripe_account_id')->nullable();
             $table->timestamps();
         });
     }

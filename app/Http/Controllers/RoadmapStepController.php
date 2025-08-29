@@ -20,7 +20,7 @@ class RoadmapStepController extends Controller
         $this->roadmapStepService = $roadmapStepService;
     }
 
-    public function index($roadmapId)
+    public function indexwep($roadmapId)
     {
         try {
             $steps = $this->roadmapStepService->getStepsByRoadmap($roadmapId);
@@ -30,12 +30,12 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function create($roadmapId)
+    public function createwep($roadmapId)
     {
         return view('roadmap_steps.create', compact('roadmapId'));
     }
 
-    public function store(Request $request, $roadmapId)
+    public function storewep(Request $request, $roadmapId)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -55,7 +55,7 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function show($id)
+    public function showwep($id)
     {
         try {
             $step = $this->roadmapStepService->getStepById($id);
@@ -67,7 +67,7 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function edit($id)
+    public function editwep($id)
     {
         try {
             $step = $this->roadmapStepService->getStepById($id);
@@ -79,7 +79,7 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function updatewep(Request $request, $id)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -100,11 +100,11 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroywep($id)
     {
         try {
             $step = $this->roadmapStepService->getStepById($id);
-            $roadmapId = $step->roadmap_id; // حفظ الـ roadmapId قبل الحذف
+            $roadmapId = $step->roadmap_id;
 
             $this->roadmapStepService->deleteStep($step);
 
@@ -117,7 +117,7 @@ class RoadmapStepController extends Controller
         }
     }
 
-    public function attachCourses(Request $request, $stepId)
+    public function attachCourseswep(Request $request, $stepId)
     {
         $validated = $request->validate([
             'course_ids' => 'required|array',
@@ -136,6 +136,94 @@ class RoadmapStepController extends Controller
             return redirect()->route('roadmap_steps.index')->with('error', 'Step not found');
         } catch (\Exception $e) {
             return redirect()->route('roadmap_steps.index')->with('error', 'Unexpected error: ' . $e->getMessage());
+        }
+    }
+    public function getStepsByRoadmap($roadmapId)
+    {
+        try {
+            $steps = $this->roadmapStepService->getStepsByRoadmap($roadmapId);
+            return response()->json(['data' => $steps], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function store(Request $request, $roadmapId)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+        ]);
+
+        try {
+            $validated['roadmap_id'] = $roadmapId;
+            $step = $this->roadmapStepService->createStep($validated);
+            return response()->json(['message' => 'Step created successfully', 'data' => $step], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function showStep($id)
+    {
+        try {
+            $step = $this->roadmapStepService->getStepById($id);
+            return response()->json(['data' => $step], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Step not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+        ]);
+
+        try {
+            $step = $this->roadmapStepService->getStepById($id);
+            $updatedStep = $this->roadmapStepService->updateStep($step, $validated);
+            return response()->json(['message' => 'Step updated successfully', 'data' => $updatedStep], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Step not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $step = $this->roadmapStepService->getStepById($id);
+            $this->roadmapStepService->deleteStep($step);
+            return response()->json(['message' => 'Step deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Step not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function attachCourses(Request $request, $stepId)
+    {
+        $validated = $request->validate([
+            'course_ids' => 'required|array',
+            'course_ids*' => 'exists:courses,id',
+        ]);
+
+        try {
+            $step = $this->roadmapStepService->getStepById($stepId);
+            $this->roadmapStepService->attachCourses($step, $validated['course_ids']);
+            return response()->json(['message' => 'Courses attached successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Step not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unexpected error: ' . $e->getMessage()], 500);
         }
     }
 }

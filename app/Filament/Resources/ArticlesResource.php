@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ArticlesResource\Pages;
 use App\Models\Article;
+use App\Models\Teacher;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -20,6 +21,8 @@ class ArticlesResource extends Resource
     protected static ?string $model = Article::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationGroup = 'Articles';
+    protected static ?string $modelLabel = 'Article';
 
     public static function form(Form $form): Form
     {
@@ -39,8 +42,8 @@ class ArticlesResource extends Resource
             ->columns([
             Stack::make([
                 TextColumn::make('title'),
-                TextColumn::make('content')->limit(90), 
-            ]),        
+                TextColumn::make('content')->limit(90),
+            ]),
         ])
             ->filters([
                 Filter::make('Pending')
@@ -51,7 +54,7 @@ class ArticlesResource extends Resource
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-               
+
             ]);
     }
 

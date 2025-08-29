@@ -80,6 +80,9 @@ class ResourceController extends Controller
     }
     public function showAllResourse(): \Illuminate\Http\JsonResponse
     {
+
+
+
         $resources = Resource::with('teacher', 'resourceable')->get();
 
         return $this->successResponse([

@@ -42,6 +42,8 @@ use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\RoadmapProgressController;
 use App\Http\Controllers\RoadmapStepController;
+
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RulesForArticlesController;
 
 Route::get('/user', function (Request $request) {
@@ -216,13 +218,27 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     Route::get('resource/index', [ResourceController::class, 'showAllResourse']);
 
 
+
 });
+
+
+
+
+Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    Route::get('resource/index', [ResourceController::class, 'showAllResourse']);
+
+
+});
+
 // My Resources list
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('resource/showAll', [ResourceController::class, 'showAll']);
     Route::get('myresource/index', [MyResourceListController::class, 'index']);
     Route::get('myresource/store', [MyResourceListController::class, 'store']);
     Route::delete('myresource/{id}/remove', [MyResourceListController::class, 'remove']);
+
+
+
 });
 //Personal Blog
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -232,15 +248,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('mynotes/{id}/update', [PersonalBlogController::class, 'update']);
     Route::delete('mynotes/{id}/destroy', [PersonalBlogController::class, 'destroy']);
     Route::delete('mynotes/destroyAll', [PersonalBlogController::class, 'destroyAll']);
+
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('myresources/showAll', [MyResourceListController::class, 'show']);
     Route::get('myresources/{id}/add', [MyResourceListController::class, 'store']);
+
 });
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('coupon/store', [CouponsController::class, 'store']);
-});
+
 
 
 
@@ -268,6 +284,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('{id}', [ContentSubjectController::class, 'apiUpdate'])->name('update');
         Route::delete('{id}', [ContentSubjectController::class, 'apiDestroy'])->name('destroy');
     });
+
 });
 
 Route::prefix('categories')->group(function () {
@@ -286,6 +303,7 @@ Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
     Route::post('/', [CourseController::class, 'apiStore']);
     Route::post('/{id}', [CourseController::class, 'apiUpdate']);
     Route::delete('/{id}', [CourseController::class, 'apiDestroy']);
+
 });
 Route::middleware('auth:sanctum')->get('/my-courses', [CourseController::class, 'apiMyCourses']);
 
@@ -309,10 +327,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('contents', [CourseContentController::class, 'store']);
 Route::post('contents/{content}', [CourseContentController::class, 'update']);
 Route::delete('contents/{content}', [CourseContentController::class, 'destroy']);
-Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
+//Route::get('contents/{courseId}', [CourseContentController::class, 'index']);
 
 Route::prefix('contents')->middleware(['auth:sanctum', 'active.subscription'])->group(function () {
-    //  Route::get('{courseId}', [CourseContentController::class, 'index']);
+      Route::get('{courseId}', [CourseContentController::class, 'index']);
     Route::get('{courseId}/search', [CourseContentController::class, 'search']);
 
 
@@ -364,7 +382,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('{stepId}', [RoadmapStepController::class, 'showStep']);
 
-        Route::post('/', [RoadmapStepController::class, 'store']);
+        Route::post('{roadmapId}', [RoadmapStepController::class, 'store']);
 
         Route::put('{stepId}', [RoadmapStepController::class, 'update']);
 
@@ -372,4 +390,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('attach-courses/{stepId}', [RoadmapStepController::class, 'attachCourses']);
     });
+    Route::middleware(['auth:sanctum'])->post('/purchase', [PaymentController::class, 'createPaymentIntent']);
+Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->middleware(['auth:sanctum']);
 });
+use Stripe\Stripe;
+use Stripe\Account;
+
+Route::get('/stripe/account-status/{accountId}', function ($accountId) {
+    Stripe::setApiKey(config('services.stripe.secret'));
+    try {
+        $account = Account::retrieve($accountId);
+
+        return response()->json([
+            'id' => $account->id,
+            'email' => $account->email,
+            'type' => $account->type,
+            'country' => $account->country,
+            'capabilities' => $account->capabilities,
+            'details_submitted' => $account->details_submitted,
+            'charges_enabled' => $account->charges_enabled,
+            'payouts_enabled' => $account->payouts_enabled,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+        ], 400);
+    }
+});
+
+
+

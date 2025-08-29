@@ -15,6 +15,7 @@ class Teacher extends Model
         'academic_qualification',
         'years_of_experience',
         'university_degree',
+        'stripe_account_id'
     ];
 
 

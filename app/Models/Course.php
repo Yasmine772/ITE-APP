@@ -83,5 +83,16 @@ class Course extends Model
         return $this->hasMany(Exam::class, 'exams');
     }
 
+public function purchases()
+{
+    return $this->hasMany(Purchase::class);
+}
+
+public function students()
+{
+    return $this->belongsToMany(User::class, 'purchases')
+                ->withPivot('amount_paid', 'payment_status')
+                ->withTimestamps();
+}
 
 }

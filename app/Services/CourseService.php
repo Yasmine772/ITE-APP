@@ -12,7 +12,7 @@ class CourseService
     {
         return Course::with(['teacher.user', 'category', 'subject'])->latest()->get();
     }
-    
+
 
     public function getCourseById($id)
     {
@@ -51,16 +51,17 @@ class CourseService
 
     public function deleteCourse(Course $course)
     {
-        if ($course->cover_image && Storage::disk('public')->exists($course->cover_image)) {
-            Storage::disk('public')->delete($course->cover_image);
-        }
-
-        return $course->delete();
+        // if ($course->cover_image && Storage::disk('public')->exists($course->cover_image)) {
+        //     Storage::disk('public')->delete($course->cover_image);
+        // }
+        $course->update(['archived' => true]);
+        return true;
     }
 
     public function filterCourses(array $filters)
     {
         $query = Course::query();
+        $query->where('archived', false);
 
         if (isset($filters['title']) && $filters['title'] !== '') {
             $query->where('title', 'like', '%' . $filters['title'] . '%');
@@ -91,21 +92,19 @@ class CourseService
         return $query->with($relations)->get();
     }
 
-    
-   public function getTopRatedCourses($limit = 10)
-{
-    //   dd('Reached getTopRatedCourses');
-    return Course::with(['teacher.user:id,name'])
-        ->withCount([
-            'subscriptions as active_subscriptions_count' => function ($query) {
-                $query->where('status', 'active');
-            }
-        ])
-        ->orderByDesc('active_subscriptions_count') 
-        ->orderByDesc('average_rating')             
-        ->limit($limit)
-        ->get();
-}
 
-
+    public function getTopRatedCourses($limit = 10)
+    {
+        //   dd('Reached getTopRatedCourses');
+        return Course::with(['teacher.user:id,name'])->where('archived', false)
+            ->withCount([
+                'subscriptions as active_subscriptions_count' => function ($query) {
+                    $query->where('status', 'active');
+                }
+            ])
+            ->orderByDesc('active_subscriptions_count')
+            ->orderByDesc('average_rating')
+            ->limit($limit)
+            ->get();
+    }
 }

@@ -35,6 +35,7 @@ Route::get('/', function () {
 });
 
 
+
 Auth::routes();
 Route::get('/notifications',[AdminController::class,'showAllNotification']);
 

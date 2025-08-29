@@ -63,6 +63,9 @@ class SubjectService
         if (!empty($filters['specialization_id'])) {
             $query->where('specialization_id', $filters['specialization_id']);
         }
+         if (!empty($filters['semester_id'])) {
+            $query->where('semester_id', $filters['semester_id']);
+        }
 
         if (!empty($filters['teacher_id'])) {
             $query->where('teacher_id', $filters['teacher_id']);

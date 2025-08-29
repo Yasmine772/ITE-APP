@@ -158,10 +158,30 @@ class User extends Authenticatable implements MustVerifyEmail
    {
         return $this->belongsToMany(Resource::class);
    }
+
+   public function purchases()
+{
+    return $this->hasMany(Purchase::class);
+}
+
+public function purchasedCourses()
+{
+    return $this->belongsToMany(Course::class, 'purchases')
+                ->withPivot('amount_paid', 'payment_status')
+                ->withTimestamps();
+}
     public function receivedAdvertisements()
     {
         return $this->belongsToMany(Advertisement::class, 'advertisement_user')->withTimestamps();
     }
+
+
+
+    public function coupons(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Coupon::class, Teacher::class);
+    }
+
 
 
 }

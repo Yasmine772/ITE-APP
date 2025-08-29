@@ -12,7 +12,7 @@ class CreateStudent extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $user = \App\Models\User::create($data);
-        $user->assignRole('student'); // إضافة دور student تلقائي
+        $user->assignRole('student');
 
         return [];
     }

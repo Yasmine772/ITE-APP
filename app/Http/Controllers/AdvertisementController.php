@@ -112,7 +112,7 @@ class AdvertisementController extends Controller
         return $this->successResponse(['Details' => [
              'title'=> $advertisement->title,
             'description'=> $advertisement->description ,
-            'Teacher name'=>$advertisement->teacher_name,
+            'Teacher name'=>$advertisement->user?->name,
             'Created at'=>  $advertisement->created_at,
             'Updated at'=>  $advertisement->updated_at,
 

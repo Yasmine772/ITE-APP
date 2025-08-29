@@ -75,7 +75,7 @@ class ContentSubjectPolicy
 {
     public function view(User $user, ContentSubject $contentSubject): bool
     {
-        return $this->ownsSubject($user, $contentSubject);
+        return true;
     }
 
     public function update(User $user, ContentSubject $contentSubject): bool
