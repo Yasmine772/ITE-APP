@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
+class ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -446,8 +446,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
-            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
+            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
+            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
         ),
         'Spatie\\Invade\\' => 
         array (
@@ -455,8 +455,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/ignition/src',
-            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
+            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
+            1 => __DIR__ . '/..' . '/spatie/ignition/src',
         ),
         'Spatie\\FlareClient\\' => 
         array (
@@ -508,8 +508,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -573,8 +573,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces',
+            1 => __DIR__ . '/..' . '/league/uri',
         ),
         'League\\MimeTypeDetection\\' => 
         array (
@@ -981,10 +981,32 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\EditAdvertisement' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/EditAdvertisement.php',
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\ListAdvertisements' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/ListAdvertisements.php',
         'App\\Filament\\Resources\\AdvertisementResource\\Pages\\ViewAdvertisement' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvertisementResource/Pages/ViewAdvertisement.php',
+        'App\\Filament\\Resources\\AdvicesResource' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource.php',
+        'App\\Filament\\Resources\\AdvicesResource\\Pages\\CreateAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/CreateAdvices.php',
+        'App\\Filament\\Resources\\AdvicesResource\\Pages\\EditAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/EditAdvices.php',
+        'App\\Filament\\Resources\\AdvicesResource\\Pages\\ListAdvices' => __DIR__ . '/../..' . '/app/Filament/Resources/AdvicesResource/Pages/ListAdvices.php',
+        'App\\Filament\\Resources\\ArticlesResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource.php',
+        'App\\Filament\\Resources\\ArticlesResource\\Pages\\ListArticles' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource/Pages/ListArticles.php',
+        'App\\Filament\\Resources\\ArticlesResource\\Pages\\ViewArticles' => __DIR__ . '/../..' . '/app/Filament/Resources/ArticlesResource/Pages/ViewArticles.php',
+        'App\\Filament\\Resources\\AssignmentResource\\RelationManagers\\SolutionsRelationManager' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentResource/RelationManagers/SolutionsRelationManager.php',
+        'App\\Filament\\Resources\\AssignmentsResource' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource.php',
+        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\CreateAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/CreateAssignments.php',
+        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\EditAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/EditAssignments.php',
+        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\ListAssignments' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/ListAssignments.php',
+        'App\\Filament\\Resources\\AssignmentsResource\\Pages\\ViewAssignment' => __DIR__ . '/../..' . '/app/Filament/Resources/AssignmentsResource/Pages/ViewAssignment.php',
+        'App\\Filament\\Resources\\ExamsResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource.php',
+        'App\\Filament\\Resources\\ExamsResource\\Pages\\CreateExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/CreateExams.php',
+        'App\\Filament\\Resources\\ExamsResource\\Pages\\EditExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/EditExams.php',
+        'App\\Filament\\Resources\\ExamsResource\\Pages\\ListExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/ListExams.php',
+        'App\\Filament\\Resources\\ExamsResource\\Pages\\ViewExams' => __DIR__ . '/../..' . '/app/Filament/Resources/ExamsResource/Pages/ViewExams.php',
         'App\\Filament\\Resources\\NotificationResource' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource.php',
         'App\\Filament\\Resources\\NotificationResource\\Pages\\EditNotification' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource/Pages/EditNotification.php',
         'App\\Filament\\Resources\\NotificationResource\\Pages\\ListNotifications' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource/Pages/ListNotifications.php',
         'App\\Filament\\Resources\\NotificationResource\\Pages\\ViewNotification' => __DIR__ . '/../..' . '/app/Filament/Resources/NotificationResource/Pages/ViewNotification.php',
+        'App\\Filament\\Resources\\ResourceResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ResourceResource.php',
+        'App\\Filament\\Resources\\ResourceResource\\Pages\\CreateResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ResourceResource/Pages/CreateResource.php',
+        'App\\Filament\\Resources\\ResourceResource\\Pages\\EditResource' => __DIR__ . '/../..' . '/app/Filament/Resources/ResourceResource/Pages/EditResource.php',
+        'App\\Filament\\Resources\\ResourceResource\\Pages\\ListResources' => __DIR__ . '/../..' . '/app/Filament/Resources/ResourceResource/Pages/ListResources.php',
         'App\\Filament\\Resources\\StudentResource' => __DIR__ . '/../..' . '/app/Filament/Resources/StudentResource.php',
         'App\\Filament\\Resources\\StudentResource\\Pages\\CreateStudent' => __DIR__ . '/../..' . '/app/Filament/Resources/StudentResource/Pages/CreateStudent.php',
         'App\\Filament\\Resources\\StudentResource\\Pages\\EditStudent' => __DIR__ . '/../..' . '/app/Filament/Resources/StudentResource/Pages/EditStudent.php',
@@ -1012,6 +1034,7 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         'App\\Http\\Controllers\\ComplaintController' => __DIR__ . '/../..' . '/app/Http/Controllers/ComplaintController.php',
         'App\\Http\\Controllers\\ContentSubjectController' => __DIR__ . '/../..' . '/app/Http/Controllers/ContentSubjectController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\CouponsController' => __DIR__ . '/../..' . '/app/Http/Controllers/CouponsController.php',
         'App\\Http\\Controllers\\CourseContentController' => __DIR__ . '/../..' . '/app/Http/Controllers/CourseContentController.php',
         'App\\Http\\Controllers\\CourseController' => __DIR__ . '/../..' . '/app/Http/Controllers/CourseController.php',
         'App\\Http\\Controllers\\CourseProgressController' => __DIR__ . '/../..' . '/app/Http/Controllers/CourseProgressController.php',
@@ -1043,6 +1066,7 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         'App\\Http\\Middleware\\HandleInertiaRequests' => __DIR__ . '/../..' . '/app/Http/Middleware/HandleInertiaRequests.php',
         'App\\Http\\Middleware\\Teacher' => __DIR__ . '/../..' . '/app/Http/Middleware/Teacher.php',
         'App\\Http\\Middleware\\verifiedEmail' => __DIR__ . '/../..' . '/app/Http/Middleware/verifiedEmail.php',
+        'App\\Http\\Requests\\CopounStoreRequest' => __DIR__ . '/../..' . '/app/Http/Requests/CopounStoreRequest.php',
         'App\\Http\\Requests\\CourseContentRequest' => __DIR__ . '/../..' . '/app/Http/Requests/CourseContentRequest.php',
         'App\\Http\\Requests\\CourseRequest' => __DIR__ . '/../..' . '/app/Http/Requests/CourseRequest.php',
         'App\\Http\\Requests\\PersonalBlogRequest' => __DIR__ . '/../..' . '/app/Http/Requests/PersonalBlogRequest.php',
@@ -1114,6 +1138,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\Filament\\AdminPanelPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/AdminPanelPanelProvider.php',
+        'App\\Providers\\Filament\\AdminPanelProvider' => __DIR__ . '/../..' . '/app/Providers/Filament/AdminPanelProvider.php',
+        'App\\Rules\\OnlyOneCorrectOption' => __DIR__ . '/../..' . '/app/Rules/OnlyOneCorrectOption.php',
         'App\\Services\\CategoryService' => __DIR__ . '/../..' . '/app/Services/CategoryService.php',
         'App\\Services\\ContentSubjectService' => __DIR__ . '/../..' . '/app/Services/ContentSubjectService.php',
         'App\\Services\\CourseContentService' => __DIR__ . '/../..' . '/app/Services/CourseContentService.php',
@@ -11278,6 +11304,8 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
         'Symfony\\Component\\Uid\\Command\\GenerateUuidCommand' => __DIR__ . '/..' . '/symfony/uid/Command/GenerateUuidCommand.php',
         'Symfony\\Component\\Uid\\Command\\InspectUlidCommand' => __DIR__ . '/..' . '/symfony/uid/Command/InspectUlidCommand.php',
         'Symfony\\Component\\Uid\\Command\\InspectUuidCommand' => __DIR__ . '/..' . '/symfony/uid/Command/InspectUuidCommand.php',
+        'Symfony\\Component\\Uid\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/uid/Exception/InvalidArgumentException.php',
+        'Symfony\\Component\\Uid\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/uid/Exception/LogicException.php',
         'Symfony\\Component\\Uid\\Factory\\NameBasedUuidFactory' => __DIR__ . '/..' . '/symfony/uid/Factory/NameBasedUuidFactory.php',
         'Symfony\\Component\\Uid\\Factory\\RandomBasedUuidFactory' => __DIR__ . '/..' . '/symfony/uid/Factory/RandomBasedUuidFactory.php',
         'Symfony\\Component\\Uid\\Factory\\TimeBasedUuidFactory' => __DIR__ . '/..' . '/symfony/uid/Factory/TimeBasedUuidFactory.php',
@@ -11571,9 +11599,9 @@ class ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit385bf63bf431b2884df2d42f1ec16d0e::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4148dc04d0af4feccfbf3cef7811133f::$classMap;
 
         }, null, ClassLoader::class);
     }
