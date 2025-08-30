@@ -16,6 +16,11 @@ return [
     'colors' => [
         'primary' => '#3579e0ff',
     ],
+    'widgets' => [
+
+        \App\Filament\Widgets\ChatWidget::class,
+    ],
+
 
     'broadcasting' => [
 

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Filament\Pages\CustomChatifyPage;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Rating;
 use App\Observers\RatingObserver;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\App;
 use App\Models\Subject;
 use App\Models\Course;
 use App\Models\User;
+use Monzer\FilamentChatifyIntegration\ChatifyPlugin;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -35,5 +38,11 @@ class AppServiceProvider extends ServiceProvider
         Rating::observe(RatingObserver::class);
         CourseContent::observe(CourseContentObserver::class);
 
+    }
+    public function panel(\Filament\Panel $panel): \Filament\Panel
+    {
+        return $panel->plugin(
+            ChatifyPlugin::make()->customPage(CustomChatifyPage::class)
+        );
     }
 }

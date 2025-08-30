@@ -181,6 +181,24 @@ public function purchasedCourses()
     {
         return $this->hasManyThrough(Coupon::class, Teacher::class);
     }
+    public function sentMessages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Message::class, 'sender_id');
+    }
+
+    public function receivedMessages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Message::class, 'receiver_id');
+    }
+
+    public function messagesWith($userId)
+    {
+        return \App\Models\Message::where(function($q) use ($userId) {
+            $q->where('sender_id', $this->id)->where('receiver_id', $userId);
+        })->orWhere(function($q) use ($userId) {
+            $q->where('sender_id', $userId)->where('receiver_id', $this->id);
+        })->orderBy('created_at');
+    }
 
 
 

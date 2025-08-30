@@ -66,15 +66,15 @@ class ResourceResource extends FilamentResource
 
     public static function getEloquentQuery(): Builder
     {
-
         $user = auth()->user();
 
         if ($user->hasRole('admin')) {
             return parent::getEloquentQuery();
         }
 
-        return parent::getEloquentQuery()->where('teacher_id', $teacher->id);
+        return parent::getEloquentQuery()->where('teacher_id', $user->teacher->id);
     }
+
 
     public static function getPages(): array
     {

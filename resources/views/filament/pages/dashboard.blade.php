@@ -1,19 +1,21 @@
 <x-filament::page>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <!-- Students Chart -->
         <div class="bg-white p-4 rounded-2xl shadow">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Number of Students</h3>
             <canvas id="studentsChart"></canvas>
         </div>
 
-
+        <!-- Teachers Chart -->
         <div class="bg-white p-4 rounded-2xl shadow">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Number of Teachers</h3>
             <canvas id="teachersChart"></canvas>
         </div>
     </div>
 
-
+    <!-- Last Advertisements -->
     <div class="mt-6 bg-white p-4 rounded-2xl shadow w-full">
         <h3 class="text-lg font-semibold text-gray-700 mb-4">Last advertisements added</h3>
         <div class="overflow-x-auto">
@@ -38,13 +40,13 @@
 
 
 
+    <!-- Chart.js Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @php
         $studentData = $this->getStudentCountsPerYear();
         $teacherData = $this->getTeacherCountsPerYear();
     @endphp
     <script>
-
         new Chart(document.getElementById('studentsChart'), {
             type: 'line',
             data: {
@@ -59,7 +61,6 @@
             },
             options: { responsive: true }
         });
-
 
         new Chart(document.getElementById('teachersChart'), {
             type: 'line',

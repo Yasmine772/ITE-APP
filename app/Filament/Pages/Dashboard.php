@@ -6,12 +6,22 @@ use Filament\Pages\Page;
 use App\Models\User;
 use App\Models\Subject;
 use App\Models\Advertisement;
+use App\Livewire\ChatBox;
+use app\Livewire\ConversationsWidget;
+
 
 class Dashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?string $navigationGroup = 'Dashboard';
     protected static string $view = 'filament.pages.dashboard';
+    protected function getWidgets(): array
+    {
+        return [
+            \App\Http\Livewire\ConversationsWidget::class ,
+            \App\Http\Livewire\ChatBox::class,
+        ];
+    }
 
     public function getStudentCountsPerYear(): array
     {
@@ -59,5 +69,6 @@ class Dashboard extends Page
     public function getTotalStudents() { return User::role('student')->count(); }
     public function getTotalTeachers() { return User::role('teacher')->count(); }
     public function getTotalSubjects() { return Subject::count(); }
+
 
 }
